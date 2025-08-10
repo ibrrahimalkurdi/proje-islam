@@ -1,0 +1,171 @@
+{
+  "teachers": [
+    {
+      "id": "bryar_ahmad",
+      "name": "م.بریار ئەحمەد",
+      "profileImage": "https://i.postimg.cc/HxCQWnsN/IMG-0990.jpg",
+      "bio": "پسپۆر د زانستێن شەرعی دا و خودان چەندین زنجیرە وانەیێن تۆمارکری.",
+      "phone": "+964 750 873 3725",
+      "social": {
+        "youtube": "https://youtube.com/@bryar_ahmad?si=7V9o1a0k-kkC6TPR",
+        "telegram": "https://t.me/Bryar_ahmaad"
+      },
+      "locations": [
+        {
+          "name": "مزگەفتا شێلی، تاخێ شێلێ",
+          "coordinates": [36.8625, 42.9885],
+          "schedule": "هەر ڕۆژا پێنچ شەمبی، پشتی نڤێژا مەغریب",
+          "lessonTaught": "شلۆڤەکرنا پەرتووکا \"الأصول الثلاثة\""
+        },
+        {
+          "name": "مزگەفتا تەقوا، دهۆک",
+          "coordinates": [36.8580, 42.9990],
+          "schedule": "هەر ڕۆژا سێ شەمبی، پشتی نڤێژا عەسر",
+          "lessonTaught": "شلۆڤەکرنا پەرتووکا \"نواقض الإسلام\""
+        }
+      ]
+    },
+    {
+      "id": "ismail_zaxo",
+      "name": "مامۆستا ئیسماعیل",
+      "profileImage": "https://randomuser.me/api/portraits/men/55.jpg",
+      "bio": "پسپۆر د فقهێ داراییدا و خودان چەندین پەرتوکە ل زاخۆ.",
+      "phone": "٠٧٥٠٢٢٢٣٣٤٤",
+      "social": {
+        "youtube": "#",
+        "facebook": "#"
+      },
+      "locations": [
+        {
+          "name": "مزگەفتا زاخو یا مەزن، زاخۆ",
+          "coordinates": [37.1435, 42.6820],
+          "schedule": "هەر ڕۆژا چارشەمبی، پشتی نڤێژا عیشا",
+          "lessonTaught": "فقهێ کرین و فرۆتنێ"
+        }
+      ]
+    },
+    {
+      "id": "kawa_erbil",
+      "name": "مامۆستا کاوە",
+      "profileImage": "https://randomuser.me/api/portraits/men/33.jpg",
+      "bio": "شارەزا د زانستێ سیرە و مێژوویا ئیسلامی دا ل هەولێرێ.",
+      "phone": "٠٧٥٠٣٣٣٤٤٥٥",
+      "social": {
+        "telegram": "#",
+        "twitter": "#"
+      },
+      "locations": [
+        {
+          "name": "مزگەفتا جەلیل خەیات، هەولێر",
+          "coordinates": [36.1740, 44.0085],
+          "schedule": "هەمی ڕۆژێن ئێک شەمبی، پشتی نڤێژا سپێدێ",
+          "lessonTaught": "ژیانناما پێغەمبەری ﷺ"
+        }
+      ]
+    },
+    {
+      "id": "ali_sulaymani",
+      "name": "مامۆستا عەلی",
+      "profileImage": "https://randomuser.me/api/portraits/men/44.jpg",
+      "bio": "پسپۆر د تەزکیە و ئەخلاقی دا و خودان دەنگەکێ خوشە ل سلێمانیێ.",
+      "phone": "٠٧٧٠٤٤٤٥٥٦٦",
+      "social": {
+        "facebook": "#",
+        "instagram": "#"
+      },
+      "locations": [
+        {
+          "name": "مزگەفتا گەورە، سلێمانی",
+          "coordinates": [35.5562, 45.4343],
+          "schedule": "پشتی نڤێژا ئەینی",
+          "lessonTaught": "پاککرنا دلی (تەزکیە)"
+        }
+      ]
+    }
+  ],
+  "curriculum": {
+    "levels": [
+      {
+        "title": "ئاستێ یەکێ: بنەمایێن سەرەتایی",
+        "items": ["matn1", "matn2"]
+      },
+      {
+        "title": "ئاستێ دووێ: فقهێ بنەرەت",
+        "items": ["matn3"]
+      },
+      {
+        "title": "ئاستێ سێیێ: پێشکەفتی",
+        "items": ["matn4"]
+      }
+    ],
+    "items": [
+      {
+        "matnId": "matn1",
+        "title": "الأصول الثلاثة",
+        "text": ["بِسْمِ اللهِ الرَّحْمَنِ الرَّحِيمِ.", "اعْلَمْ رَحِمَكَ اللهُ أَنَّهُ يَجِبُ عَلَيْنَا تَعَلّمُ أَرْبَعِ مَسَائِلَ..."],
+        "explanations": [
+          {
+            "id": "sharah_ahmad_matn1",
+            "teacherId": "bryar_ahmad",
+            "videos": [{"title": "دەرسـا یەکێ", "url": "#"}, {"title": "دەرسـا دووێ", "url": "#"}],
+            "seriesId": "gl5"
+          }
+        ]
+      },
+      {
+        "matnId": "matn2",
+        "title": "القواعد الأربعة",
+        "text": ["بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ", "أَسْأَلُ اللَّهَ الْكَرِيمَ رَبَّ الْعَرْشِ الْعَظِيمِ أَنْ يَتَوَلاَّكَ فِي الدُّنْيَا وَالآخِرَةِ..."],
+        "explanations": [
+          {
+            "id": "sharah_ismail_matn2",
+            "teacherId": "ismail_zaxo",
+            "videos": [{"title": "پێشەکی", "url": "#"}]
+          }
+        ]
+      },
+      {
+        "matnId": "matn3",
+        "title": "نواقض الإسلام",
+        "text": ["بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ", "اعلم أن نواقض الإسلام عشرة نواقض..."],
+        "explanations": [
+          {
+            "id": "sharah_ahmad_matn3",
+            "teacherId": "bryar_ahmad",
+            "videos": [{"title": "وانا یەکێ", "url": "#"}]
+          },
+          {
+            "id": "sharah_ali_matn3",
+            "teacherId": "ali_sulaymani",
+            "videos": [{"title": "وانا یەکێ", "url": "#"}]
+          }
+        ]
+      },
+      {
+        "matnId": "matn4",
+        "title": "شروط لا إله إلا الله",
+        "text": ["العلم، اليقين، القبول...", "الانقياد، الصدق، الإخلاص، المحبة"],
+        "explanations": [
+          {
+            "id": "sharah_kawa_matn4",
+            "teacherId": "kawa_erbil",
+            "videos": [{"title": "دەرسـا یەکێ", "url": "#"}]
+          }
+        ]
+      }
+    ]
+  },
+  "generalLectures": [
+    {"id": "gl1", "title": "شلۆڤەکرنا ناڤێن جوان یێن خودێ", "teacherId": "bryar_ahmad", "category": "عەقیدە", "image": "https://picsum.photos/400/225?random=1", "videos": [{"title": "وانا یەکێ: الرحمن", "url": "#"}, {"title": "وانا دووێ: الرحيم", "url": "#"}, {"title": "وانا سێیێ: الملك", "url": "#"}]},
+    {"id": "gl2", "title": "فقهێ کرین و فرۆتنێ", "teacherId": "ismail_zaxo", "category": "فیقه", "image": "https://picsum.photos/400/225?random=2", "videos": [{"title": "دەستپێک", "url": "#"}, {"title": "مەرجێن کرین و فرۆتنێ", "url": "#"}]},
+    {"id": "gl3", "title": "ژیانناما پێغەمبەری ﷺ", "teacherId": "kawa_erbil", "category": "سیرە", "image": "https://picsum.photos/400/225?random=4", "videos": [{"title": "وانا یەکێ", "url": "#"}, {"title": "وانا دووێ", "url": "#"}]},
+    {"id": "gl4", "title": "پاککرنا دلی", "teacherId": "ali_sulaymani", "category": "تەزکیە", "image": "https://picsum.photos/400/225?random=5", "videos": [{"title": "وانا یەکێ: ئخلاس", "url": "#"}, {"title": "وانا دووێ: تەوبە", "url": "#"}, {"title": "وانا سێیێ: زوهد", "url": "#"}]},
+    {"id": "gl5", "title": "گرنگییا فێربوونا تەوحیدی", "teacherId": "bryar_ahmad", "category": "عەقیدە", "image": "https://picsum.photos/400/225?random=6", "videos": [{"title": "وانا یەکێ", "url": "#"}]}
+  ],
+  "pirtukxane": [
+    {"title": "الأصول الثلاثة", "author": "محمد بن عبد الوهاب", "category": "عەقیدە", "coverImage": "https://picsum.photos/250/350?random=3", "description": "پەرتوکەکا کورت و پر مفایە دەربارەی وان سێ پرسیارێن د قەبری دا دهێنە کرن.", "readUrl": "#read-pdf-1", "downloadUrl": "#download-pdf-1"},
+    {"title": "رياض الصالحين", "author": "الإمام النووي", "category": "حەدیس", "coverImage": "https://picsum.photos/250/350?random=7", "description": "کۆمکرنا فەرموودەیێن پێغەمبەری ﷺ لسەر بابەتاێن جودا جودا.", "readUrl": "#read-pdf-2", "downloadUrl": "#download-pdf-2"},
+    {"title": "الرحيق المختوم", "author": "صفي الرحمن المباركفوري", "category": "سیرە", "coverImage": "https://picsum.photos/250/350?random=8", "description": "ئێک ژ باشترین پەرتوکێن لسەر ژیانناما پێغەمبەری ﷺ هاتینە نڤیسین.", "readUrl": "#read-pdf-3", "downloadUrl": "#download-pdf-3"},
+    {"title": "منهاج المسلم", "author": "أبو بكر الجزائري", "category": "گشتی", "coverImage": "https://picsum.photos/250/350?random=9", "description": "پەرتوکەکا گشتگیرە لسەر بیروباوەر، عیبادەت، ئەخلاق و مامەلەیان.", "readUrl": "#read-pdf-4", "downloadUrl": "#download-pdf-4"}
+  ]
+}
