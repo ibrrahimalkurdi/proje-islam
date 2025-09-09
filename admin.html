@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>پەنجەرا بەڕێوەبرنێ - پرۆژێ ئیسلام</title>
+    <style>
+        body { font-family: 'Noto Sans Arabic', sans-serif; background-color: #0d1117; color: #c9d1d9; line-height: 1.7; padding: 20px; }
+        .container { max-width: 900px; margin: auto; }
+        h1, h2 { color: #58a6ff; border-bottom: 2px solid #30363d; padding-bottom: 10px; }
+        .form-section { background-color: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 25px; margin-bottom: 30px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input, .form-group select { width: 100%; background: #0d1117; border: 1px solid #30363d; color: #c9d1d9; padding: 10px; border-radius: 6px; box-sizing: border-box; }
+        button { background-color: #2ea043; color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        button:hover { opacity: 0.9; }
+        #output-container { margin-top: 30px; }
+        #output-code { width: 100%; height: 400px; background-color: #010409; color: #c9d1d9; border: 1px solid #30363d; border-radius: 6px; padding: 10px; font-family: monospace; direction: ltr; text-align: left; }
+        .copy-btn { background-color: #58a6ff; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>پەنجەرا بەڕێوەبرنێ</h1>
+        <p>ل ڤێرێ تو دشێی ب ساناھی ناڤەرۆکێ بۆ مالپەری زێدە بکەی.</p>
+
+        <!-- فۆرما زێدەکرنا وانەیێن گشتی -->
+        <div class="form-section">
+            <h2>زێدەکرنا وانەیەکا گشتی</h2>
+            <div class="form-group">
+                <label for="lec-id">ID یا وانەیێ (ب ئنگلیزی و بێ سپەیس، بۆ نموونە: lec004)</label>
+                <input type="text" id="lec-id" required>
+            </div>
+            <div class="form-group">
+                <label for="lec-title">ناڤونیشانێ وانەیێ</label>
+                <input type="text" id="lec-title" required>
+            </div>
+            <div class="form-group">
+                <label for="lec-teacher">مامۆستا</label>
+                <select id="lec-teacher"></select> <!-- دێ ب جاڤاسکریپتێ هێتە پرکرن -->
+            </div>
+            <div class="form-group">
+                <label for="lec-category">بابەت (بۆ نموونە: عەقیدە، فیقهـ...)</label>
+                <input type="text" id="lec-category">
+            </div>
+            <div class="form-group">
+                <label for="lec-image">لینکێ وێنەیی</label>
+                <input type="text" id="lec-image">
+            </div>
+            <div class="form-group">
+                <label for="lec-pdf">لینکێ پەرتوکا PDF (ئەگەر ھەبیت)</label>
+                <input type="text" id="lec-pdf">
+            </div>
+             <div class="form-group">
+                <label for="lec-videos">لینکێن ڤیدیۆیان (ھەر لینکەکێ ل ڕێزەکێ بنڤیسە)</label>
+                <textarea id="lec-videos" rows="5" style="width:100%; background: #0d1117; border: 1px solid #30363d; color: #c9d1d9; padding: 10px; border-radius: 6px; box-sizing: border-box;"></textarea>
+            </div>
+            <button onclick="zêdekirinaWaneyê()">وانەیێ زێدە بکە</button>
+        </div>
+
+        <!-- ل پاشەرۆژێ دشێی فورمێن دی بۆ پەرتووکان و فەتوایان ل ڤێرێ زێدە بکەی -->
+
+        <!-- بەشێ نیشاندانا کۆدی -->
+        <div id="output-container">
+            <h2>کۆدێ نوو یێ داتایان</h2>
+            <p>پشتی تە زانیاریێن خۆ زێدەکرن، کۆدێ ل خارێ ھەمیێ **کۆپی بکە** و ل جهێ ھەمی ناڤەرۆکا فایلێ **`data.js`** بدانە.</p>
+            <textarea id="output-code" readonly></textarea>
+            <br><br>
+            <button onclick="copyCode()" class="copy-btn">کۆدی کۆپی بکە</button>
+        </div>
+    </div>
+
+    <!-- گرێدانا فایلێ داتایان دا بشێین زانیاریان بخوینین و نوو بکەین -->
+    <script src="data.js"></script>
+    
+    <script>
+        // === کۆدێ JavaScript یێ پەنجەرا بەڕێوەبرنێ ===
+
+        // پرکرنا لیستا مامۆستایان د فۆرمێ دا
+        const teacherSelect = document.getElementById('lec-teacher');
+        Object.values(allData.teachers).forEach(teacher => {
+            const option = document.createElement('option');
+            option.value = teacher.id;
+            option.textContent = teacher.name;
+            teacherSelect.appendChild(option);
+        });
+
+        // فەنکشن بۆ زێدەکرنا وانەیەکا گشتی
+        function zêdekirinaWaneyê() {
+            // وەرگرتنا زانیاریان ژ فۆرمێ
+            const id = document.getElementById('lec-id').value;
+            const title = document.getElementById('lec-title').value;
+            const teacherId = document.getElementById('lec-teacher').value;
+            const category = document.getElementById('lec-category').value;
+            const image = document.getElementById('lec-image').value;
+            const pdfUrl = document.getElementById('lec-pdf').value;
+            
+            // پرۆسێسکرنا لینکێن ڤیدیۆیان
+            const videosText = document.getElementById('lec-videos').value;
+            const videoLinks = videosText.split('\n').filter(link => link.trim() !== '');
+            const videos = videoLinks.map((link, index) => {
+                return { title: `وانا ${index + 1}`, url: link };
+            });
+
+            // پشکنین کا ئەرێ ھەمی خانە پرکرینە
+            if (!id || !title || !teacherId) {
+                alert("هیڤی یە ID و ناڤونیشان و مامۆستای ھەلبژێری.");
+                return;
+            }
+
+            // دروستکرنا ئۆبجێکتێ نوو یێ وانەیێ
+            const wanaNû = {
+                id: id,
+                title: title,
+                teacherId: teacherId,
+                category: category,
+                image: image,
+                pdfUrl: pdfUrl,
+                videos: videos
+            };
+
+            // زێدەکرنا وانەیا نوو بۆ لیستا وانەیان
+            allData.generalLectures.push(wanaNû);
+
+            alert("وانە ب سەرکەفتیانە ھاتە زێدەکرن! نوکە کۆدێ نوو کۆپی بکە.");
+            
+            // نووکرنا کۆدێ د تێکست بۆکسێ دا
+            nîşandanaKodaNû();
+        }
+
+        // فەنکشن بۆ نیشاندانا کۆدێ نوو
+        function nîşandanaKodaNû() {
+            const outputElement = document.getElementById('output-code');
+            // ئەم ئۆبجێکتێ allData دکەینە سترینگەکا جوان (formatted string)
+            const codeString = `let allData = ${JSON.stringify(allData, null, 4)};`;
+            outputElement.value = codeString;
+        }
+
+        // فەنکشن بۆ کۆپیکرنا کۆدی
+        function copyCode() {
+            const outputElement = document.getElementById('output-code');
+            outputElement.select();
+            document.execCommand('copy');
+            alert("کۆد ھاتە کۆپیکرن!");
+        }
+        
+        // بۆ جارا ئێکێ کۆدێ ھەبووی نیشان بدە
+        nîşandanaKodaNû();
+    </script>
+</body>
+</html>
