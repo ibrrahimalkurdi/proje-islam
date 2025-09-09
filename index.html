@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ku" dir="rtl">
 <head>
@@ -668,9 +667,11 @@ audio::-webkit-media-controls-fullscreen-button { color: var(--primary-text); }
 <!-- JS Libraries -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-<!-- گرێدانا فایلێ داتایان -->
+<!-- 
+    GRING: Dîta û Mantiqa Malperî niha ji vî faylî dihêt xwandn
+    گرنگ: داتا و مەنطقا مالپەری نوکە ژ ڤی فایلی دهێت خواندن
+-->
 <script src="data.js"></script>
-  
 <script>
 // ====================================================================================
 // ============================= پرۆژێ ئیسلام - JAVASCRIPT ============================
@@ -678,11 +679,22 @@ audio::-webkit-media-controls-fullscreen-button { color: var(--primary-text); }
 (function() {
 'use strict';
 
-// === [ 1. داتایێن ناڤخۆیی (Embedded Data) ] ===
-// ** تێبینی: ** هەمی داتا نوکە د ناڤ فایلێ data.js دا نە.
+// === [ 1. داتایێن ژ دەرڤە (External Data) ] ===
+// Têbînî: Zanyarî êdî ne li vir in. Ew ji `data.js` tên xwendin.
+// Em tenê piştrast dikin ku guherbara `embeddedData` heye.
+if (typeof embeddedData === 'undefined') {
+    console.error("Çewtî: Faylê `data.js` nehatiye barkirin an jî vala ye!");
+    // We can define a default empty structure to avoid breaking the site
+    window.embeddedData = { teachers: {}, generalLectures: [], pirtukxane: [], bookSales: [], locations: [], liveCourse: {}, levels: [], fatwas: [], hadiths: [], tafsir: {}, viewStatuses: {}, seerah: [], adhkar: [], fiqh: [] };
+}
+
 
 // === [ 2. حالەتێ گشتی و گۆڕاوەکان ] ===
-// ** تێبینی: ** allData چیتر ل ڤێرێ نینە، راستەوخۆ ژ data.js دهێت.
+let allData = { 
+    teachers: {}, generalLectures: [], pirtukxane: [], locations: [], liveCourse: {}, 
+    levels: [], fatwas: [], viewStatuses: {}, hadiths: [], tafsir: {}, bookSales: [],
+    seerah: [], adhkar: [], fiqh: []
+};
 let map = null, mapInitialized = false, mapMarkers = {};
 let hadithCurrentPage = 1;
 const hadithsPerPage = 10;
@@ -705,7 +717,7 @@ const progressManager = {
     toggleCourseCompletion: function(courseId) { let completed = this.getCompletedCourses(); const index = completed.indexOf(courseId); if (index > -1) { completed.splice(index, 1); } else { completed.push(courseId); } localStorage.setItem(this.completedCoursesKey, JSON.stringify(completed)); gamificationManager.checkAndAwardBadges(); buildDashboardView(); },
     togglePdfMemorization: function(courseId) { let memorized = this.getMemorizedPdfs(); const index = memorized.indexOf(courseId); if (index > -1) { memorized.splice(index, 1); } else { memorized.push(courseId); } localStorage.setItem(this.memorizedPdfsKey, JSON.stringify(memorized)); gamificationManager.checkAndAwardBadges(); buildDashboardView(); },
     toggleLectureWatched: function(lectureId) { let watched = this.getWatchedLectures(); const index = watched.indexOf(lectureId); if(index > -1) { watched.splice(index, 1); } else { watched.push(lectureId); } localStorage.setItem(this.watchedLecturesKey, JSON.stringify(watched)); gamificationManager.checkAndAwardBadges(); buildDashboardView(); filterLectures(); },
-    toggleLibraryBookRead: function(bookTitle) { let read = this.getReadLibraryBooks(); const index = read.indexOf(bookTitle); if(index > -1) { read.splice(index, 1); } else { read.push(read); } localStorage.setItem(this.readLibraryBooksKey, JSON.stringify(read)); gamificationManager.checkAndAwardBadges(); buildDashboardView(); buildPirtukxaneView(); },
+    toggleLibraryBookRead: function(bookTitle) { let read = this.getReadLibraryBooks(); const index = read.indexOf(bookTitle); if(index > -1) { read.splice(index, 1); } else { read.push(bookTitle); } localStorage.setItem(this.readLibraryBooksKey, JSON.stringify(read)); gamificationManager.checkAndAwardBadges(); buildDashboardView(); buildPirtukxaneView(); },
     unlockLevel: function(levelIndex) { let unlocked = this.getUnlockedLevels(); if (!unlocked.includes(levelIndex)) { unlocked.push(levelIndex); localStorage.setItem(this.unlockedLevelsKey, JSON.stringify(unlocked)); gamificationManager.checkAndAwardBadges(); } }
 };
 const hadithTracker = {
@@ -821,9 +833,7 @@ const dailyTaskManager = {
 document.addEventListener('DOMContentLoaded', () => {
     const loadingScreen = document.getElementById('loading-screen');
     try {
-        // چیتر پێدڤی ب ڤێ نینە، چونکی داتا راستەوخۆ ژ فایلێ data.js دهێن
-        // loadEmbeddedData(); 
-        
+        loadEmbeddedData();
         dailyTaskManager.checkAndUpdateTasks();
         buildAllViews();
         updateAndShowVisitorCount();
@@ -848,11 +858,14 @@ function setupEventListeners() {
     }); 
 }
 
-
 // === [ 4. وەرگرتن و پرۆسێسا داتایان ] ===
-// چیتر ئەم پێتڤی ب ڤێ فەنکشنێ نینین، چونکی داتایێن مە د فایلەکێ جودا دانە
-// function loadEmbeddedData() { ... }
-
+function loadEmbeddedData() {
+    console.log("Loading data from embedded source...");
+    allData = embeddedData;
+    // Process data to match expected structure if necessary
+    // For now, the structure is already correct.
+    console.log("Data loaded successfully.");
+}
 
 // === [ 5. ڕێکخستنا مۆدالان ] ===
 function openModal(modalId) { const modal = document.getElementById(modalId); if(modal) modal.classList.add('is-visible'); }
