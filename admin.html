@@ -3,146 +3,333 @@
 <html lang="ku" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>پەنجەرا بەڕێوەبرنێ - پرۆژێ ئیسلام</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پانێلا کونترۆلێ - پڕۆژێ ئیسلام</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
-        body { font-family: 'Noto Sans Arabic', sans-serif; background-color: #0d1117; color: #c9d1d9; line-height: 1.7; padding: 20px; }
-        .container { max-width: 900px; margin: auto; }
-        h1, h2 { color: #58a6ff; border-bottom: 2px solid #30363d; padding-bottom: 10px; }
-        .form-section { background-color: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 25px; margin-bottom: 30px; }
+        :root {
+            --dark-bg: #0d1117; --card-bg: #161b22; --primary-text: #c9d1d9; --secondary-text: #8b949e;
+            --accent-color: #58a6ff; --border-color: #30363d; --success-color: #2ea043; --danger-color: #f85149;
+            --font-kurdish: 'Noto Sans Arabic', sans-serif;
+        }
+        body { font-family: var(--font-kurdish); background-color: var(--dark-bg); color: var(--primary-text); line-height: 1.6; margin: 0; padding: 20px; }
+        .container { max-width: 1200px; margin: auto; }
+        h1, h2, h3 { color: var(--accent-color); border-bottom: 2px solid var(--border-color); padding-bottom: 10px; margin-top: 40px; }
+        .admin-section { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 25px; margin-bottom: 30px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; border: 1px solid var(--border-color); text-align: right; }
+        th { background-color: var(--dark-bg); }
         .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; background: #0d1117; border: 1px solid #30363d; color: #c9d1d9; padding: 10px; border-radius: 6px; box-sizing: border-box; }
-        button { background-color: #2ea043; color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; }
-        button:hover { opacity: 0.9; }
-        #output-container { margin-top: 30px; }
-        #output-code { width: 100%; height: 400px; background-color: #010409; color: #c9d1d9; border: 1px solid #30363d; border-radius: 6px; padding: 10px; font-family: monospace; direction: ltr; text-align: left; }
-        .copy-btn { background-color: #58a6ff; }
+        .form-group label { display: block; margin-bottom: 5px; }
+        input[type="text"], input[type="url"], textarea, select {
+            width: 100%; background: var(--dark-bg); border: 1px solid var(--border-color); color: var(--primary-text);
+            padding: 10px; border-radius: 6px; box-sizing: border-box;
+        }
+        textarea { min-height: 100px; resize: vertical; }
+        button { background-color: var(--accent-color); color: #fff; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; transition: opacity 0.3s; }
+        button:hover { opacity: 0.85; }
+        button.delete-btn { background-color: var(--danger-color); }
+        button.edit-btn { background-color: #f0b429; }
+        .output-section { margin-top: 40px; background: #010409; padding: 20px; border-radius: 8px; border: 1px solid var(--border-color); }
+        #json-output { width: 100%; min-height: 300px; background: #010409; color: #79c0ff; border: 1px dashed var(--border-color); font-family: monospace; font-size: 14px; direction: ltr; }
+        .sticky-header { position: sticky; top: 0; background: var(--dark-bg); padding: 20px; z-index: 10; border-bottom: 1px solid var(--border-color); margin-bottom: 20px; }
+        .nav-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        .nav-tab { background: var(--card-bg); padding: 10px 15px; border-radius: 6px 6px 0 0; cursor: pointer; border: 1px solid var(--border-color); border-bottom: none; }
+        .nav-tab.active { background: var(--accent-color); color: var(--dark-bg); font-weight: bold; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>پەنجەرا بەڕێوەبرنێ</h1>
-        <p>ل ڤێرێ تو دشێی ب ساناھی ناڤەرۆکێ بۆ مالپەری زێدە بکەی.</p>
+        <header class="sticky-header">
+            <h1><i class="fas fa-tools"></i> پانێلا کونترۆلێ</h1>
+            <p style="color:var(--secondary-text)">ل ڤێرێ دشێی هەمی ناڤەرۆکا مالپەری کونترۆل بکەی.</p>
+        </header>
 
-        <!-- فۆرما زێدەکرنا وانەیێن گشتی -->
-        <div class="form-section">
-            <h2>زێدەکرنا وانەیەکا گشتی</h2>
-            <div class="form-group">
-                <label for="lec-id">ID یا وانەیێ (ب ئنگلیزی و بێ سپەیس، بۆ نموونە: lec004)</label>
-                <input type="text" id="lec-id" required>
-            </div>
-            <div class="form-group">
-                <label for="lec-title">ناڤونیشانێ وانەیێ</label>
-                <input type="text" id="lec-title" required>
-            </div>
-            <div class="form-group">
-                <label for="lec-teacher">مامۆستا</label>
-                <select id="lec-teacher"></select> <!-- دێ ب جاڤاسکریپتێ هێتە پرکرن -->
-            </div>
-            <div class="form-group">
-                <label for="lec-category">بابەت (بۆ نموونە: عەقیدە، فیقهـ...)</label>
-                <input type="text" id="lec-category">
-            </div>
-            <div class="form-group">
-                <label for="lec-image">لینکێ وێنەیی</label>
-                <input type="text" id="lec-image">
-            </div>
-            <div class="form-group">
-                <label for="lec-pdf">لینکێ پەرتوکا PDF (ئەگەر ھەبیت)</label>
-                <input type="text" id="lec-pdf">
-            </div>
-             <div class="form-group">
-                <label for="lec-videos">لینکێن ڤیدیۆیان (ھەر لینکەکێ ل ڕێزەکێ بنڤیسە)</label>
-                <textarea id="lec-videos" rows="5"></textarea>
-            </div>
-            <button onclick="zêdekirinaWaneyê()">وانەیێ زێدە بکە</button>
+        <div class="nav-tabs">
+            <div class="nav-tab active" onclick="showTab('sections')">ڕێکخستنا بەشان</div>
+            <div class="nav-tab" onclick="showTab('teachers')">مامۆستایان</div>
+            <div class="nav-tab" onclick="showTab('lectures')">وانەیێن گشتی</div>
+            <!-- ل پاشەرۆژێ دێ بەشێن دی زێدە کەین -->
         </div>
 
-        <!-- بەشێ نیشاندانا کۆدی -->
-        <div id="output-container">
-            <h2>کۆدێ نوو یێ داتایان</h2>
-            <p>پشتی تە زانیاریێن خۆ زێدەکرن، کۆدێ ل خارێ ھەمیێ **کۆپی بکە** و ل جهێ ھەمی ناڤەرۆکا فایلێ **`data.js`** بدانە.</p>
-            <textarea id="output-code" readonly></textarea>
-            <br><br>
-            <button onclick="copyCode()" class="copy-btn">کۆدی کۆپی بکە</button>
-        </div>
+        <main>
+            <!-- ================== ڕێکخستنا بەشان (قفلکرن) ================== -->
+            <div id="sections-tab" class="tab-content active">
+                <div class="admin-section">
+                    <h2><i class="fas fa-lock"></i> ڕێکخستنا بەشان (قفلکرن و پاسورد)</h2>
+                    <p>ل ڤێرێ دشێی هەر بەشەکێ مالپەری بکارئینی، قفل بکەی، یان بێژی د چێکرنێ دایە.</p>
+                    <table id="sections-table">
+                        <thead>
+                            <tr>
+                                <th>ناڤێ بەشی</th>
+                                <th>حالەت</th>
+                                <th>پاسورد (دێ بۆ Firebase هێت)</th>
+                            </tr>
+                        </thead>
+                        <tbody><!-- دێ ب JavaScript پر بیت --></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ================== ڕێکخستنا مامۆستایان ================== -->
+            <div id="teachers-tab" class="tab-content">
+                <div class="admin-section">
+                    <h2><i class="fas fa-chalkboard-teacher"></i> ڕێکخستنا مامۆستایان</h2>
+                    <table id="teachers-table">
+                        <thead><tr><th>ناڤ</th><th>وێنە</th><th>چالاکی</th></tr></thead>
+                        <tbody><!-- دێ ب JavaScript پر بیت --></tbody>
+                    </table>
+                    <h3><i class="fas fa-plus-circle"></i> مامۆستایەکێ نوو زێدەبکە / دەستکاری بکە</h3>
+                    <form id="teacher-form">
+                        <input type="hidden" id="teacher-id">
+                        <div class="form-group"><label for="teacher-name">ناڤێ مامۆستای:</label><input type="text" id="teacher-name" required></div>
+                        <div class="form-group"><label for="teacher-image">لینکێ وێنەی:</label><input type="url" id="teacher-image"></div>
+                        <div class="form-group"><label for="teacher-bio">کورتەیەک لسەر:</label><textarea id="teacher-bio"></textarea></div>
+                        <div class="form-group"><label for="teacher-telegram">لینکێ تێلێگرامی:</label><input type="url" id="teacher-telegram"></div>
+                        <button type="submit">هەلگرتن</button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- ================== ڕێکخستنا وانەیێن گشتی ================== -->
+            <div id="lectures-tab" class="tab-content">
+                <div class="admin-section">
+                     <h2><i class="fas fa-video"></i> ڕێکخستنا وانەیێن گشتی</h2>
+                    <table id="lectures-table">
+                        <thead><tr><th>ناڤونیشان</th><th>مامۆستا</th><th>چالاکی</th></tr></thead>
+                        <tbody><!-- دێ ب JavaScript پر بیت --></tbody>
+                    </table>
+                    <h3><i class="fas fa-plus-circle"></i> وانەیەکا نوو زێدەبکە / دەستکاری بکە</h3>
+                    <form id="lecture-form">
+                        <input type="hidden" id="lecture-id">
+                        <div class="form-group"><label for="lecture-title">ناڤونیشانێ وانەیێ:</label><input type="text" id="lecture-title" required></div>
+                        <div class="form-group"><label for="lecture-teacher">مامۆستا:</label><select id="lecture-teacher" required></select></div>
+                        <div class="form-group"><label for="lecture-category">بابەت (Category):</label><input type="text" id="lecture-category" required></div>
+                        <div class="form-group"><label for="lecture-image">لینکێ وێنەی:</label><input type="url" id="lecture-image"></div>
+                        <div class="form-group"><label for="lecture-pdf">لینکێ PDF (ئەگەر هەبیت):</label><input type="url" id="lecture-pdf"></div>
+                        <div class="form-group"><label for="lecture-videos">لینکێن ڤیدیویان (هەر لینکەک ل دێڕەکێ):</label><textarea id="lecture-videos" placeholder="وانا ١ | https://youtu.be/....&#10;وانا ٢ | https://youtu.be/...."></textarea></div>
+                        <button type="submit">هەلگرتن</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ================== بەشێ دەرئەنجام (Output) ================== -->
+            <div class="output-section admin-section">
+                <h2><i class="fas fa-code"></i> دەرئەنجام بۆ فایلێ data.js</h2>
+                <p style="color:var(--warning-color); font-weight: bold;">
+                    گرنگ: پشتی هەر گهورینەکێ، پێتڤیە تۆ هەمی ڤی کۆدێ ل خارێ کۆپی بکەی و بکەیە د ناڤا فایلێ `data.js` دا ل شوینا کۆدێ کەڤن.
+                </p>
+                <button onclick="generateOutput()">کۆدی نووژەن بکە</button>
+                <textarea id="json-output" readonly onclick="this.select()"></textarea>
+            </div>
+        </main>
     </div>
 
-    <!-- گرێدانا فایلێ داتایان دا بشێین زانیاریان بخوینین و نوو بکەین -->
     <script src="data.js"></script>
-    
     <script>
-        // === کۆدێ JavaScript یێ پەنجەرا بەڕێوەبرنێ ===
+        // Data kopî kirin da ku em karibin destkarîyê têda bikin bêyî ku faylê eslî biguherînin
+        let adminData = JSON.parse(JSON.stringify(embeddedData));
 
-        // پرکرنا لیستا مامۆستایان د فۆرمێ دا
-        const teacherSelect = document.getElementById('lec-teacher');
-        Object.values(allData.teachers).forEach(teacher => {
-            const option = document.createElement('option');
-            option.value = teacher.id;
-            option.textContent = teacher.name;
-            teacherSelect.appendChild(option);
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // ======================= Rêkxistina Beşan =======================
+        function renderSectionsTable() {
+            const tbody = document.querySelector('#sections-table tbody');
+            const viewNames = {
+                "home-view": "مالپەرێ سەرەکی", "levels-view": "رێرەوا فێربوونێ", "waneyan-view": "وانەیێن گشتی",
+                "hadith-view": "کتێبخانەیا حەدیسێ", "tafsir-view": "تەفسیرا قورئانێ", "pirtukxane-view": "پەرتوکخانە",
+                "book-sales-view": "فرۆتنا پەرتووکان", "teachers-view": "مامۆستایان", "fatwas-view": "پرسیار و بەرسڤ",
+                "map-view": "خەریتە", "live-view": "خولێن ڕاستەوخۆ", "dashboard-view": "داشبۆرد", "favorites-view": "دڵخوازان",
+                "seerah-view": "ژیانناما پێغەمبەری", "adhkar-view": "دوعا و زکران", "fiqh-view": "فقهـ و حوکم",
+                "prayer-times-view": "کاتی نڤێژان", "kids-view": "بەشێ زارۆیان"
+            };
+            const statusOptions = {
+                "0": "چالاک", "1": "د چێکرنێ دایە", "8": "قفلە",
+                "2": "ئاریشەیەکا تەکنیکی", "3": "ژێر چاککرنێ دایە", "4": "دهێتە نووژەنکرن",
+                "5": "راوەستایە", "7": "ڤەشارتی (Hidden)"
+            };
+            let html = '';
+            for (const key in adminData.viewStatuses) {
+                html += `
+                    <tr>
+                        <td>${viewNames[key] || key}</td>
+                        <td>
+                            <select onchange="updateSectionStatus('${key}', this.value)">
+                                ${Object.entries(statusOptions).map(([val, text]) => 
+                                    `<option value="${val}" ${adminData.viewStatuses[key] === val ? 'selected' : ''}>${text}</option>`
+                                ).join('')}
+                            </select>
+                        </td>
+                        <td><input type="text" placeholder="پاسورد دێ ل ڤێرێ هێت..." disabled></td>
+                    </tr>
+                `;
+            }
+            tbody.innerHTML = html;
+        }
+
+        function updateSectionStatus(key, value) {
+            adminData.viewStatuses[key] = value;
+            generateOutput(); // Otomatîk encamê nûjen dike
+        }
+
+
+        // ======================= Rêkxistina Mamostayan =======================
+        function renderTeachers() {
+            const tbody = document.querySelector('#teachers-table tbody');
+            tbody.innerHTML = '';
+            for (const id in adminData.teachers) {
+                const teacher = adminData.teachers[id];
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${teacher.name}</td>
+                        <td><img src="${teacher.profileImage}" width="50" style="border-radius: 50%;"></td>
+                        <td>
+                            <button class="edit-btn" onclick="editTeacher('${id}')">دەستکاری</button>
+                            <button class="delete-btn" onclick="deleteTeacher('${id}')">ژێبرن</button>
+                        </td>
+                    </tr>
+                `;
+            }
+            // Dropdown-a mamostayan di forma waneyan da nûjen bike
+            renderTeacherOptions();
+        }
+
+        document.getElementById('teacher-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const id = document.getElementById('teacher-id').value;
+            const teacherData = {
+                id: id || `t${Date.now()}`,
+                name: document.getElementById('teacher-name').value,
+                profileImage: document.getElementById('teacher-image').value,
+                bio: document.getElementById('teacher-bio').value,
+                social: { telegram: document.getElementById('teacher-telegram').value, youtube: "", facebook: "" }
+            };
+            adminData.teachers[teacherData.id] = teacherData;
+            renderTeachers();
+            this.reset();
+            document.getElementById('teacher-id').value = '';
+            generateOutput();
         });
 
-        // فەنکشن بۆ زێدەکرنا وانەیەکا گشتی
-        function zêdekirinaWaneyê() {
-            // وەرگرتنا زانیاریان ژ فۆرمێ
-            const id = document.getElementById('lec-id').value;
-            const title = document.getElementById('lec-title').value;
-            const teacherId = document.getElementById('lec-teacher').value;
-            const category = document.getElementById('lec-category').value;
-            const image = document.getElementById('lec-image').value;
-            const pdfUrl = document.getElementById('lec-pdf').value;
-            
-            // پرۆسێسکرنا لینکێن ڤیدیۆیان
-            const videosText = document.getElementById('lec-videos').value;
-            const videoLinks = videosText.split('\n').filter(link => link.trim() !== '');
-            const videos = videoLinks.map((link, index) => {
-                return { title: `وانا ${index + 1}`, url: link };
-            });
+        function editTeacher(id) {
+            const teacher = adminData.teachers[id];
+            document.getElementById('teacher-id').value = teacher.id;
+            document.getElementById('teacher-name').value = teacher.name;
+            document.getElementById('teacher-image').value = teacher.profileImage;
+            document.getElementById('teacher-bio').value = teacher.bio;
+            document.getElementById('teacher-telegram').value = teacher.social.telegram;
+            document.getElementById('teacher-name').focus();
+            showTab('teachers');
+        }
 
-            // پشکنین کا ئەرێ ھەمی خانە پرکرینە
-            if (!id || !title || !teacherId) {
-                alert("هیڤی یە ID و ناڤونیشان و مامۆستای ھەلبژێری.");
-                return;
+        function deleteTeacher(id) {
+            if (confirm(`تو پشتراستی دڤێی مامۆستا "${adminData.teachers[id].name}" ژێببەی؟`)) {
+                delete adminData.teachers[id];
+                renderTeachers();
+                generateOutput();
             }
-
-            // دروستکرنا ئۆبجێکتێ نوو یێ وانەیێ
-            const wanaNû = {
-                id: id,
-                title: title,
-                teacherId: teacherId,
-                category: category,
-                image: image,
-                pdfUrl: pdfUrl,
-                videos: videos
-            };
-
-            // زێدەکرنا وانەیا نوو بۆ لیستا وانەیان
-            allData.generalLectures.push(wanaNû);
-
-            alert("وانە ب سەرکەفتیانە ھاتە زێدەکرن! نوکە کۆدێ نوو کۆپی بکە.");
-            
-            // نووکرنا کۆدێ د تێکست بۆکسێ دا
-            nîşandanaKodaNû();
-        }
-
-        // فەنکشن بۆ نیشاندانا کۆدێ نوو
-        function nîşandanaKodaNû() {
-            const outputElement = document.getElementById('output-code');
-            const codeString = `let allData = ${JSON.stringify(allData, null, 4)};`;
-            outputElement.value = codeString;
-        }
-
-        // فەنکشن بۆ کۆپیکرنا کۆدی
-        function copyCode() {
-            const outputElement = document.getElementById('output-code');
-            outputElement.select();
-            document.execCommand('copy');
-            alert("کۆد ھاتە کۆپیکرن!");
         }
         
-        // بۆ جارا ئێکێ کۆدێ ھەبووی نیشان بدە
-        nîşandanaKodaNû();
+        // ======================= Rêkxistina Waneyan =======================
+        function renderTeacherOptions() {
+            const select = document.getElementById('lecture-teacher');
+            select.innerHTML = '<option value="">-- مامۆستایەکێ هەلبژێرە --</option>';
+            for(const id in adminData.teachers) {
+                select.innerHTML += `<option value="${id}">${adminData.teachers[id].name}</option>`;
+            }
+        }
+        
+        function renderLectures() {
+            const tbody = document.querySelector('#lectures-table tbody');
+            tbody.innerHTML = '';
+            adminData.generalLectures.forEach((lecture, index) => {
+                const teacherName = adminData.teachers[lecture.teacherId]?.name || 'نەدیار';
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${lecture.title}</td>
+                        <td>${teacherName}</td>
+                        <td>
+                            <button class="edit-btn" onclick="editLecture(${index})">دەستکاری</button>
+                            <button class="delete-btn" onclick="deleteLecture(${index})">ژێبرن</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+        
+        document.getElementById('lecture-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const index = document.getElementById('lecture-id').value;
+            const videosText = document.getElementById('lecture-videos').value.trim();
+            const videosArray = videosText.split('\n').map(line => {
+                const parts = line.split('|');
+                return { title: parts[0].trim(), url: parts[1].trim() };
+            }).filter(v => v.url);
+
+            const lectureData = {
+                id: (index !== '' && adminData.generalLectures[index].id) ? adminData.generalLectures[index].id : `lec${Date.now()}`,
+                title: document.getElementById('lecture-title').value,
+                teacherId: document.getElementById('lecture-teacher').value,
+                category: document.getElementById('lecture-category').value,
+                image: document.getElementById('lecture-image').value,
+                pdfUrl: document.getElementById('lecture-pdf').value,
+                videos: videosArray
+            };
+
+            if (index === '') {
+                adminData.generalLectures.push(lectureData);
+            } else {
+                adminData.generalLectures[index] = lectureData;
+            }
+            renderLectures();
+            this.reset();
+            document.getElementById('lecture-id').value = '';
+            generateOutput();
+        });
+        
+        function editLecture(index) {
+            const lecture = adminData.generalLectures[index];
+            document.getElementById('lecture-id').value = index;
+            document.getElementById('lecture-title').value = lecture.title;
+            document.getElementById('lecture-teacher').value = lecture.teacherId;
+            document.getElementById('lecture-category').value = lecture.category;
+            document.getElementById('lecture-image').value = lecture.image;
+            document.getElementById('lecture-pdf').value = lecture.pdfUrl;
+            document.getElementById('lecture-videos').value = lecture.videos.map(v => `${v.title} | ${v.url}`).join('\n');
+            document.getElementById('lecture-title').focus();
+            showTab('lectures');
+        }
+        
+        function deleteLecture(index) {
+            if (confirm(`تو پشتراستی دڤێی وانەیا "${adminData.generalLectures[index].title}" ژێببەی؟`)) {
+                adminData.generalLectures.splice(index, 1);
+                renderLectures();
+                generateOutput();
+            }
+        }
+        
+        // ======================= Derencam =======================
+        function generateOutput() {
+            // Em JSON-ê bi rengekî xweşik format dikin (2 space indentation)
+            const jsonString = JSON.stringify(adminData, null, 4);
+            document.getElementById('json-output').value = `const embeddedData = ${jsonString};`;
+        }
+
+        // ======================= Destpêk =======================
+        window.onload = function() {
+            renderSectionsTable();
+            renderTeachers();
+            renderLectures();
+            generateOutput(); // Ji bo cara yekem encamê çêbike
+        };
     </script>
+
 </body>
 </html>
