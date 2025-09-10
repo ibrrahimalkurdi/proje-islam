@@ -1,37 +1,42 @@
+
 <!DOCTYPE html>
 <html lang="ku" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>پەنێلا کۆنترۆلێ - پرۆژێ ئیسلام</title>
+    <title>پانێلا ئەدمین - پڕۆژێ ئیسلام</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
-        :root { --dark-bg: #0d1117; --card-bg: #161b22; --primary-text: #c9d1d9; --secondary-text: #8b949e; --accent-color: #58a6ff; --border-color: #30363d; --success-color: #2ea043; --danger-color: #f85149; --font-kurdish: 'Noto Sans Arabic', sans-serif; }
+        :root {
+            --dark-bg: #0d1117; --card-bg: #161b22; --primary-text: #c9d1d9; --secondary-text: #8b949e;
+            --accent-color: #58a6ff; --border-color: #30363d; --success-color: #2ea043; --danger-color: #f85149;
+            --font-kurdish: 'Noto Sans Arabic', sans-serif;
+        }
         body { font-family: var(--font-kurdish); background-color: var(--dark-bg); color: var(--primary-text); line-height: 1.6; margin: 0; padding: 20px; }
-        .container { max-width: 1000px; margin: auto; }
-        h1, h2, h3 { color: var(--accent-color); border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; }
-        #login-section, #admin-panel { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 25px; margin-top: 20px; }
+        .container { max-width: 900px; margin: auto; }
+        .login-container, .admin-panel { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 30px; }
+        h1, h2, h3 { color: var(--primary-text); border-bottom: 2px solid var(--accent-color); padding-bottom: 10px; margin-bottom: 20px; }
         .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; }
-        .form-group input, .form-group textarea, .form-group select { width: 100%; background: var(--dark-bg); border: 1px solid var(--border-color); color: var(--primary-text); padding: 10px; border-radius: 6px; font-family: var(--font-kurdish); box-sizing: border-box; }
-        button { background: var(--accent-color); color: #fff; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-family: var(--font-kurdish); font-size: 1rem; }
-        button:hover { opacity: 0.9; }
-        button.danger { background: var(--danger-color); }
+        label { display: block; margin-bottom: 5px; }
+        input, select, textarea { width: 100%; background: var(--dark-bg); border: 1px solid var(--border-color); color: var(--primary-text); padding: 10px; border-radius: 6px; box-sizing: border-box; }
+        button { background: var(--accent-color); color: #fff; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; }
+        button.danger { background-color: var(--danger-color); }
         #admin-panel { display: none; }
+        .admin-nav { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .nav-btn { background: var(--border-color); }
+        .nav-btn.active { background: var(--accent-color); }
+        .admin-section { display: none; }
+        .admin-section.active { display: block; }
         .item-list { list-style: none; padding: 0; }
-        .item-list li { background: var(--dark-bg); padding: 15px; border-radius: 6px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        #status-message { text-align: center; margin-top: 15px; font-weight: bold; }
-        #user-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .section-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 25px; margin-bottom: 25px; }
+        .item-list li { background: var(--dark-bg); padding: 10px; border-radius: 6px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>پەنێلا کۆنترۆلێ</h1>
-    
-    <!-- Login Section -->
-    <div id="login-section">
-        <h2>چوونا ژۆر</h2>
+    <!-- بەشێ لۆگینێ -->
+    <div id="login-container" class="login-container">
+        <h1><i class="fas fa-lock"></i> لۆگینا ئەدمینی</h1>
         <form id="login-form">
             <div class="form-group">
                 <label for="email">ئیمێل</label>
@@ -41,245 +46,215 @@
                 <label for="password">پاسۆرد</label>
                 <input type="password" id="password" required>
             </div>
-            <button type="submit">چوونا ژۆر</button>
+            <button type="submit">چوونەژوور</button>
             <p id="login-error" style="color: var(--danger-color); margin-top: 10px;"></p>
         </form>
     </div>
 
-    <!-- Admin Panel -->
+    <!-- پانێلا ئەدمینی (ڤەشارتیە) -->
     <div id="admin-panel">
-        <div id="user-info">
-            <span id="user-email"></span>
-            <button id="logout-btn" class="danger">دەرچوون</button>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h1><i class="fas fa-tools"></i> پانێلا ئەدمین</h1>
+            <button id="logout-btn" class="danger">چوونەدەر</button>
         </div>
-        <p id="status-message"></p>
-
-        <!-- View Status Management -->
-        <div class="section-card">
-            <h3>کۆنترۆلا بەشان (قفلکرن/ڤەکرن)</h3>
-            <form id="view-status-form">
-                <div id="view-status-list">Loading...</div>
-                <br>
-                <button type="submit">پاشکەفتکرنا گوهۆرینان</button>
-            </form>
-        </div>
-
-        <!-- Teachers Management -->
-        <div class="section-card">
-            <h3>رێڤەبرنا مامۆستایان</h3>
-            <form id="teacher-form">
-                <input type="hidden" id="teacher-id">
-                <div class="form-group"><label for="teacher-name">ناڤێ مامۆستای</label><input type="text" id="teacher-name" required></div>
-                <div class="form-group"><label for="teacher-bio">کورتەیەک لسەر مامۆستای</label><input type="text" id="teacher-bio"></div>
-                <div class="form-group"><label for="teacher-image">لینکێ وێنەی</label><input type="url" id="teacher-image"></div>
-                <div class="form-group"><label for="teacher-telegram">لینکێ تێلەگرامی</label><input type="url" id="teacher-telegram"></div>
-                 <!-- Add more fields for social media as needed -->
-                <button type="submit">پاشکەفتکرن</button>
-            </form>
-            <hr style="border-color: var(--border-color); margin: 20px 0;">
-            <h4>لیستا مامۆستایان</h4>
-            <ul id="teachers-list" class="item-list"></ul>
-        </div>
+        <p>ل ڤێرێ دشێی هەمی ناڤەرۆکا مالپەری کۆنترۆل بکەی. هەر گوهۆرینەک راستەوخۆ دێ ل مالپەرێ گشتی دیار بیت.</p>
         
-        <!-- Add more sections here for fatwas, hadiths, etc. following the same pattern -->
+        <nav class="admin-nav">
+             <button class="nav-btn active" data-target="site-settings-section">ڕێکخستنێن گشتی</button>
+             <button class="nav-btn" data-target="teachers-section">مامۆستایان</button>
+             <!-- لێرە بەشەکانی تر زیاد بکە -->
+        </nav>
 
+        <div class="admin-content">
+            <!-- بەشێ ڕێکخستنێن گشتی و قفل کرنا بەشان -->
+            <div id="site-settings-section" class="admin-section active">
+                <h2><i class="fas fa-cogs"></i> بەڕێوەبرنا بەشان (قفل کرن / ڤەکرن)</h2>
+                <form id="view-status-form">
+                    <p>0: چالاک | 1: د کارکرنێ دایە | 8: قفلە</p>
+                    <!-- لڤێرێ دێ ب شێوەیەکێ ئۆتۆماتیکی پڕ بیت -->
+                </form>
+                <button id="save-view-status">هەلگرتنا گوهۆرینان</button>
+                 <p id="status-save-message" style="color: var(--success-color); margin-top: 10px;"></p>
+            </div>
+
+            <!-- بەشێ مامۆستایان -->
+            <div id="teachers-section" class="admin-section">
+                <h2><i class="fas fa-chalkboard-teacher"></i> بەڕێوەبرنا مامۆستایان</h2>
+                <form id="teacher-form">
+                    <input type="hidden" id="teacher-id">
+                    <div class="form-group"><label for="teacher-name">ناڤ</label><input type="text" id="teacher-name" required></div>
+                    <div class="form-group"><label for="teacher-bio">کورتەیا ژیانێ</label><textarea id="teacher-bio"></textarea></div>
+                    <div class="form-group"><label for="teacher-image">لینکێ وێنەی</label><input type="text" id="teacher-image"></div>
+                    <div class="form-group"><label for="teacher-telegram">لینکێ تێلێگرامی</label><input type="text" id="teacher-telegram"></div>
+                    <button type="submit">هەلگرتن</button>
+                </form>
+                <h3>لیستا مامۆستایان</h3>
+                <ul id="teachers-list" class="item-list"></ul>
+            </div>
+            
+            <!-- لڤێرێ بەشێن دی بۆ (وانە، حەدیس، فەتوا...) دێ چێکەین -->
+        </div>
     </div>
 </div>
 
 <!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
 <script>
-    // **گرنگ:** هەمان Firebase config ل ڤێرێ ژی دابنە
     const firebaseConfig = {
-        apiKey: "AIzaSyDDi3HtFigGy3qFpFVhSATal3yzm7Z_dZA",
-        authDomain: "projeislam.firebaseapp.com",
-        databaseURL: "https://projeislam.firebaseio.com", // گرنگە بهێتە زێدەکرن
-        projectId: "projeislam",
-        storageBucket: "projeislam.firebasestorage.app",
-        messagingSenderId: "686343038831",
-        appId: "1:686343038831:web:745161e7543b53aa0b6a9a"
+      apiKey: "AIzaSyDDi3HtFigGy3qFpFVhSATal3yzm7Z_dZA",
+      authDomain: "projeislam.firebaseapp.com",
+      projectId: "projeislam",
+      storageBucket: "projeislam.appspot.com",
+      messagingSenderId: "686343038831",
+      appId: "1:686343038831:web:745161e7543b53aa0b6a9a",
     };
-
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
-    const database = firebase.database();
+    const db = firebase.firestore();
 
-    // Elements
-    const loginSection = document.getElementById('login-section');
+    const loginContainer = document.getElementById('login-container');
     const adminPanel = document.getElementById('admin-panel');
     const loginForm = document.getElementById('login-form');
-    const loginError = document.getElementById('login-error');
-    const userEmail = document.getElementById('user-email');
     const logoutBtn = document.getElementById('logout-btn');
-    const statusMessage = document.getElementById('status-message');
 
-    // Auth State Listener
+    // چاڤدێریا حالەتێ لۆگینێ
     auth.onAuthStateChanged(user => {
         if (user) {
-            loginSection.style.display = 'none';
+            loginContainer.style.display = 'none';
             adminPanel.style.display = 'block';
-            userEmail.textContent = `بخێر هاتن, ${user.email}`;
             loadAdminData();
         } else {
-            loginSection.style.display = 'block';
+            loginContainer.style.display = 'block';
             adminPanel.style.display = 'none';
         }
     });
 
-    // Login
+    // لۆگین کرن
     loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         auth.signInWithEmailAndPassword(email, password)
             .catch(error => {
-                loginError.textContent = "ئیمێل یان پاسۆرد خەلەتە.";
+                document.getElementById('login-error').textContent = "ئیمەیل یان پاسۆرد خەلەتە.";
                 console.error("Login Error:", error);
             });
     });
 
-    // Logout
+    // لۆگ ئاوت کرن
     logoutBtn.addEventListener('click', () => {
         auth.signOut();
     });
-    
-    function showStatusMessage(message, isError = false) {
-        statusMessage.textContent = message;
-        statusMessage.style.color = isError ? 'var(--danger-color)' : 'var(--success-color)';
-        setTimeout(() => { statusMessage.textContent = ''; }, 3000);
-    }
-    
-    // ================== ADMIN DATA MANAGEMENT ==================
+
+    // گوهۆرینا تابێن ناڤ پانێلێ
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.admin-section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById(btn.dataset.target).classList.add('active');
+        });
+    });
+
+    // === لۆژیکا تایبەت ب هەر بەشەکی ===
     function loadAdminData() {
-        loadTeachers();
         loadViewStatuses();
-        // Call other load functions here
+        loadTeachers();
+        // ... load other sections
     }
 
-    // --- Teachers Management ---
+    // --- بەڕێوەبرنا بەشان ---
+    async function loadViewStatuses() {
+        const form = document.getElementById('view-status-form');
+        const doc = await db.collection('single_docs').doc('viewStatuses').get();
+        if (doc.exists) {
+            const statuses = doc.data();
+            let html = '';
+            for (const key in statuses) {
+                html += `<div class="form-group">
+                            <label for="status-${key}">${key}</label>
+                            <input type="text" id="status-${key}" data-key="${key}" value="${statuses[key]}">
+                         </div>`;
+            }
+            form.innerHTML = html;
+        }
+    }
+    document.getElementById('save-view-status').addEventListener('click', async () => {
+        const inputs = document.querySelectorAll('#view-status-form input');
+        const newStatuses = {};
+        inputs.forEach(input => {
+            newStatuses[input.dataset.key] = input.value;
+        });
+        await db.collection('single_docs').doc('viewStatuses').set(newStatuses);
+        const msg = document.getElementById('status-save-message');
+        msg.textContent = 'گوهۆرین ب سەرکەفتی هاتە هەلگرتن!';
+        setTimeout(() => msg.textContent = '', 3000);
+    });
+
+    // --- بەڕێوەبرنا مامۆستایان ---
+    const teachersCollection = db.collection('teachers');
     const teacherForm = document.getElementById('teacher-form');
     const teachersList = document.getElementById('teachers-list');
-    
-    teacherForm.addEventListener('submit', (e) => {
+
+    async function loadTeachers() {
+        const snapshot = await teachersCollection.get();
+        teachersList.innerHTML = '';
+        snapshot.forEach(doc => {
+            const teacher = { id: doc.id, ...doc.data() };
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <span>${teacher.name}</span>
+                <div>
+                    <button onclick="editTeacher('${teacher.id}')">دەستکاری</button>
+                    <button class="danger" onclick="deleteTeacher('${teacher.id}')">ژێبرن</button>
+                </div>`;
+            teachersList.appendChild(li);
+        });
+    }
+
+    teacherForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const id = document.getElementById('teacher-id').value || database.ref().child('teachers').push().key;
-        const teacherData = {
-            id: id,
+        const id = document.getElementById('teacher-id').value;
+        const data = {
             name: document.getElementById('teacher-name').value,
             bio: document.getElementById('teacher-bio').value,
             profileImage: document.getElementById('teacher-image').value,
-            social: {
-                telegram: document.getElementById('teacher-telegram').value,
-                // you can add more social links here
-            }
+            social: { telegram: document.getElementById('teacher-telegram').value }
         };
 
-        database.ref('teachers/' + id).set(teacherData)
-            .then(() => {
-                showStatusMessage('مامۆستا ب سەرکەفتی هاتە پاشکەفتکرن.');
-                teacherForm.reset();
-                document.getElementById('teacher-id').value = '';
-                loadTeachers();
-            })
-            .catch(err => showStatusMessage('چەوتیەک روویدا!', true));
-    });
-
-    function loadTeachers() {
-        database.ref('teachers').once('value', snapshot => {
-            teachersList.innerHTML = '';
-            const teachers = snapshot.val();
-            if (teachers) {
-                Object.entries(teachers).forEach(([key, teacher]) => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `
-                        <span>${teacher.name}</span>
-                        <div>
-                            <button onclick="editTeacher('${key}')">دەستکاری</button>
-                            <button class="danger" onclick="deleteTeacher('${key}')">ژێبرن</button>
-                        </div>
-                    `;
-                    teachersList.appendChild(li);
-                });
-            }
-        });
-    }
-
-    window.editTeacher = (id) => {
-        database.ref('teachers/' + id).once('value', snapshot => {
-            const teacher = snapshot.val();
-            document.getElementById('teacher-id').value = id;
-            document.getElementById('teacher-name').value = teacher.name;
-            document.getElementById('teacher-bio').value = teacher.bio;
-            document.getElementById('teacher-image').value = teacher.profileImage;
-            document.getElementById('teacher-telegram').value = teacher.social.telegram;
-            teacherForm.scrollIntoView({ behavior: 'smooth' });
-        });
-    };
-
-    window.deleteTeacher = (id) => {
-        if (confirm('تۆ پشتراستی دێ ڤی مامۆستای ژێبەی؟')) {
-            database.ref('teachers/' + id).remove()
-                .then(() => {
-                    showStatusMessage('مامۆستا هاتە ژێبرن.');
-                    loadTeachers();
-                })
-                .catch(err => showStatusMessage('چەوتیەک د ژێبرنێ دا روویدا!', true));
+        if (id) {
+            await teachersCollection.doc(id).update(data);
+        } else {
+            await teachersCollection.add(data);
         }
-    };
-    
-    // --- View Status Management ---
-    const viewStatusForm = document.getElementById('view-status-form');
-    const viewStatusList = document.getElementById('view-status-list');
-    
-    function loadViewStatuses() {
-        // First, define all possible views so even new ones appear
-        const allPossibleViews = [
-            'home-view', 'levels-view', 'waneyan-view', 'hadith-view', 'tafsir-view',
-            'pirtukxane-view', 'book-sales-view', 'teachers-view', 'fatwas-view',
-            'map-view', 'live-view', 'dashboard-view', 'favorites-view', 'seerah-view',
-            'adhkar-view', 'fiqh-view', 'prayer-times-view', 'kids-view'
-        ];
+        teacherForm.reset();
+        document.getElementById('teacher-id').value = '';
+        loadTeachers();
+    });
 
-        database.ref('viewStatuses').once('value', snapshot => {
-            const statuses = snapshot.val() || {};
-            viewStatusList.innerHTML = '';
-
-            allPossibleViews.forEach(key => {
-                const value = statuses[key] || '0'; // Default to '0' (Active) if not in DB
-                const div = document.createElement('div');
-                div.className = 'form-group';
-                div.innerHTML = `
-                    <label for="status-${key}">${key.replace('-view', '')}</label>
-                    <select id="status-${key}" data-view-key="${key}">
-                        <option value="0" ${value === '0' ? 'selected' : ''}>0 - بکاردکەڤیت (Active)</option>
-                        <option value="1" ${value === '1' ? 'selected' : ''}>1 - د کارکرنێ دایە (Soon)</option>
-                        <option value="8" ${value === '8' ? 'selected' : ''}>8 - قفلە (Locked)</option>
-                        <option value="2" ${value === '2' ? 'selected' : ''}>2 - ئاریشە (Error)</option>
-                        <option value="3" ${value === '3' ? 'selected' : ''}>3 - ژێر چاککرنێ (Maintenance)</option>
-                         <option value="7" ${value === '7' ? 'selected' : ''}>7 - ڤەشارتی (Hidden)</option>
-                    </select>
-                `;
-                viewStatusList.appendChild(div);
-            });
-        });
+    async function editTeacher(id) {
+        const doc = await teachersCollection.doc(id).get();
+        const teacher = doc.data();
+        document.getElementById('teacher-id').value = id;
+        document.getElementById('teacher-name').value = teacher.name;
+        document.getElementById('teacher-bio').value = teacher.bio;
+        document.getElementById('teacher-image').value = teacher.profileImage;
+        document.getElementById('teacher-telegram').value = teacher.social.telegram;
+        window.scrollTo({top: teacherForm.offsetTop, behavior: 'smooth'});
     }
 
-    viewStatusForm.addEventListener('submit', e => {
-        e.preventDefault();
-        const updates = {};
-        viewStatusList.querySelectorAll('select').forEach(select => {
-            const key = select.dataset.viewKey;
-            const value = select.value;
-            updates[key] = value;
-        });
-        
-        database.ref('viewStatuses').update(updates)
-            .then(() => showStatusMessage('حالەتێ بەشان ب سەرکەفتی هاتە نووکرن.'))
-            .catch(err => showStatusMessage('چەوتیەک روویدا!', true));
-    });
+    async function deleteTeacher(id) {
+        if (confirm('تۆ دڵنیای دێ ڤی مامۆستای ژێبەی؟')) {
+            await teachersCollection.doc(id).delete();
+            loadTeachers();
+        }
+    }
+    // Make functions globally accessible for onclick handlers
+    window.editTeacher = editTeacher;
+    window.deleteTeacher = deleteTeacher;
 </script>
 
 </body>
