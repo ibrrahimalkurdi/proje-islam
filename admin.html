@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پانێلێ کونترۆلێ - پرۆژێ ئیسلام</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;700&display=swap');
+        
+        :root {
+            --dark-bg: #0d1117; --card-bg: #161b22; --primary-text: #c9d1d9;
+            --secondary-text: #8b949e; --accent-color: #58a6ff; --border-color: #30363d;
+            --success-color: #2ea043; --danger-color: #f85149; --warning-color: #f0b429;
+            --font-kurdish: 'Noto Sans Arabic', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-kurdish); background-color: var(--dark-bg);
+            color: var(--primary-text); line-height: 1.6;
+        }
+
+        #login-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 1000;
+            display: flex; justify-content: center; align-items: center;
+        }
+        #login-box {
+            background: var(--card-bg); padding: 30px; border-radius: 10px;
+            width: 90%; max-width: 400px; text-align: center;
+            border-top: 3px solid var(--accent-color);
+        }
+        #login-box h2 { margin-bottom: 20px; }
+        #login-box input {
+            width: 100%; padding: 12px; margin-bottom: 20px;
+            background: var(--dark-bg); border: 1px solid var(--border-color);
+            color: var(--primary-text); border-radius: 6px; font-family: var(--font-kurdish);
+        }
+        #login-box button {
+            width: 100%; padding: 12px; background: var(--accent-color);
+            color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 1rem;
+        }
+
+        #admin-panel { display: none; padding: 20px; max-width: 1200px; margin: auto; }
+        header h1 { text-align: center; margin-bottom: 30px; }
+
+        nav.tabs {
+            display: flex; gap: 10px; margin-bottom: 30px; border-bottom: 1px solid var(--border-color);
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            padding: 10px 20px; background: none; border: none; color: var(--secondary-text);
+            cursor: pointer; font-family: var(--font-kurdish); font-size: 1rem;
+            border-bottom: 3px solid transparent;
+        }
+        .tab-btn.active { color: var(--accent-color); border-bottom-color: var(--accent-color); }
+
+        .content-section { display: none; }
+        .content-section.active { display: block; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;}
+        .section-header h2 { margin: 0; }
+        .add-new-btn {
+            background: var(--success-color); color: white; padding: 10px 20px;
+            border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem;
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; border: 1px solid var(--border-color); text-align: right; }
+        thead { background-color: var(--card-bg); }
+        .actions-cell button {
+            background: none; border: none; cursor: pointer; font-size: 1.1rem;
+            margin: 0 5px; color: var(--secondary-text);
+        }
+        .actions-cell .edit-btn:hover { color: var(--warning-color); }
+        .actions-cell .delete-btn:hover { color: var(--danger-color); }
+        
+        /* Modal Styles */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); z-index: 500;
+            display: none; justify-content: center; align-items: center;
+        }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: var(--card-bg); padding: 30px; border-radius: 10px;
+            width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto;
+        }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;}
+        .close-modal-btn { background: none; border: none; font-size: 1.8rem; color: var(--secondary-text); cursor: pointer;}
+        
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%; padding: 10px; background: var(--dark-bg);
+            border: 1px solid var(--border-color); color: var(--primary-text);
+            border-radius: 6px; font-family: var(--font-kurdish);
+        }
+        .form-group textarea { min-height: 100px; resize: vertical; }
+        #videos-container .video-entry { display: flex; gap: 10px; margin-bottom: 10px; }
+        .modal-footer { margin-top: 20px; text-align: left; }
+        .save-btn {
+            background: var(--accent-color); color: white; padding: 10px 25px;
+            border: none; border-radius: 6px; cursor: pointer; font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Login Screen -->
+    <div id="login-overlay">
+        <div id="login-box">
+            <h2><i class="fas fa-lock"></i> پانێلێ کونترۆلێ</h2>
+            <p style="color:var(--secondary-text); margin-bottom: 20px;">هیڤی یە وشەیا نهێنی داخل بکە.</p>
+            <input type="password" id="password-input" placeholder="وشەیا نهێنی">
+            <button id="login-btn">چوونە ژۆر</button>
+            <p id="login-error" style="color:var(--danger-color); margin-top:15px; display:none;">وشەیا نهێنی خەلەتە!</p>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="admin-panel">
+        <header>
+            <h1><i class="fas fa-cogs"></i> پانێلێ کونترۆلێ - پرۆژێ ئیسلام</h1>
+        </header>
+
+        <nav class="tabs">
+            <button class="tab-btn active" data-target="teachers-section"><i class="fas fa-chalkboard-teacher"></i> مامۆستایان</button>
+            <button class="tab-btn" data-target="lectures-section"><i class="fas fa-video"></i> وانەیێن گشتی</button>
+            <button class="tab-btn" data-target="status-section"><i class="fas fa-toggle-on"></i> حالەتێ بەشان</button>
+            <!-- ل پاشەرۆژێ تو دشێی بەشێن دی لڤێرە زێدەکەی -->
+        </nav>
+
+        <main>
+            <!-- Teachers Section -->
+            <section id="teachers-section" class="content-section active">
+                <div class="section-header">
+                    <h2>بەڕێوەبرنا مامۆستایان</h2>
+                    <button class="add-new-btn" onclick="openModal('teacher')"><i class="fas fa-plus"></i> مامۆستایەکێ نوو زێدەکە</button>
+                </div>
+                <div style="overflow-x:auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ناڤ</th>
+                                <th>کورتە</th>
+                                <th>کارپێکرن</th>
+                            </tr>
+                        </thead>
+                        <tbody id="teachers-list">
+                            <!-- Data will be loaded here by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- General Lectures Section -->
+            <section id="lectures-section" class="content-section">
+                <div class="section-header">
+                    <h2>بەڕێوەبرنا وانەیێن گشتی</h2>
+                    <button class="add-new-btn" onclick="openModal('lecture')"><i class="fas fa-plus"></i> وانەیەکا نوو زێدەکە</button>
+                </div>
+                <div style="overflow-x:auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ناڤونیشان</th>
+                                <th>مامۆستا</th>
+                                <th>بابەت (Category)</th>
+                                <th>کارپێکرن</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lectures-list">
+                            <!-- Data will be loaded here by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- View Status Section -->
+            <section id="status-section" class="content-section">
+                <div class="section-header">
+                    <h2>کونترۆلکرنا حالەتێ بەشان</h2>
+                </div>
+                <div id="view-status-list">
+                    <!-- Status controls will be loaded here -->
+                </div>
+                 <div class="modal-footer">
+                    <button class="save-btn" onclick="saveAllViewStatus()"><i class="fas fa-save"></i> پاشکەفتکرنا هەمی گۆهڕینان</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Add/Edit Modal -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">فۆرم</h3>
+                <button class="close-modal-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="edit-form">
+                <input type="hidden" id="edit-id">
+                <input type="hidden" id="edit-type">
+
+                <!-- Fields will be dynamically inserted here -->
+                <div id="form-fields"></div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="save-btn"><i class="fas fa-save"></i> پاشکەفتکرن</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
+    <script>
+    'use strict';
+
+    // #######################################################################################
+    // ## گرنگ: پێزانینێن پرۆژەیێ خۆ یێ فایەربەیس ل ڤێرێ داخل بکە (هەمان یێن مالپەرێ سەرەکی)  ##
+    // #######################################################################################
+    const firebaseConfig = {
+        apiKey: "AIzaSy...YOUR_API_KEY", // ل ڤێرێ داخل بکە
+        authDomain: "your-project-id.firebaseapp.com", // ل ڤێرێ داخل بکە
+        projectId: "your-project-id", // ل ڤێرێ داخل بکە
+        storageBucket: "your-project-id.appspot.com", // ل ڤێرێ داخل بکە
+        messagingSenderId: "1234567890", // ل ڤێرێ داخل بکە
+        appId: "1:1234567890:web:abcdef123456" // ل ڤێرێ داخل بکە
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // ##############################################################
+    // ## گرنگ: وشەیا نهێنی یا پانێلی لڤێرە بگۆهڕە                  ##
+    // ##############################################################
+    const ADMIN_PASSWORD = "1234"; 
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // Login Logic
+        const loginBtn = document.getElementById('login-btn');
+        const passwordInput = document.getElementById('password-input');
+        
+        loginBtn.addEventListener('click', handleLogin);
+        passwordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleLogin();
+        });
+
+        function handleLogin() {
+            const errorP = document.getElementById('login-error');
+            if (passwordInput.value === ADMIN_PASSWORD) {
+                document.getElementById('login-overlay').style.display = 'none';
+                document.getElementById('admin-panel').style.display = 'block';
+                initializeApp();
+            } else {
+                errorP.style.display = 'block';
+            }
+        }
+    });
+
+    async function initializeApp() {
+        // Tab Navigation
+        const tabs = document.querySelectorAll('.tab-btn');
+        const contentSections = document.querySelectorAll('.content-section');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                contentSections.forEach(section => {
+                    section.classList.remove('active');
+                    if (section.id === tab.dataset.target) {
+                        section.classList.add('active');
+                    }
+                });
+            });
+        });
+
+        // Form Submission
+        document.getElementById('edit-form').addEventListener('submit', handleFormSubmit);
+
+        // Initial Data Load
+        await loadTeachers();
+        await loadLectures();
+        await loadViewStatus();
+    }
+
+    // --- Data Loading Functions ---
+    let teacherData = []; // Cache teacher data for lecture form
+    async function loadTeachers() {
+        const list = document.getElementById('teachers-list');
+        list.innerHTML = '<tr><td colspan="3">داتای دهێتە وەرگرتن...</td></tr>';
+        const snapshot = await db.collection('teachers').get();
+        teacherData = snapshot.docs.map(doc => ({ id: doc.id, name: doc.data().name }));
+        list.innerHTML = '';
+        snapshot.docs.forEach(doc => {
+            const data = doc.data();
+            list.innerHTML += `
+                <tr id="teacher-${doc.id}">
+                    <td>${data.name || ''}</td>
+                    <td>${(data.bio || '').substring(0, 50)}...</td>
+                    <td class="actions-cell">
+                        <button class="edit-btn" onclick="openModal('teacher', '${doc.id}')" title="دەستکاری"><i class="fas fa-edit"></i></button>
+                        <button class="delete-btn" onclick="deleteItem('teachers', '${doc.id}')" title="ژێبرن"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>`;
+        });
+    }
+
+    async function loadLectures() {
+        const list = document.getElementById('lectures-list');
+        list.innerHTML = '<tr><td colspan="4">داتای دهێتە وەرگرتن...</td></tr>';
+        const snapshot = await db.collection('generalLectures').get();
+        list.innerHTML = '';
+        snapshot.docs.forEach(doc => {
+            const data = doc.data();
+            const teacher = teacherData.find(t => t.id === data.teacherId);
+            list.innerHTML += `
+                <tr id="lecture-${doc.id}">
+                    <td>${data.title || ''}</td>
+                    <td>${teacher ? teacher.name : 'نەناسراو'}</td>
+                    <td>${data.category || ''}</td>
+                    <td class="actions-cell">
+                        <button class="edit-btn" onclick="openModal('lecture', '${doc.id}')" title="دەستکاری"><i class="fas fa-edit"></i></button>
+                        <button class="delete-btn" onclick="deleteItem('generalLectures', '${doc.id}')" title="ژێبرن"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>`;
+        });
+    }
+    
+    const allViews = [
+        'levels-view', 'waneyan-view', 'tafsir-view', 'hadith-view', 
+        'fatwas-view', 'teachers-view', 'seerah-view', 'adhkar-view',
+        'fiqh-view', 'pirtukxane-view', 'book-sales-view', 'map-view', 
+        'live-view', 'prayer-times-view', 'kids-view'
+    ];
+    let currentViewStatus = {};
+
+    async function loadViewStatus() {
+        const list = document.getElementById('view-status-list');
+        list.innerHTML = '<p>داتای دهێتە وەرگرتن...</p>';
+        const snapshot = await db.collection('viewStatus').get();
+        snapshot.docs.forEach(doc => {
+            currentViewStatus[doc.id] = doc.data().stpCode;
+        });
+
+        list.innerHTML = '';
+        allViews.forEach(viewId => {
+            const currentStatus = currentViewStatus[viewId] || '0';
+            list.innerHTML += `
+                <div class="form-group" style="display:flex; justify-content:space-between; align-items:center; background: var(--card-bg); padding:10px; border-radius:6px;">
+                    <label for="status-${viewId}">${viewId}</label>
+                    <select id="status-${viewId}" data-view-id="${viewId}" class="view-status-select">
+                        <option value="0" ${currentStatus === '0' ? 'selected' : ''}>0 - ڤەکریە و کار دکەت</option>
+                        <option value="1" ${currentStatus === '1' ? 'selected' : ''}>1 - د کارکرنێ دایە</option>
+                        <option value="8" ${currentStatus === '8' ? 'selected' : ''}>8 - قفلە</option>
+                        <option value="3" ${currentStatus === '3' ? 'selected' : ''}>3 - ژێر چاککرنێ دایە</option>
+                        <option value="7" ${currentStatus === '7' ? 'selected' : ''}>7 - ب تەمامی ڤەشێرە</option>
+                        <!-- Add other status codes if needed -->
+                    </select>
+                </div>
+            `;
+        });
+    }
+
+    // --- Modal and Form Logic ---
+    async function openModal(type, id = null) {
+        const modal = document.getElementById('edit-modal');
+        const title = document.getElementById('modal-title');
+        const formFields = document.getElementById('form-fields');
+        document.getElementById('edit-id').value = id || '';
+        document.getElementById('edit-type').value = type;
+
+        let data = {};
+        if (id) {
+            const docRef = await db.collection(type === 'lecture' ? 'generalLectures' : type + 's').doc(id).get();
+            data = docRef.data();
+        }
+
+        title.textContent = id ? `دەستکاریکرنا ${type}` : `زێدەکرنا ${type}ەکا نوو`;
+        formFields.innerHTML = generateFormFields(type, data);
+        
+        modal.classList.add('active');
+    }
+
+    function closeModal() {
+        document.getElementById('edit-modal').classList.remove('active');
+    }
+    
+    function generateFormFields(type, data) {
+        if (type === 'teacher') {
+            return `
+                <div class="form-group">
+                    <label for="name">ناڤێ تەمام</label>
+                    <input type="text" id="name" value="${data.name || ''}" required>
+                </div>
+                <div class="form-group">
+                    <label for="bio">کورتەیا ژیان (Bio)</label>
+                    <textarea id="bio">${data.bio || ''}</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="profileImage">لینکێ وێنەیێ پرۆفایلێ</label>
+                    <input type="text" id="profileImage" value="${data.profileImage || ''}">
+                </div>
+                <div class="form-group">
+                    <label for="phone">ژمارا تەلەفونێ</label>
+                    <input type="text" id="phone" value="${data.phone || ''}">
+                </div>
+                 <div class="form-group">
+                    <label>لینکێن سۆشیال میدیایێ (Map)</label>
+                    <input type="text" id="social_youtube" placeholder="لینکێ YouTube" value="${data.social ? data.social.youtube || '' : ''}">
+                    <input type="text" id="social_telegram" placeholder="لینکێ Telegram" value="${data.social ? data.social.telegram || '' : ''}" style="margin-top:5px;">
+                     <input type="text" id="social_facebook" placeholder="لینکێ Facebook" value="${data.social ? data.social.facebook || '' : ''}" style="margin-top:5px;">
+                </div>
+            `;
+        }
+        if (type === 'lecture') {
+            const teacherOptions = teacherData.map(t => `<option value="${t.id}" ${data.teacherId === t.id ? 'selected' : ''}>${t.name}</option>`).join('');
+            let videoFields = '';
+            if (data.videos && Array.isArray(data.videos)) {
+                videoFields = data.videos.map((video, index) => `
+                    <div class="video-entry">
+                        <input type="text" class="video-title" placeholder="ناڤونیشانێ ڤیدیویێ" value="${video.title || ''}">
+                        <input type="text" class="video-url" placeholder="لینکێ ڤیدیویێ" value="${video.url || ''}">
+                    </div>
+                `).join('');
+            }
+            return `
+                <div class="form-group">
+                    <label for="title">ناڤونیشانێ وانەیێ</label>
+                    <input type="text" id="title" value="${data.title || ''}" required>
+                </div>
+                 <div class="form-group">
+                    <label for="teacherId">مامۆستا</label>
+                    <select id="teacherId" required>${teacherOptions}</select>
+                </div>
+                <div class="form-group">
+                    <label for="category">بابەت (Category)</label>
+                    <input type="text" id="category" value="${data.category || ''}">
+                </div>
+                <div class="form-group">
+                    <label for="image">لینکێ وێنەیێ سەرەکی</label>
+                    <input type="text" id="image" value="${data.image || ''}">
+                </div>
+                <div class="form-group">
+                    <label for="pdfUrl">لینکێ فایلێ PDF (ئەگەر هەبیت)</label>
+                    <input type="text" id="pdfUrl" value="${data.pdfUrl || ''}">
+                </div>
+                <div class="form-group">
+                    <label>ڤیدیویێن وانەیێ</label>
+                    <div id="videos-container">${videoFields}</div>
+                    <button type="button" onclick="addVideoField()" style="margin-top:10px; padding:5px 10px;">+ ڤیدیویەکا دی زێدەکە</button>
+                </div>
+            `;
+        }
+        return '';
+    }
+    
+    function addVideoField() {
+        const container = document.getElementById('videos-container');
+        container.innerHTML += `
+            <div class="video-entry">
+                <input type="text" class="video-title" placeholder="ناڤونیشانێ ڤیدیویێ">
+                <input type="text" class="video-url" placeholder="لینکێ ڤیدیویێ">
+            </div>
+        `;
+    }
+
+    // --- Data Saving/Updating/Deleting ---
+    async function handleFormSubmit(e) {
+        e.preventDefault();
+        const id = document.getElementById('edit-id').value;
+        const type = document.getElementById('edit-type').value;
+        let collectionName = type === 'lecture' ? 'generalLectures' : type + 's';
+        
+        let dataToSave = {};
+
+        if (type === 'teacher') {
+            dataToSave = {
+                name: document.getElementById('name').value,
+                bio: document.getElementById('bio').value,
+                profileImage: document.getElementById('profileImage').value,
+                phone: document.getElementById('phone').value,
+                social: {
+                    youtube: document.getElementById('social_youtube').value,
+                    telegram: document.getElementById('social_telegram').value,
+                    facebook: document.getElementById('social_facebook').value
+                }
+            };
+        } else if (type === 'lecture') {
+            const videos = [];
+            document.querySelectorAll('#videos-container .video-entry').forEach(entry => {
+                const title = entry.querySelector('.video-title').value;
+                const url = entry.querySelector('.video-url').value;
+                if (title && url) {
+                    videos.push({ title, url });
+                }
+            });
+            dataToSave = {
+                title: document.getElementById('title').value,
+                teacherId: document.getElementById('teacherId').value,
+                category: document.getElementById('category').value,
+                image: document.getElementById('image').value,
+                pdfUrl: document.getElementById('pdfUrl').value,
+                videos: videos
+            };
+        }
+
+        try {
+            if (id) {
+                // Update existing document
+                await db.collection(collectionName).doc(id).update(dataToSave);
+                alert('پێزانین ب سەرکەفتیانە هاتنە نووژەنکرن!');
+            } else {
+                // Add new document
+                await db.collection(collectionName).add(dataToSave);
+                alert('پێزانین ب سەرکەفتیانە هاتنە زێدەکرن!');
+            }
+            closeModal();
+            if(type === 'teacher') await loadTeachers();
+            if(type === 'lecture') await loadLectures();
+
+        } catch (error) {
+            console.error("Error saving data: ", error);
+            alert('چەوتیەک روویدا د پاشکەفتکرنێ دا!');
+        }
+    }
+
+    async function deleteItem(collection, id) {
+        if(confirm("تو پشتراستی دێ ڤی بابەتی ژێبەری؟ ئەڤ کارە ناهێتە ڤەگەڕاندن.")) {
+            let collectionName = collection === 'lectures' ? 'generalLectures' : collection;
+            try {
+                await db.collection(collectionName).doc(id).delete();
+                alert("بابەت هاتە ژێبرن.");
+                // Remove from UI
+                const row = document.getElementById(`${collection.slice(0, -1)}-${id}`);
+                if (row) row.remove();
+            } catch (error) {
+                console.error("Error deleting item:", error);
+                alert("چەوتیەک د ژێبرنێ دا روویدا.");
+            }
+        }
+    }
+
+    async function saveAllViewStatus() {
+        const selects = document.querySelectorAll('.view-status-select');
+        const batch = db.batch();
+
+        selects.forEach(select => {
+            const viewId = select.dataset.viewId;
+            const newStatus = select.value;
+            const docRef = db.collection('viewStatus').doc(viewId);
+            batch.set(docRef, { stpCode: newStatus });
+        });
+
+        try {
+            await batch.commit();
+            alert('حالەتێ هەمی بەشان ب سەرکەفتیانە هاتە پاشکەفتکرن!');
+            await loadViewStatus();
+        } catch (error) {
+            console.error("Error saving view statuses: ", error);
+            alert("چەوتیەک د پاشکەفتکرنێ دا روویدا.");
+        }
+    }
+
+
+    // Make functions globally accessible for inline onclick handlers
+    window.openModal = openModal;
+    window.closeModal = closeModal;
+    window.deleteItem = deleteItem;
+    window.saveAllViewStatus = saveAllViewStatus;
+    window.addVideoField = addVideoField;
+
+    </script>
+</body>
+</html>
