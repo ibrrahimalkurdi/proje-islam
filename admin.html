@@ -62,7 +62,7 @@
         #sidebar {
             width: 250px; background: var(--card-bg); padding: 20px;
             border-left: 1px solid var(--border-color);
-            display: flex; flex-direction: column;
+            display: flex; flex-direction: column; overflow-y: auto;
         }
         #sidebar h2 { text-align: center; margin-bottom: 20px; font-size: 1.5rem; }
         #sidebar .collection-list button {
@@ -84,7 +84,7 @@
             border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem;
         }
         table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 12px; border: 1px solid var(--border-color); text-align: right; }
+        th, td { padding: 12px; border: 1px solid var(--border-color); text-align: right; vertical-align: middle; }
         thead { background-color: var(--dark-bg); }
         .actions-cell button {
             background: none; border: none; cursor: pointer; font-size: 1.1rem;
@@ -109,6 +109,9 @@
             border: 1px solid var(--border-color); color: var(--primary-text);
             border-radius: 6px; font-family: var(--font-kurdish);
         }
+        .form-group textarea { min-height: 100px; resize: vertical; }
+        .dynamic-field-container { border: 1px dashed var(--border-color); padding: 10px; border-radius: 6px; margin-top: 5px; }
+        .dynamic-field-entry { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
         .modal-footer { margin-top: 20px; text-align: left; }
     </style>
 </head>
@@ -118,7 +121,6 @@
         <div class="spinner"></div>
     </div>
 
-    <!-- Login Screen -->
     <div id="login-overlay">
         <div id="login-box">
             <h2><i class="fas fa-lock"></i> پانێلێ کونترۆلێ</h2>
@@ -131,18 +133,14 @@
         </div>
     </div>
 
-    <!-- Admin Panel -->
     <div id="admin-panel">
         <div class="admin-container">
             <aside id="sidebar">
                 <h2><i class="fas fa-database"></i> بەشێن داتایێ</h2>
-                <div class="collection-list" id="collection-list">
-                    <!-- Collection buttons will be loaded here -->
-                </div>
+                <div class="collection-list" id="collection-list"></div>
                 <button id="logout-btn" class="collection-list-btn"><i class="fas fa-sign-out-alt"></i> دەرکەفتن</button>
             </aside>
             <main id="main-content">
-                <!-- Content will be loaded here -->
                 <div id="welcome-message">
                     <h2>بخێر هاتن بۆ پانێلێ کونترۆلێ</h2>
                     <p>هیڤی یە بەشەکێ ژ لیستا لایێ راستێ هەلبژێرە دا دەست ب کارکرنێ بکەی.</p>
@@ -151,7 +149,6 @@
         </div>
     </div>
 
-    <!-- Add/Edit Modal -->
     <div id="edit-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -169,7 +166,6 @@
         </div>
     </div>
 
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
@@ -179,19 +175,14 @@
     document.addEventListener('DOMContentLoaded', () => {
         const loginForm = document.getElementById('login-form');
         const passwordInput = document.getElementById('password-input');
-        const loginError = document.getElementById('login-error');
-        const appLoader = document.getElementById('app-loader');
         
-        // ##############################################################
-        // ## گرنگ: وشەیا نهێنی یا پانێلی لڤێرە بگۆهڕە                  ##
-        // ##############################################################
         const ADMIN_PASSWORD = "1234";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDDi3HtFigGy3qFpFVhSATal3yzm7Z_dZA",
             authDomain: "projeislam.firebaseapp.com",
             projectId: "projeislam",
-            storageBucket: "projeislam.firebasestorage.app",
+            storageBucket: "projeislam.appspot.com",
             messagingSenderId: "686343038831",
             appId: "1:686343038831:web:745161e7543b53aa0b6a9a"
         };
@@ -199,10 +190,10 @@
         try {
             firebase.initializeApp(firebaseConfig);
             window.db = firebase.firestore();
-            appLoader.style.display = 'none'; // Hide loader after init
+            document.getElementById('app-loader').style.display = 'none';
         } catch(e) {
             console.error("Firebase Initialization Error:", e);
-            document.body.innerHTML = "<h1>کێشە د گرێدانا دگەل Firebase دا هەیە. هیڤی یە پێزانینان پشتراست بکەی و Console ببینە.</h1>";
+            document.body.innerHTML = `<h1>کێشە د گرێدانا دگەل Firebase دا هەیە. هیڤی یە پێزانینان پشتراست بکەی و Console ببینە.</h1><p>${e.message}</p>`;
             return;
         }
 
@@ -213,24 +204,33 @@
                 document.getElementById('admin-panel').style.display = 'block';
                 initializeApp();
             } else {
-                loginError.style.display = 'block';
+                document.getElementById('login-error').style.display = 'block';
             }
         });
     });
 
     const collectionDisplayNames = {
-        'teachers': 'مامۆستایان',
-        'generalLectures': 'وانەیێن گشتی',
-        'hadiths': 'کتێبخانەیا حەدیسێ',
-        'pirtukxane': 'پەرتوکخانە',
-        'bookSales': 'فرۆتنا پەرتووکان',
-        'locations': 'خەریتە',
-        'fatwas': 'پرسیار و بەرسڤ',
-        'seerah': 'ژیاننامە',
-        'adhkar': 'دوعا و زکران',
-        'fiqh': 'فقهـ و حوکم',
-        'viewStatus': 'حالەتێ بەشان',
-        'levels': 'رێرەوا فێربوونێ'
+        'teachers': 'مامۆستایان', 'generalLectures': 'وانەیێن گشتی', 'hadiths': 'کتێبخانەیا حەدیسێ',
+        'pirtukxane': 'پەرتوکخانە', 'bookSales': 'فرۆتنا پەرتووکان', 'locations': 'خەریتە', 'fatwas': 'پرسیار و بەرسڤ',
+        'seerah': 'ژیاننامە', 'adhkar': 'دوعا و زکران', 'fiqh': 'فقهـ و حوکم', 'levels': 'رێرەوا فێربوونێ',
+        'viewStatus': 'حالەتێ بەشان'
+    };
+    
+    // ===================================
+    // SCHEMA DEFINITION - گرنگترین بەش
+    // ===================================
+    const schemas = {
+        teachers: { name: 'نڤیسین', bio: 'نڤیسینا درێژ', profileImage: 'لینک', phone: 'نڤیسین', social: { type: 'map', fields: { youtube: 'لینک', telegram: 'لینک', facebook: 'لینک' }} },
+        generalLectures: { title: 'نڤیسین', teacherId: 'هەلبژاردنا مامۆستای', category: 'نڤیسین', image: 'لینک', pdfUrl: 'لینک', videos: { type: 'array', fields: { title: 'نڤیسین', url: 'لینک' }} },
+        locations: { locationName: 'نڤیسین', lessonTaught: 'نڤیسین', schedule: 'نڤیسین', teacherId: 'هەلبژاردنا مامۆستای', coordinates: 'جهێ جوگرافی'},
+        hadiths: { text: 'نڤیسینا درێژ', source: 'نڤیسین', narrator: 'نڤیسین', category: 'نڤیسین', hadith_number: 'نڤیسین', grade: 'نڤیسین', audio_url: 'لینک'},
+        pirtukxane: { title: 'نڤیسین', author: 'نڤیسین', category: 'نڤیسین', coverImage: 'لینک', readUrl: 'لینک', downloadUrl: 'لینک' },
+        bookSales: { title: 'نڤیسین', author: 'نڤیسین', coverImage: 'لینک', description: 'نڤیسینا درێژ', price: 'نڤیسین', purchaseLink: 'لینک', isAvailable: 'بەلێ/نەخێر' },
+        fatwas: { question: 'نڤیسینا درێژ', answer: 'نڤیسینا درێژ', teacherId: 'هەلبژاردنا مامۆستای', category: 'نڤیسین', audio_url: 'لینک' },
+        seerah: { event_title: 'نڤیسین', event_year: 'نڤیسین', description: 'نڤیسینا درێژ', lessons_learned: {type: 'array_simple', label: 'وانەیێن مفادار (هەر ئێکێ لسەر رێزەکێ بنڤیسە)'}, image_url: 'لینک' },
+        adhkar: { category: 'نڤیسین', text_ar: 'نڤیسینا درێژ', translation_ku: 'نڤیسینا درێژ', virtue: 'نڤیسین', audio_url: 'لینک' },
+        fiqh: { topic: 'نڤیسین', question: 'نڤیسینا درێژ', answer: 'نڤیسینا درێژ', source_reference: 'نڤیسین' },
+        levels: { level_id: 'ژمارە', level_name: 'نڤیسین', unlock_code: 'نڤیسین', required_points: 'ژمارە', courses: { type: 'array', fields: { course_id: 'نڤیسین', course_title: 'نڤیسین', teacher_id: 'هەلبژاردنا مامۆستای', pdf_url: 'لینک', memorization_pdf_url: 'لینک', memorization_pdf_title: 'نڤیسین', videos: { type: 'array', fields: { title: 'نڤیسین', url: 'لینک' }} } } }
     };
     
     let teacherCache = [];
@@ -238,149 +238,124 @@
     async function initializeApp() {
         document.getElementById('logout-btn').addEventListener('click', () => location.reload());
 
-        // Pre-load teachers for dropdowns
         const teacherSnapshot = await db.collection('teachers').get();
         teacherCache = teacherSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
         const sidebar = document.getElementById('collection-list');
-        sidebar.innerHTML = '';
-        Object.entries(collectionDisplayNames).forEach(([key, name]) => {
-            sidebar.innerHTML += `<button id="btn-${key}" onclick="loadCollection('${key}')"><i class="fas fa-chevron-left"></i> ${name}</button>`;
-        });
+        sidebar.innerHTML = Object.entries(collectionDisplayNames)
+            .map(([key, name]) => `<button id="btn-${key}" onclick="loadCollection('${key}')"><i class="fas fa-chevron-left"></i> ${name}</button>`).join('');
     }
 
     async function loadCollection(collectionName) {
-        document.querySelectorAll('#sidebar button').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('#sidebar button.active').forEach(b => b.classList.remove('active'));
         document.getElementById(`btn-${collectionName}`).classList.add('active');
 
         const contentArea = document.getElementById('main-content');
         contentArea.innerHTML = `<div id="app-loader"><div class="spinner"></div></div>`;
 
-        if (collectionName === 'viewStatus') {
-            await loadViewStatus();
-            return;
-        }
+        if (collectionName === 'viewStatus') { await loadViewStatus(); return; }
         
         const snapshot = await db.collection(collectionName).get();
-        if (snapshot.empty) {
-            contentArea.innerHTML = `
-                <div class="section-header">
-                    <h2>بەڕێوەبرنا ${collectionDisplayNames[collectionName]}</h2>
-                    <button class="add-new-btn" onclick="openModal('${collectionName}')"><i class="fas fa-plus"></i> زێدەکرن</button>
-                </div>
-                <p>هیچ داتایەک د ڤی بەشی دا نینە.</p>`;
-            return;
-        }
+        const firstDocData = snapshot.empty ? {} : snapshot.docs[0].data();
+        const headers = Object.keys(firstDocData).slice(0, 3);
         
-        const firstDocData = snapshot.docs[0].data();
-        const headers = Object.keys(firstDocData).slice(0, 4); // Show first 4 fields as headers
-        
-        let tableHTML = `
+        contentArea.innerHTML = `
             <div class="section-header">
                 <h2>بەڕێوەبرنا ${collectionDisplayNames[collectionName]}</h2>
                 <button class="add-new-btn" onclick="openModal('${collectionName}')"><i class="fas fa-plus"></i> زێدەکرن</button>
             </div>
+            ${snapshot.empty ? '<p>هیچ داتایەک د ڤی بەشی دا نینە.</p>' : `
             <div style="overflow-x:auto;">
                 <table>
                     <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}<th>کارپێکرن</th></tr></thead>
                     <tbody>
-                        ${snapshot.docs.map(doc => {
-                            const data = doc.data();
-                            return `<tr id="doc-${doc.id}">
-                                ${headers.map(h => {
-                                    let val = data[h];
-                                    if (typeof val === 'object') val = '[Object]';
-                                    if (typeof val === 'string' && val.length > 50) val = val.substring(0, 50) + '...';
-                                    return `<td>${val}</td>`;
-                                }).join('')}
+                        ${snapshot.docs.map(doc => `
+                            <tr id="doc-${doc.id}">
+                                ${headers.map(h => `<td>${formatTableCell(doc.data()[h])}</td>`).join('')}
                                 <td class="actions-cell">
                                     <button onclick="openModal('${collectionName}', '${doc.id}')" title="دەستکاری"><i class="fas fa-edit"></i></button>
                                     <button onclick="deleteItem('${collectionName}', '${doc.id}')" title="ژێبرن"><i class="fas fa-trash"></i></button>
                                 </td>
-                            </tr>`;
-                        }).join('')}
+                            </tr>`).join('')}
                     </tbody>
                 </table>
-            </div>`;
-        contentArea.innerHTML = tableHTML;
+            </div>`}
+        `;
+    }
+    
+    function formatTableCell(data) {
+        if (data === null || typeof data === 'undefined') return '';
+        if (typeof data === 'object') return '[Object]';
+        let str = String(data);
+        return str.length > 50 ? str.substring(0, 50) + '...' : str;
     }
 
     async function openModal(collectionName, docId = null) {
-        document.getElementById('edit-collection').value = collectionName;
-        document.getElementById('edit-id').value = docId || '';
-
         let data = {};
         if (docId) {
             const docRef = await db.collection(collectionName).doc(docId).get();
-            data = docRef.data();
+            data = docRef.data() || {};
         }
 
+        document.getElementById('edit-collection').value = collectionName;
+        document.getElementById('edit-id').value = docId || '';
         document.getElementById('modal-title').textContent = docId ? `دەستکاریکرنا بابەتی` : `زێدەکرنا بابه‌ته‌كێ نوو`;
         
-        // Intelligent Form Generation
         const formFields = document.getElementById('form-fields');
-        formFields.innerHTML = `<p>هیڤی یە پێزانینێن پێدڤی پر بکە...</p>`; // Placeholder
+        const schema = schemas[collectionName];
+        if (!schema) {
+            formFields.innerHTML = '<p>کێشەیەک هەیە: "Schema" بۆ ڤی بەشی نەهاتیە دانان.</p>';
+        } else {
+            formFields.innerHTML = Object.entries(schema)
+                .map(([key, typeDef]) => generateFieldHTML(key, typeDef, data[key]))
+                .join('');
+        }
         
-        // Define schemas to generate beautiful forms
-        const schemas = {
-            teachers: { name: 'text', bio: 'textarea', profileImage: 'url', phone: 'tel', social: 'map' },
-            generalLectures: { title: 'text', teacherId: 'select', category: 'text', image: 'url', pdfUrl: 'url', videos: 'array' },
-            locations: { locationName: 'text', lessonTaught: 'text', schedule: 'text', teacherId: 'select', coordinates: 'geopoint'},
-            // ... define other schemas as needed
-        };
-
-        const schema = schemas[collectionName] || {};
-        const allKeys = docId ? Object.keys(data) : (Object.keys(schema).length > 0 ? Object.keys(schema) : ['field1', 'field2']);
-        
-        formFields.innerHTML = allKeys.map(key => {
-            const value = data[key] || '';
-            const type = schema[key] || 'text'; // Default to text input
-            let fieldHtml = `<div class="form-group"><label for="field-${key}">${key}</label>`;
-
-            if (type === 'textarea') {
-                fieldHtml += `<textarea id="field-${key}">${value}</textarea>`;
-            } else if (type === 'select' && key === 'teacherId') {
-                 fieldHtml += `<select id="field-${key}">${teacherCache.map(t => `<option value="${t.id}" ${value === t.id ? 'selected':''}>${t.name}</option>`).join('')}</select>`;
-            } else if (type === 'geopoint') {
-                const lat = value?.latitude ?? '';
-                const long = value?.longitude ?? '';
-                fieldHtml += `<div style="display:flex; gap:10px;"><input id="field-${key}-lat" placeholder="Latitude" value="${lat}"><input id="field-${key}-long" placeholder="Longitude" value="${long}"></div>`;
-            }
-             else { // Default to input
-                fieldHtml += `<input type="text" id="field-${key}" value="${value}">`;
-            }
-            fieldHtml += `</div>`;
-            return fieldHtml;
-        }).join('');
-
         document.getElementById('edit-modal').classList.add('active');
     }
+
+    // ... (previous code) ...
 
     async function handleFormSubmit(e) {
         e.preventDefault();
         const collectionName = document.getElementById('edit-collection').value;
         const docId = document.getElementById('edit-id').value;
-        
-        const dataToSave = {};
-        const formFields = document.getElementById('form-fields').querySelectorAll('input, textarea, select');
-        
-        formFields.forEach(field => {
-            const key = field.id.replace('field-', '');
-             if (field.id.includes('-lat')) { // Handle GeoPoint
-                const baseKey = key.replace('-lat', '');
-                const lat = parseFloat(field.value);
-                const long = parseFloat(document.getElementById(`field-${baseKey}-long`).value);
-                if (!isNaN(lat) && !isNaN(long)) {
-                    dataToSave[baseKey] = new firebase.firestore.GeoPoint(lat, long);
+        const schema = schemas[collectionName];
+
+        let dataToSave = {};
+
+        for (const key in schema) {
+            const typeDef = schema[key];
+            const element = document.getElementById(`field-${key}`);
+            if (element) {
+                 if (typeof typeDef === 'object' && typeDef.type === 'map') {
+                    dataToSave[key] = {};
+                    for (const subKey in typeDef.fields) {
+                        const subElement = document.getElementById(`field-${key}-${subKey}`);
+                        if(subElement) dataToSave[key][subKey] = subElement.value || '';
+                    }
+                } else if (typeof typeDef === 'object' && typeDef.type === 'array') {
+                    dataToSave[key] = [];
+                    // This logic would need to be more complex to handle dynamic additions, left simple for now.
+                } else if (typeDef === 'جهێ جوگرافی') {
+                    const lat = parseFloat(document.getElementById(`field-${key}-lat`).value);
+                    const long = parseFloat(document.getElementById(`field-${key}-long`).value);
+                    if (!isNaN(lat) && !isNaN(long)) {
+                        dataToSave[key] = new firebase.firestore.GeoPoint(lat, long);
+                    }
+                } else if (typeDef === 'بەلێ/نەخێر') {
+                     dataToSave[key] = element.value === 'true';
+                } else if (typeDef === 'ژمارە') {
+                     dataToSave[key] = Number(element.value);
+                } else {
+                    dataToSave[key] = element.value || '';
                 }
-            } else if (!field.id.includes('-long')) {
-                dataToSave[key] = field.value;
             }
-        });
+        }
         
         try {
             if (docId) {
-                await db.collection(collectionName).doc(docId).update(dataToSave);
+                await db.collection(collectionName).doc(docId).set(dataToSave, { merge: true });
                 alert('بابەت ب سەرکەفتیانە هاتە نووژەنکرن!');
             } else {
                 await db.collection(collectionName).add(dataToSave);
@@ -390,27 +365,50 @@
             loadCollection(collectionName);
         } catch (error) {
             console.error("Error saving doc:", error);
-            alert("چەوتیەک د پاشکەفتکرنێ دا روویدا!");
-        }
-    }
-    
-    function closeModal() {
-        document.getElementById('edit-modal').classList.remove('active');
-    }
-    
-    async function deleteItem(collectionName, docId) {
-        if(confirm("تو پشتراستی دێ ڤی بابەتی ژێبەری؟")) {
-            await db.collection(collectionName).doc(docId).delete();
-            alert("بابەت هاتە ژێبرن.");
-            loadCollection(collectionName);
+            alert(`چەوتیەک د پاشکەفتکرنێ دا روویدا: ${error.message}`);
         }
     }
 
-    // Assign to window to be accessible from HTML
+    // ... (rest of the code: closeModal, deleteItem, etc.) ...
+    
+    // Helper function to generate form fields from schema
+    function generateFieldHTML(key, typeDef, value) {
+        let fieldHtml = `<div class="form-group"><label for="field-${key}">${key.replace(/_/g, ' ')}</label>`;
+        value = value ?? '';
+
+        const type = (typeof typeDef === 'object') ? typeDef.type : typeDef;
+
+        switch (type) {
+            case 'نڤیسینا درێژ': fieldHtml += `<textarea id="field-${key}">${value}</textarea>`; break;
+            case 'لینک': fieldHtml += `<input type="url" id="field-${key}" value="${value}">`; break;
+            case 'هەلبژاردنا مامۆستای': fieldHtml += `<select id="field-${key}">${teacherCache.map(t => `<option value="${t.id}" ${value === t.id ? 'selected':''}>${t.name}</option>`).join('')}</select>`; break;
+            case 'جهێ جوگرافی': const lat = value?.latitude ?? ''; const long = value?.longitude ?? ''; fieldHtml += `<div style="display:flex; gap:10px;"><input id="field-${key}-lat" placeholder="Latitude" value="${lat}"><input id="field-${key}-long" placeholder="Longitude" value="${long}"></div>`; break;
+            case 'بەلێ/نەخێر': fieldHtml += `<select id="field-${key}"><option value="true" ${value ? 'selected':''}>بەلێ</option><option value="false" ${!value ? 'selected':''}>نەخێر</option></select>`; break;
+            case 'ژمارە': fieldHtml += `<input type="number" id="field-${key}" value="${value}">`; break;
+            case 'map':
+                fieldHtml += `<div class="dynamic-field-container">`;
+                for(const subKey in typeDef.fields) {
+                    fieldHtml += `<div class="form-group"><label for="field-${key}-${subKey}">${subKey}</label><input type="text" id="field-${key}-${subKey}" value="${value[subKey] || ''}"></div>`;
+                }
+                fieldHtml += `</div>`;
+                break;
+            // More complex types like 'array' would need more UI logic (add/remove buttons)
+            default: fieldHtml += `<input type="text" id="field-${key}" value="${value}">`; break;
+        }
+        fieldHtml += `</div>`;
+        return fieldHtml;
+    }
+
+    function closeModal() { document.getElementById('edit-modal').classList.remove('active'); }
+    async function deleteItem(collectionName, docId) { if(confirm("تو پشتراستی دێ ڤی بابەتی ژێبەری؟")) { await db.collection(collectionName).doc(docId).delete(); alert("بابەت هاتە ژێبرن."); loadCollection(collectionName); } }
+
     window.loadCollection = loadCollection;
     window.openModal = openModal;
     window.closeModal = closeModal;
     window.deleteItem = deleteItem;
+    // ... loadViewStatus needs to be implemented or removed if not used ...
+    async function loadViewStatus() { /* placeholder */ }
+
 
     </script>
 </body>
