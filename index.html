@@ -11,7 +11,6 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="apple-touch-icon" href="https://i.ibb.co/d0zst2qZ/IMG-1202.jpg">
 
-
 <!-- CSS Libraries -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -683,13 +682,12 @@ audio::-webkit-media-controls-fullscreen-button { color: var(--primary-text); }
 // **گرنگ:** ڤان زانیاریان ژ پڕۆژێ خۆ یێ Firebase بینە
 const firebaseConfig = {
     apiKey: "AIzaSyDDi3HtFigGy3qFpFVhSATal3yzm7Z_dZA",
-  authDomain: "projeislam.firebaseapp.com",
-  projectId: "projeislam",
-  storageBucket: "projeislam.firebasestorage.app",
-  messagingSenderId: "686343038831",
-  appId: "1:686343038831:web:745161e7543b53aa0b6a9a",
-  measurementId: "G-40PLKXX7GK"
-};
+    authDomain: "projeislam.firebaseapp.com",
+    projectId: "projeislam",
+    storageBucket: "projeislam.firebasestorage.app",
+    messagingSenderId: "686343038831",
+    appId: "1:686343038831:web:745161e7543b53aa0b6a9a",
+    measurementId: "G-40PLKXX7GK"
 };
 
 // Initialize Firebase
@@ -907,11 +905,6 @@ async function loadDataFromFirebase() {
 function openModal(modalId) { const modal = document.getElementById(modalId); if(modal) modal.classList.add('is-visible'); }
 function closeModal(modalId) { const modal = document.getElementById(modalId); if (!modal) return; modal.classList.remove('is-visible'); if (modalId === 'teacher-profile-modal') document.getElementById('profile-dynamic-content').innerHTML = ''; if (modalId === 'media-player-modal') { document.getElementById('media-player-container').innerHTML = ''; } if (modalId === 'pdf-viewer-modal') { document.getElementById('pdf-iframe').src = 'about:blank'; } }
 
-
-// =================================================================
-// =========== هەمی فەنکشنێن دی وەک خۆ دمینن ل ڤێرێ ===========
-// ... (کودێ تە یێ درێژ یێ JavaScript ل ڤێرێ دهێت دانان بێی کێماسی) ...
-// =================================================================
 
 // === [ 6. ئاڤاکەرێن دیتنان (View Builders) ] ===
 function buildAllViews() {
