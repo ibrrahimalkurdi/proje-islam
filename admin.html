@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ku" dir="rtl">
 <head>
@@ -13,22 +12,32 @@
             --font-kurdish: 'Noto Sans Arabic', sans-serif;
         }
         body { font-family: var(--font-kurdish); background-color: var(--dark-bg); color: var(--primary-text); line-height: 1.6; margin: 0; padding: 20px; }
-        .container { max-width: 900px; margin: auto; }
+        .container { max-width: 1200px; margin: auto; }
         .login-container, .admin-panel { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 30px; }
         h1, h2, h3 { color: var(--primary-text); border-bottom: 2px solid var(--accent-color); padding-bottom: 10px; margin-bottom: 20px; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
         .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; }
+        label { display: block; margin-bottom: 5px; font-size: 0.9rem; color: var(--secondary-text); }
         input, select, textarea { width: 100%; background: var(--dark-bg); border: 1px solid var(--border-color); color: var(--primary-text); padding: 10px; border-radius: 6px; box-sizing: border-box; }
-        button { background: var(--accent-color); color: #fff; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; }
+        textarea { min-height: 100px; resize: vertical; }
+        button { background: var(--accent-color); color: #fff; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-family: var(--font-kurdish); }
+        button:hover { opacity: 0.9; }
         button.danger { background-color: var(--danger-color); }
+        button.secondary { background-color: var(--border-color); }
         #admin-panel { display: none; }
-        .admin-nav { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .admin-nav { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; }
         .nav-btn { background: var(--border-color); }
-        .nav-btn.active { background: var(--accent-color); }
+        .nav-btn.active { background: var(--accent-color); font-weight: bold; }
         .admin-section { display: none; }
-        .admin-section.active { display: block; }
+        .admin-section.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .item-list { list-style: none; padding: 0; }
-        .item-list li { background: var(--dark-bg); padding: 10px; border-radius: 6px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .item-list li { background: var(--dark-bg); padding: 10px 15px; border-radius: 6px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-right: 3px solid var(--accent-color); }
+        .item-actions button { margin-right: 5px; }
+        .form-section { border-bottom: 1px dashed var(--border-color); padding-bottom: 20px; margin-bottom: 20px; }
+        .form-section h3 { border: none; font-size: 1.1rem; }
+        .video-entry { display: flex; gap: 10px; margin-bottom: 10px; }
+        .video-entry input { flex-grow: 1; }
     </style>
 </head>
 <body>
@@ -55,44 +64,114 @@
     <div id="admin-panel">
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <h1><i class="fas fa-tools"></i> پانێلا ئەدمین</h1>
-            <button id="logout-btn" class="danger">چوونەدەر</button>
+            <button id="logout-btn" class="danger"><i class="fas fa-sign-out-alt"></i> چوونەدەر</button>
         </div>
-        <p>ل ڤێرێ دشێی هەمی ناڤەرۆکا مالپەری کۆنترۆل بکەی. هەر گوهۆرینەک راستەوخۆ دێ ل مالپەرێ گشتی دیار بیت.</p>
         
         <nav class="admin-nav">
              <button class="nav-btn active" data-target="site-settings-section">ڕێکخستنێن گشتی</button>
              <button class="nav-btn" data-target="teachers-section">مامۆستایان</button>
-             <!-- لێرە بەشەکانی تر زیاد بکە -->
+             <button class="nav-btn" data-target="levels-section">رێرەوا فێربوونێ</button>
+             <button class="nav-btn" data-target="lectures-section">وانەیێن گشتی</button>
+             <button class="nav-btn" data-target="fatwas-section">پرسیار و بەرسڤ</button>
+             <button class="nav-btn" data-target="hadiths-section">کتێبخانەیا حەدیسێ</button>
+             <button class="nav-btn" data-target="tafsir-section">تەفسیرا قورئانێ</button>
+             <button class="nav-btn" data-target="library-section">پەرتوکخانە</button>
+             <button class="nav-btn" data-target="booksales-section">فرۆتنا پەرتووکان</button>
+             <button class="nav-btn" data-target="locations-section">خەریتە</button>
+             <button class="nav-btn" data-target="livecourse-section">خولێن ڕاستەوخۆ</button>
         </nav>
 
         <div class="admin-content">
             <!-- بەشێ ڕێکخستنێن گشتی و قفل کرنا بەشان -->
             <div id="site-settings-section" class="admin-section active">
                 <h2><i class="fas fa-cogs"></i> بەڕێوەبرنا بەشان (قفل کرن / ڤەکرن)</h2>
-                <form id="view-status-form">
-                    <p>0: چالاک | 1: د کارکرنێ دایە | 8: قفلە</p>
+                <form id="view-status-form" class="form-grid">
                     <!-- لڤێرێ دێ ب شێوەیەکێ ئۆتۆماتیکی پڕ بیت -->
                 </form>
-                <button id="save-view-status">هەلگرتنا گوهۆرینان</button>
-                 <p id="status-save-message" style="color: var(--success-color); margin-top: 10px;"></p>
+                <button id="save-view-status" style="margin-top:20px;"><i class="fas fa-save"></i> هەلگرتنا گوهۆرینان</button>
+                <p id="status-save-message" style="color: var(--success-color); margin-top: 10px;"></p>
             </div>
 
             <!-- بەشێ مامۆستایان -->
             <div id="teachers-section" class="admin-section">
                 <h2><i class="fas fa-chalkboard-teacher"></i> بەڕێوەبرنا مامۆستایان</h2>
-                <form id="teacher-form">
-                    <input type="hidden" id="teacher-id">
-                    <div class="form-group"><label for="teacher-name">ناڤ</label><input type="text" id="teacher-name" required></div>
-                    <div class="form-group"><label for="teacher-bio">کورتەیا ژیانێ</label><textarea id="teacher-bio"></textarea></div>
-                    <div class="form-group"><label for="teacher-image">لینکێ وێنەی</label><input type="text" id="teacher-image"></div>
-                    <div class="form-group"><label for="teacher-telegram">لینکێ تێلێگرامی</label><input type="text" id="teacher-telegram"></div>
-                    <button type="submit">هەلگرتن</button>
-                </form>
+                <div class="form-section">
+                    <form id="teacher-form">
+                        <input type="hidden" id="teacher-id">
+                        <div class="form-grid">
+                            <div class="form-group"><label for="teacher-name">ناڤ</label><input type="text" id="teacher-name" required></div>
+                            <div class="form-group"><label for="teacher-image">لینکێ وێنەی</label><input type="text" id="teacher-image"></div>
+                            <div class="form-group"><label for="teacher-phone">ژمارا تەلەفۆنێ</label><input type="text" id="teacher-phone"></div>
+                            <div class="form-group"><label for="teacher-youtube">یوتیوب</label><input type="text" id="teacher-youtube"></div>
+                            <div class="form-group"><label for="teacher-telegram">تێلێگرام</label><input type="text" id="teacher-telegram"></div>
+                            <div class="form-group"><label for="teacher-facebook">فەیسبوک</label><input type="text" id="teacher-facebook"></div>
+                        </div>
+                        <div class="form-group"><label for="teacher-bio">کورتەیا ژیانێ</label><textarea id="teacher-bio"></textarea></div>
+                        <button type="submit"><i class="fas fa-save"></i> هەلگرتن</button>
+                        <button type="button" class="secondary" onclick="document.getElementById('teacher-form').reset(); document.getElementById('teacher-id').value = ''">فورمێ ڤالا بکە</button>
+                    </form>
+                </div>
                 <h3>لیستا مامۆستایان</h3>
                 <ul id="teachers-list" class="item-list"></ul>
             </div>
+
+            <!-- بەشێ رێرەوا فێربوونێ (Levels & Courses) -->
+            <div id="levels-section" class="admin-section">
+                <h2><i class="fas fa-stairs"></i> بەڕێوەبرنا رێرەوا فێربوونێ</h2>
+                <div class="form-section">
+                     <form id="level-course-form">
+                        <input type="hidden" id="level-course-id">
+                        <h3>زانیاریێن ئاستی (Level)</h3>
+                        <div class="form-grid">
+                            <div class="form-group"><label for="level-id">ژمارا ئاستی</label><input type="number" id="level-id" required></div>
+                            <div class="form-group"><label for="level-name">ناڤێ ئاستی</label><input type="text" id="level-name" required></div>
+                            <div class="form-group"><label for="level-unlock-code">کۆدێ ڤەکرنێ</label><input type="text" id="level-unlock-code"></div>
+                            <div class="form-group"><label for="level-required-points">خالێن پێدڤی</label><input type="number" id="level-required-points"></div>
+                        </div>
+                        <hr style="border-color: var(--border-color); margin: 20px 0;">
+                        <h3>زانیاریێن خولێ (Course)</h3>
+                         <div class="form-grid">
+                            <div class="form-group"><label for="course-title">ناڤێ خولێ</label><input type="text" id="course-title" required></div>
+                            <div class="form-group"><label for="course-teacher-id">مامۆستا</label><select id="course-teacher-id" required></select></div>
+                            <div class="form-group"><label for="course-pdf-url">لینکێ PDF</label><input type="text" id="course-pdf-url"></div>
+                        </div>
+                        <h4>پەرتوکا ژبەرکرنێ</h4>
+                         <div class="form-grid">
+                            <div class="form-group"><label for="course-memo-pdf-url">لینکێ PDF (ژبەرکرن)</label><input type="text" id="course-memo-pdf-url"></div>
+                            <div class="form-group"><label for="course-memo-pdf-title">ناڤێ دوگمەیێ</label><input type="text" id="course-memo-pdf-title"></div>
+                        </div>
+                        <h4>وانە (Videos)</h4>
+                        <div id="videos-container">
+                            <div class="video-entry">
+                                <input type="text" placeholder="ناڤێ وانەیێ" class="video-title">
+                                <input type="text" placeholder="لینکێ وانەیێ" class="video-url">
+                            </div>
+                        </div>
+                        <button type="button" id="add-video-btn"><i class="fas fa-plus"></i> وانەیەکا دی زێدەکە</button>
+                        <hr style="border-color: var(--border-color); margin: 20px 0;">
+                        <button type="submit"><i class="fas fa-save"></i> هەلگرتنا خولێ</button>
+                    </form>
+                </div>
+                <h3>لیستا خولان (بپێی ئاست)</h3>
+                <div id="levels-list"></div>
+            </div>
+
+            <!-- بەشێ وانەیێن گشتی -->
+            <div id="lectures-section" class="admin-section">
+                <h2><i class="fas fa-video"></i> بەڕێوەبرنا وانەیێن گشتی</h2>
+                <p>... لڤێرێ فورم و لیستا وانەیێن گشتی دێ هێتە دانان ...</p>
+                <!-- TODO: Add form and list for general lectures -->
+            </div>
             
-            <!-- لڤێرێ بەشێن دی بۆ (وانە، حەدیس، فەتوا...) دێ چێکەین -->
+             <!-- بەشێن دی... -->
+            <div id="fatwas-section" class="admin-section"><h2><i class="fas fa-question-circle"></i> بەڕێوەبرنا پرسیار و بەرسڤان</h2><p>... فورم و لیست ...</p></div>
+            <div id="hadiths-section" class="admin-section"><h2><i class="fas fa-book-quran"></i> بەڕێوەبرنا کتێبخانەیا حەدیسێ</h2><p>... فورم و لیست ...</p></div>
+            <div id="tafsir-section" class="admin-section"><h2><i class="fas fa-quran"></i> بەڕێوەبرنا تەفسیرا قورئانێ</h2><p>... فورم و لیست ...</p></div>
+            <div id="library-section" class="admin-section"><h2><i class="fas fa-swatchbook"></i> بەڕێوەبرنا پەرتوکخانێ</h2><p>... فورم و لیست ...</p></div>
+            <div id="booksales-section" class="admin-section"><h2><i class="fas fa-shopping-cart"></i> بەڕێوەبرنا فرۆتنا پەرتووکان</h2><p>... فورم و لیست ...</p></div>
+            <div id="locations-section" class="admin-section"><h2><i class="fas fa-map-marked-alt"></i> بەڕێوەبرنا خەریتەی</h2><p>... فورم و لیست ...</p></div>
+            <div id="livecourse-section" class="admin-section"><h2><i class="fas fa-satellite-dish"></i> بەڕێوەبرنا خولێن ڕاستەوخۆ</h2><p>... فورم و لیست ...</p></div>
+
         </div>
     </div>
 </div>
@@ -103,6 +182,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
 <script>
+    // === دامەزراندنا Firebase ===
     const firebaseConfig = {
       apiKey: "AIzaSyDDi3HtFigGy3qFpFVhSATal3yzm7Z_dZA",
       authDomain: "projeislam.firebaseapp.com",
@@ -115,58 +195,41 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    const loginContainer = document.getElementById('login-container');
-    const adminPanel = document.getElementById('admin-panel');
-    const loginForm = document.getElementById('login-form');
-    const logoutBtn = document.getElementById('logout-btn');
-
-    // چاڤدێریا حالەتێ لۆگینێ
+    // === لۆگین و گشتی ===
     auth.onAuthStateChanged(user => {
         if (user) {
-            loginContainer.style.display = 'none';
-            adminPanel.style.display = 'block';
-            loadAdminData();
+            document.getElementById('login-container').style.display = 'none';
+            document.getElementById('admin-panel').style.display = 'block';
+            loadAllAdminData();
         } else {
-            loginContainer.style.display = 'block';
-            adminPanel.style.display = 'none';
+            document.getElementById('login-container').style.display = 'block';
+            document.getElementById('admin-panel').style.display = 'none';
         }
     });
-
-    // لۆگین کرن
-    loginForm.addEventListener('submit', (e) => {
+    document.getElementById('login-form').addEventListener('submit', e => {
         e.preventDefault();
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
-        auth.signInWithEmailAndPassword(email, password)
-            .catch(error => {
-                document.getElementById('login-error').textContent = "ئیمەیل یان پاسۆرد خەلەتە.";
-                console.error("Login Error:", error);
-            });
+        auth.signInWithEmailAndPassword(email, password).catch(err => {
+            document.getElementById('login-error').textContent = "ئیمەیل یان پاسۆرد خەلەتە.";
+        });
     });
-
-    // لۆگ ئاوت کرن
-    logoutBtn.addEventListener('click', () => {
-        auth.signOut();
-    });
-
-    // گوهۆرینا تابێن ناڤ پانێلێ
+    document.getElementById('logout-btn').addEventListener('click', () => auth.signOut());
     document.querySelectorAll('.nav-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.nav-btn, .admin-section').forEach(el => el.classList.remove('active'));
             btn.classList.add('active');
-            document.querySelectorAll('.admin-section').forEach(sec => sec.classList.remove('active'));
             document.getElementById(btn.dataset.target).classList.add('active');
         });
     });
 
-    // === لۆژیکا تایبەت ب هەر بەشەکی ===
-    function loadAdminData() {
+    function loadAllAdminData() {
         loadViewStatuses();
         loadTeachers();
-        // ... load other sections
+        loadLevels();
     }
-
-    // --- بەڕێوەبرنا بەشان ---
+    
+    // === 1. بەڕێوەبرنا بەشان (View Status) ===
     async function loadViewStatuses() {
         const form = document.getElementById('view-status-form');
         const doc = await db.collection('single_docs').doc('viewStatuses').get();
@@ -175,46 +238,49 @@
             let html = '';
             for (const key in statuses) {
                 html += `<div class="form-group">
-                            <label for="status-${key}">${key}</label>
-                            <input type="text" id="status-${key}" data-key="${key}" value="${statuses[key]}">
+                            <label for="status-${key}">${key.replace('-view', '')}</label>
+                            <select id="status-${key}" data-key="${key}" class="status-select">
+                                <option value="0" ${statuses[key] == '0' ? 'selected' : ''}>0: چالاک</option>
+                                <option value="1" ${statuses[key] == '1' ? 'selected' : ''}>1: د کارکرنێ دایە</option>
+                                <option value="8" ${statuses[key] == '8' ? 'selected' : ''}>8: قفلە</option>
+                                <option value="7" ${statuses[key] == '7' ? 'selected' : ''}>7: ڤەشارتی</option>
+                            </select>
                          </div>`;
             }
             form.innerHTML = html;
         }
     }
     document.getElementById('save-view-status').addEventListener('click', async () => {
-        const inputs = document.querySelectorAll('#view-status-form input');
+        const selects = document.querySelectorAll('.status-select');
         const newStatuses = {};
-        inputs.forEach(input => {
-            newStatuses[input.dataset.key] = input.value;
-        });
-        await db.collection('single_docs').doc('viewStatuses').set(newStatuses);
+        selects.forEach(select => { newStatuses[select.dataset.key] = select.value; });
+        await db.collection('single_docs').doc('viewStatuses').set(newStatuses, { merge: true });
         const msg = document.getElementById('status-save-message');
         msg.textContent = 'گوهۆرین ب سەرکەفتی هاتە هەلگرتن!';
         setTimeout(() => msg.textContent = '', 3000);
     });
 
-    // --- بەڕێوەبرنا مامۆستایان ---
+    // === 2. بەڕێوەبرنا مامۆستایان ===
     const teachersCollection = db.collection('teachers');
     const teacherForm = document.getElementById('teacher-form');
     const teachersList = document.getElementById('teachers-list');
-
-    async function loadTeachers() {
+    async function loadTeachers(selectElementId = null) {
         const snapshot = await teachersCollection.get();
         teachersList.innerHTML = '';
+        let teacherOptions = '<option value="">مامۆستایەکێ هەلبژێرە</option>';
         snapshot.forEach(doc => {
             const teacher = { id: doc.id, ...doc.data() };
             const li = document.createElement('li');
-            li.innerHTML = `
-                <span>${teacher.name}</span>
-                <div>
-                    <button onclick="editTeacher('${teacher.id}')">دەستکاری</button>
-                    <button class="danger" onclick="deleteTeacher('${teacher.id}')">ژێبرن</button>
-                </div>`;
+            li.innerHTML = `<span><i class="fas fa-user" style="margin-left: 8px;"></i>${teacher.name}</span>
+                            <div class="item-actions">
+                                <button onclick="editTeacher('${teacher.id}')"><i class="fas fa-edit"></i></button>
+                                <button class="danger" onclick="deleteItem('teachers', '${teacher.id}', loadTeachers)"><i class="fas fa-trash"></i></button>
+                            </div>`;
             teachersList.appendChild(li);
+            teacherOptions += `<option value="${teacher.id}">${teacher.name}</option>`;
         });
+        if (selectElementId) document.getElementById(selectElementId).innerHTML = teacherOptions;
     }
-
     teacherForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const id = document.getElementById('teacher-id').value;
@@ -222,19 +288,15 @@
             name: document.getElementById('teacher-name').value,
             bio: document.getElementById('teacher-bio').value,
             profileImage: document.getElementById('teacher-image').value,
-            social: { telegram: document.getElementById('teacher-telegram').value }
+            phone: document.getElementById('teacher-phone').value,
+            social: { 
+                youtube: document.getElementById('teacher-youtube').value,
+                telegram: document.getElementById('teacher-telegram').value,
+                facebook: document.getElementById('teacher-facebook').value,
+            }
         };
-
-        if (id) {
-            await teachersCollection.doc(id).update(data);
-        } else {
-            await teachersCollection.add(data);
-        }
-        teacherForm.reset();
-        document.getElementById('teacher-id').value = '';
-        loadTeachers();
+        await saveOrUpdateItem('teachers', id, data, teacherForm, loadTeachers);
     });
-
     async function editTeacher(id) {
         const doc = await teachersCollection.doc(id).get();
         const teacher = doc.data();
@@ -242,19 +304,133 @@
         document.getElementById('teacher-name').value = teacher.name;
         document.getElementById('teacher-bio').value = teacher.bio;
         document.getElementById('teacher-image').value = teacher.profileImage;
-        document.getElementById('teacher-telegram').value = teacher.social.telegram;
-        window.scrollTo({top: teacherForm.offsetTop, behavior: 'smooth'});
+        document.getElementById('teacher-phone').value = teacher.phone || '';
+        document.getElementById('teacher-youtube').value = teacher.social.youtube || '';
+        document.getElementById('teacher-telegram').value = teacher.social.telegram || '';
+        document.getElementById('teacher-facebook').value = teacher.social.facebook || '';
     }
 
-    async function deleteTeacher(id) {
-        if (confirm('تۆ دڵنیای دێ ڤی مامۆستای ژێبەی؟')) {
-            await teachersCollection.doc(id).delete();
-            loadTeachers();
+    // === 3. بەڕێوەبرنا رێرەوا فێربوونێ (Levels) ===
+    const levelsCollection = db.collection('levels');
+    const levelCourseForm = document.getElementById('level-course-form');
+    const levelsListContainer = document.getElementById('levels-list');
+    
+    async function loadLevels() {
+        const snapshot = await levelsCollection.orderBy('level_id').get();
+        let levels = {};
+        snapshot.forEach(doc => {
+            const course = { id: doc.id, ...doc.data() };
+            if (!levels[course.level_id]) {
+                levels[course.level_id] = {
+                    name: course.level_name,
+                    courses: []
+                };
+            }
+            levels[course.level_id].courses.push(course);
+        });
+
+        levelsListContainer.innerHTML = '';
+        for (const levelId in levels) {
+            const level = levels[levelId];
+            let coursesHTML = level.courses.map(course => `
+                <li id="course-${course.id}">
+                    <span><i class="fas fa-book" style="margin-left: 8px;"></i>${course.course_title}</span>
+                    <div class="item-actions">
+                        <button onclick="editLevelCourse('${course.id}')"><i class="fas fa-edit"></i></button>
+                        <button class="danger" onclick="deleteItem('levels', '${course.id}', loadLevels)"><i class="fas fa-trash"></i></button>
+                    </div>
+                </li>
+            `).join('');
+            levelsListContainer.innerHTML += `
+                <div class="level-group" style="margin-bottom: 20px;">
+                    <h3 style="background:var(--dark-bg); padding:10px; border-radius:5px;">ئاستا ${levelId}: ${level.name}</h3>
+                    <ul class="item-list">${coursesHTML}</ul>
+                </div>`;
+        }
+        loadTeachers('course-teacher-id');
+    }
+    document.getElementById('add-video-btn').addEventListener('click', () => {
+        const container = document.getElementById('videos-container');
+        const newEntry = document.createElement('div');
+        newEntry.className = 'video-entry';
+        newEntry.innerHTML = `<input type="text" placeholder="ناڤێ وانەیێ" class="video-title"><input type="text" placeholder="لینکێ وانەیێ" class="video-url"><button type="button" class="danger" onclick="this.parentElement.remove()">X</button>`;
+        container.appendChild(newEntry);
+    });
+    levelCourseForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const videos = [];
+        document.querySelectorAll('.video-entry').forEach(entry => {
+            const title = entry.querySelector('.video-title').value;
+            const url = entry.querySelector('.video-url').value;
+            if(title && url) videos.push({ title, url });
+        });
+        
+        const id = document.getElementById('level-course-id').value;
+        const data = {
+            level_id: parseInt(document.getElementById('level-id').value),
+            level_name: document.getElementById('level-name').value,
+            unlockCode: document.getElementById('level-unlock-code').value,
+            requiredPoints: parseInt(document.getElementById('level-required-points').value) || 0,
+            course_title: document.getElementById('course-title').value,
+            teacherId: document.getElementById('course-teacher-id').value,
+            pdfUrl: document.getElementById('course-pdf-url').value,
+            memorizationPdfUrl: document.getElementById('course-memo-pdf-url').value,
+            memorizationPdfTitle: document.getElementById('course-memo-pdf-title').value,
+            videos: videos
+        };
+        await saveOrUpdateItem('levels', id, data, levelCourseForm, loadLevels);
+    });
+    async function editLevelCourse(id) {
+        const doc = await levelsCollection.doc(id).get();
+        const course = doc.data();
+        document.getElementById('level-course-id').value = id;
+        document.getElementById('level-id').value = course.level_id;
+        document.getElementById('level-name').value = course.level_name;
+        document.getElementById('level-unlock-code').value = course.unlockCode || '';
+        document.getElementById('level-required-points').value = course.requiredPoints || 0;
+        document.getElementById('course-title').value = course.course_title;
+        document.getElementById('course-teacher-id').value = course.teacherId;
+        document.getElementById('course-pdf-url').value = course.pdfUrl || '';
+        document.getElementById('course-memo-pdf-url').value = course.memorizationPdfUrl || '';
+        document.getElementById('course-memo-pdf-title').value = course.memorizationPdfTitle || '';
+        
+        const videosContainer = document.getElementById('videos-container');
+        videosContainer.innerHTML = '';
+        if (course.videos && course.videos.length > 0) {
+            course.videos.forEach(video => {
+                const entry = document.createElement('div');
+                entry.className = 'video-entry';
+                entry.innerHTML = `<input type="text" value="${video.title}" class="video-title"><input type="text" value="${video.url}" class="video-url"><button type="button" class="danger" onclick="this.parentElement.remove()">X</button>`;
+                videosContainer.appendChild(entry);
+            });
+        }
+        document.getElementById('levels-section').scrollIntoView();
+    }
+    
+    // === فەنکشنێن هاریکار ===
+    async function saveOrUpdateItem(collectionName, id, data, formElement, callback) {
+        if (id) {
+            await db.collection(collectionName).doc(id).update(data);
+        } else {
+            await db.collection(collectionName).add(data);
+        }
+        formElement.reset();
+        formElement.querySelector('input[type="hidden"]').value = '';
+        if (callback) callback();
+    }
+
+    async function deleteItem(collectionName, id, callback) {
+        if (confirm('تۆ دڵنیای دێ ڤی بابەتی ژێبەی؟')) {
+            await db.collection(collectionName).doc(id).delete();
+            if (callback) callback();
         }
     }
-    // Make functions globally accessible for onclick handlers
+    
+    // هنارتنا فەنکشنان بۆ Window دا د onclick دا کار بکەن
     window.editTeacher = editTeacher;
-    window.deleteTeacher = deleteTeacher;
+    window.editLevelCourse = editLevelCourse;
+    window.deleteItem = deleteItem;
+
 </script>
 
 </body>
