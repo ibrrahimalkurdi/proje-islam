@@ -198,6 +198,23 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
+    // فەنکشن بۆ گوهۆرینا هژمارێن کوردی/عەرەبی بۆ ئنگلیزی
+    const normalizeNumbers = (str) => {
+        if (typeof str !== 'string') return str;
+        const easternArabicNumerals = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+        const westernArabicNumerals = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+        let newStr = '';
+        for (let i = 0; i < str.length; i++) {
+            const index = easternArabicNumerals.indexOf(str[i]);
+            if (index !== -1) {
+                newStr += westernArabicNumerals[index];
+            } else {
+                newStr += str[i];
+            }
+        }
+        return newStr;
+    };
+
     // ##############################################################
     // ## گرنگ: وشەیا نهێنی یا پانێلی لڤێرە بگۆهڕە                  ##
     // ##############################################################
@@ -208,7 +225,8 @@
         const passwordInput = document.getElementById('password-input');
         
         const handleLogin = () => {
-            if (passwordInput.value === ADMIN_PASSWORD) {
+            // ئەم فەنکشنێ normalizeNumbers ل ڤێرێ بکار دئینین دا هەردوو جورێن هژماران قەبوول بکەت
+            if (normalizeNumbers(passwordInput.value.trim()) === ADMIN_PASSWORD) {
                 document.getElementById('login-overlay').style.display = 'none';
                 document.getElementById('admin-panel').style.display = 'block';
                 initializeApp();
