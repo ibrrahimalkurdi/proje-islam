@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ku" dir="rtl">
 <head>
@@ -6,37 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>پەنەلا کونترۆلێ - پڕۆژێ ئیسلام</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --dark-bg: #0d1117; --card-bg: #161b22; --primary-text: #c9d1d9; --secondary-text: #8b949e;
             --accent-color: #58a6ff; --border-color: #30363d; --success-color: #2ea043; --danger-color: #f85149;
             --font-kurdish: 'Noto Sans Arabic', sans-serif;
         }
-        body { font-family: var(--font-kurdish); background-color: var(--dark-bg); color: var(--primary-text); margin: 0; }
+        * { box-sizing: border-box; }
+        body { font-family: var(--font-kurdish); background-color: var(--dark-bg); color: var(--primary-text); margin: 0; font-size: 16px; }
         .admin-container { display: flex; min-height: 100vh; }
-        .sidebar { width: 250px; background-color: var(--card-bg); padding: 20px; border-left: 1px solid var(--border-color); }
-        .sidebar h2 { text-align: center; margin-bottom: 20px; }
-        .sidebar ul { list-style: none; padding: 0; }
-        .sidebar li a { display: block; padding: 10px 15px; color: var(--primary-text); text-decoration: none; border-radius: 6px; margin-bottom: 5px; }
-        .sidebar li a:hover, .sidebar li a.active { background-color: var(--accent-color); color: var(--dark-bg); }
-        .main-content { flex: 1; padding: 30px; }
+        .sidebar { width: 250px; background-color: var(--card-bg); padding: 20px; border-left: 1px solid var(--border-color); display: flex; flex-direction: column; }
+        .sidebar h2 { text-align: center; margin-bottom: 20px; color: var(--accent-color); }
+        .sidebar ul { list-style: none; padding: 0; flex-grow: 1; }
+        .sidebar li a { display: block; padding: 12px 15px; color: var(--primary-text); text-decoration: none; border-radius: 6px; margin-bottom: 5px; transition: all 0.2s ease-in-out; }
+        .sidebar li a:hover { background-color: var(--border-color); }
+        .sidebar li a.active { background-color: var(--accent-color); color: var(--dark-bg); font-weight: bold; }
+        .main-content { flex: 1; padding: 30px; overflow-y: auto; max-height: 100vh; }
         .login-view, .content-view { display: none; }
         .login-view.visible, .content-view.visible { display: block; }
-        .login-container { max-width: 400px; margin: 100px auto; padding: 30px; background-color: var(--card-bg); border-radius: 10px; }
+        .login-container { max-width: 400px; margin: 100px auto; padding: 30px; background-color: var(--card-bg); border-radius: 10px; border: 1px solid var(--border-color); }
         h1, h3 { border-bottom: 2px solid var(--accent-color); padding-bottom: 10px; margin-bottom: 20px; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; }
         input, textarea, select, button {
-            width: 100%; padding: 10px; font-family: var(--font-kurdish); border-radius: 6px;
-            background-color: var(--dark-bg); color: var(--primary-text); border: 1px solid var(--border-color);
+            width: 100%; padding: 12px; font-family: var(--font-kurdish); border-radius: 6px;
+            background-color: var(--dark-bg); color: var(--primary-text); border: 1px solid var(--border-color); font-size: 1rem;
         }
-        button { background-color: var(--accent-color); color: #fff; cursor: pointer; border: none; font-size: 1rem; }
+        input:focus, textarea:focus, select:focus { border-color: var(--accent-color); outline: none; }
+        button { background-color: var(--accent-color); color: #fff; cursor: pointer; border: none; font-weight: bold; transition: opacity 0.2s; }
+        button:hover { opacity: 0.9; }
         button.danger { background-color: var(--danger-color); }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 12px; border: 1px solid var(--border-color); text-align: right; }
+        button.secondary { background-color: var(--border-color); }
+        table { width: 100%; border-collapse: collapse; margin-top: 30px; }
+        th, td { padding: 12px; border: 1px solid var(--border-color); text-align: right; vertical-align: middle; }
         th { background-color: #1c222c; }
         .action-btns { display: flex; gap: 10px; }
-        .dynamic-fields-container .form-group { border: 1px dashed var(--border-color); padding: 10px; margin-top: 10px; border-radius: 5px; }
+        .action-btns button { padding: 8px 12px; font-size: 0.9rem; }
+        .dynamic-container { border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-top: 10px; }
+        .dynamic-item { background-color: var(--dark-bg); padding: 15px; margin-bottom: 15px; border-radius: 6px; position: relative; }
+        .dynamic-item .remove-item-btn { position: absolute; top: 10px; left: 10px; background: none; border: none; color: var(--danger-color); font-size: 1.2rem; cursor: pointer; padding: 5px; }
+        #form-container { background-color: var(--card-bg); padding: 25px; border-radius: 10px; margin-bottom: 30px; }
+        .form-group small { color: var(--secondary-text); font-size: 0.85rem; }
+        .checkbox-group { display: flex; align-items: center; gap: 10px; }
+        .checkbox-group input { width: auto; }
     </style>
 </head>
 <body>
@@ -54,7 +68,7 @@
                     <input type="password" id="password" required>
                 </div>
                 <button type="submit">چوونا ژوور</button>
-                <p id="login-error" style="color:var(--danger-color); margin-top:10px;"></p>
+                <p id="login-error" style="color:var(--danger-color); margin-top:10px; text-align:center;"></p>
             </form>
         </div>
     </div>
@@ -62,14 +76,12 @@
     <div id="admin-panel" class="admin-container" style="display: none;">
         <aside class="sidebar">
             <h2>بەڕێوەبردن</h2>
-            <ul id="sidebar-nav">
-                <!-- Links will be generated by JS -->
-            </ul>
-            <button id="logout-btn" style="width:100%; margin-top: 20px;" class="danger">دەرکەڤتن</button>
+            <ul id="sidebar-nav"></ul>
+            <button id="logout-btn" class="danger">دەرکەڤتن</button>
         </aside>
         <main id="main-content" class="main-content">
             <div id="welcome-message">
-                <h1>بخێر هاتن بۆ پەنەلا کونترۆلێ</h1>
+                <h1><i class="fas fa-tools"></i> بخێر هاتن بۆ پەنەلا کونترۆلێ</h1>
                 <p>ژ لیستا لایێ ڕاستێ بەشەکێ هەلبژێرە بۆ بەڕێوەبرنێ.</p>
             </div>
             <div id="content-view" class="content-view">
@@ -86,7 +98,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-firestore-compat.js"></script>
 
     <script>
-        // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDDi3HtFigGy3qFpFVhSATal3yzm7Z_dZA",
             authDomain: "projeislam.firebaseapp.com",
@@ -96,157 +107,354 @@
             appId: "1:686343038831:web:8b5e19daa95176000b6a9a",
         };
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
 
+        // UI Elements
         const loginView = document.getElementById('login-view');
         const adminPanel = document.getElementById('admin-panel');
-        const loginForm = document.getElementById('login-form');
-        const logoutBtn = document.getElementById('logout-btn');
-        const loginError = document.getElementById('login-error');
-        const mainContent = document.getElementById('main-content');
         const contentView = document.getElementById('content-view');
-        const viewTitle = document.getElementById('view-title');
-        const formContainer = document.getElementById('form-container');
-        const tableContainer = document.getElementById('table-container');
 
-        // Check auth state
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                loginView.style.display = 'none';
-                adminPanel.style.display = 'flex';
-                initAdminPanel();
-            } else {
-                loginView.style.display = 'block';
-                adminPanel.style.display = 'none';
-            }
-        });
-
-        // Login
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = loginForm.email.value;
-            const password = loginForm.password.value;
-            auth.signInWithEmailAndPassword(email, password)
-                .catch(error => {
-                    loginError.textContent = "ئیمێل یان پاسۆرد خەلەتە.";
-                    console.error("Login error:", error);
-                });
-        });
-
-        // Logout
-        logoutBtn.addEventListener('click', () => {
-            auth.signOut();
-        });
-
+        // ==== COLLECTIONS CONFIGURATION: The Brain of the Admin Panel ====
         const collectionsConfig = {
+            viewStatus: {
+                name: 'کونترۆلکرنا بەشان',
+                fields: [
+                    { name: 'viewId', label: 'ناڤێ سیستەمی یێ بەشی (ID)', type: 'text', required: true, help: 'بۆ نموونە: kids-view, prayer-times-view' },
+                    { name: 'statusCode', label: 'کۆدێ حالەتی', type: 'select', required: true, options: [
+                        { id: '0', name: '0 - چاڵاک (Active)' },
+                        { id: '1', name: '1 - د کارکرنێ دایە (Coming Soon)' },
+                        { id: '8', name: '8 - قفلە (Locked)' },
+                        { id: '7', name: '7 - ب تەمامی ڤەشێرە (Hide)' },
+                        { id: '3', name: '3 - ژێر چاککرنێ دایە (Under Maintenance)' }
+                    ]},
+                ]
+            },
             teachers: {
                 name: 'مامۆستایان',
                 fields: [
-                    { name: 'name', label: 'ناڤ', type: 'text' },
-                    { name: 'profileImage', label: 'لینکێ وێنەی', type: 'text' },
-                    { name: 'bio', label: 'کورتەناساندن', type: 'textarea' },
+                    { name: 'name', label: 'ناڤێ مامۆستای', type: 'text', required: true },
+                    { name: 'profileImage', label: 'لینکێ وێنەیێ پرۆفایلێ', type: 'text' },
+                    { name: 'bio', label: 'کورتەناساندن (Bio)', type: 'textarea' },
                     { name: 'phone', label: 'ژمارا تەلەفونێ', type: 'text' },
                     { name: 'social.youtube', label: 'لینکێ یوتوبی', type: 'text' },
                     { name: 'social.telegram', label: 'لینکێ تێلێگرامی', type: 'text' },
                     { name: 'social.facebook', label: 'لینکێ فەیسبوکی', type: 'text' }
                 ]
             },
+            levels: {
+                name: 'رێرەوا فێربوونێ (ئاست)',
+                fields: [
+                    { name: 'level', label: 'هژمارا ئاستی', type: 'number', required: true },
+                    { name: 'levelName', label: 'ناڤێ ئاستی', type: 'text', required: true },
+                    { name: 'unlockCode', label: 'کۆدێ ڤەکرنێ (ئەگەر هەبیت)', type: 'text' },
+                    { name: 'requiredPoints', label: 'خالێن پێدڤی', type: 'number', default: 0 },
+                    { name: 'courses', label: 'کورسێن دناڤ ڤی ئاستی دا', type: 'dynamic', subfields: [
+                        { name: 'title', label: 'ناڤنیشانێ کورسی', type: 'text', required: true },
+                        { name: 'teacherId', label: 'مامۆستا', type: 'select', optionsSource: 'teachers', required: true },
+                        { name: 'pdfUrl', label: 'لینکێ PDF یێ کورسی', type: 'text' },
+                        { name: 'memorizationPdfUrl', label: 'PDF یێ ژبەرکرنێ', type: 'text' },
+                        { name: 'memorizationPdfTitle', label: 'ناڤنیشانێ PDF یێ ژبەرکرنێ', type: 'text' },
+                        { name: 'videos', label: 'ڤیدیۆیێن کورسی', type: 'dynamic', subfields: [
+                            { name: 'title', label: 'ناڤنیشانێ ڤیدیۆیێ', type: 'text', required: true },
+                            { name: 'url', label: 'لینکێ ڤیدیۆیێ', type: 'text', required: true }
+                        ]}
+                    ]}
+                ]
+            },
             generalLectures: {
                 name: 'وانەیێن گشتی',
                 fields: [
-                    { name: 'title', label: 'ناڤنیشان', type: 'text' },
-                    { name: 'teacherId', label: 'ID یا مامۆستای', type: 'text' },
-                    { name: 'category', label: 'بابەت', type: 'text' },
-                    { name: 'image', label: 'لینکێ وێنەی', type: 'text' },
-                    { name: 'pdfUrl', label: 'لینکێ PDF', type: 'text' },
-                    { name: 'videos', label: 'ڤیدیۆکان (هەر لینکەک ل دێرەکێ)', type: 'dynamic-textarea', subfields: [{name: 'title', label: 'ناڤێ ڤیدیۆیێ'}, {name: 'url', label: 'لینکێ ڤیدیۆیێ'}] },
+                    { name: 'title', label: 'ناڤنیشانێ وانەیێ', type: 'text', required: true },
+                    { name: 'teacherId', label: 'مامۆستا', type: 'select', optionsSource: 'teachers', required: true },
+                    { name: 'category', label: 'بابەت (بۆ نموونە: عەقیدە)', type: 'text' },
+                    { name: 'image', label: 'لینکێ وێنەیێ وانەیێ', type: 'text' },
+                    { name: 'pdfUrl', label: 'لینکێ PDF (ئەگەر هەبیت)', type: 'text' },
+                    { name: 'videos', label: 'ڤیدیۆیێن وانەیێ', type: 'dynamic', subfields: [
+                        { name: 'title', label: 'ناڤنیشانێ ڤیدیۆیێ', type: 'text', required: true },
+                        { name: 'url', label: 'لینکێ ڤیدیۆیێ (YouTube, Facebook)', type: 'text', required: true }
+                    ]}
                 ]
             },
-            // ZÊDEKIRINA BEŞÊN DIN LI VIR... (Books, Levels, Hadiths, etc.)
-            // Min tenê 2 nimûne danan ji bo kurtkirinê, lê dikarî hemîyan bi heman şêweyî zêde bikî.
+            tafsir: {
+                name: 'تەفسیرا قورئانێ',
+                fields: [
+                    { name: 'surah_number', label: 'هژمارا سورەتێ (دڤێت وەک ID بێتە دانان)', type: 'text', required: true },
+                    { name: 'surahName', label: 'ناڤێ سورەتێ', type: 'text', required: true },
+                    { name: 'ayah_count', label: 'هژمارا ئایەتان', type: 'number' },
+                    { name: 'revelation_type', label: 'جۆر (مکی / مدنی)', type: 'text' },
+                    { name: 'full_tafsir_text', label: 'دەقێ تەمام یێ تەفسیرێ', type: 'textarea' },
+                    { name: 'surah_audio_url', label: 'لینکێ دەنگی یێ تەفسیرێ', type: 'text' }
+                ]
+            },
+            hadiths: {
+                name: 'کتێبخانەیا حەدیسێ',
+                fields: [
+                    { name: 'text', label: 'دەقێ حەدیسێ', type: 'textarea', required: true },
+                    { name: 'hadith_number', label: 'هژمارا حەدیسێ', type: 'text' },
+                    { name: 'source', label: 'ژێدەر', type: 'text' },
+                    { name: 'narrator', label: 'راوی', type: 'text' },
+                    { name: 'category', label: 'بابەت', type: 'text' },
+                    { name: 'grade', label: 'پلە (صحيح, حسن, ضعيف)', type: 'text' },
+                    { name: 'audio_url', label: 'لینکێ دەنگی', type: 'text' }
+                ]
+            },
+            fatwas: {
+                name: 'پرسیار و بەرسڤ',
+                fields: [
+                    { name: 'question', label: 'پرسیار', type: 'textarea', required: true },
+                    { name: 'answer', label: 'بەرسڤ', type: 'textarea', required: true },
+                    { name: 'teacherId', label: 'مامۆستایێ بەرسڤدەر', type: 'select', optionsSource: 'teachers', required: true },
+                    { name: 'category', label: 'بابەت', type: 'text' },
+                    { name: 'audio_url', label: 'لینکێ دەنگی یێ بەرسڤێ', type: 'text' }
+                ]
+            },
+            seerah: {
+                name: 'ژیانناما پێغەمبەری ﷺ',
+                fields: [
+                    { name: 'event_title', label: 'ناڤنیشانێ روودانێ', type: 'text', required: true },
+                    { name: 'event_year', label: 'سالا روودانێ', type: 'text' },
+                    { name: 'description', label: 'شروڤەکرنا روودانێ', type: 'textarea' },
+                    { name: 'image_url', label: 'لینکێ وێنەی', type: 'text' },
+                    { name: 'lessons_learned', label: 'فایدە و وانە', type: 'dynamic', subfields: [
+                         { name: 'lesson', label: 'وانە / فایدە', type: 'text' }
+                    ]}
+                ]
+            },
+            adhkar: {
+                name: 'دوعا و زکران',
+                fields: [
+                    { name: 'category', label: 'بابەت (بۆ نموونە: زکرێن سپێدێ)', type: 'text', required: true },
+                    { name: 'text_ar', label: 'دەقێ زکری (عەرەبی)', type: 'textarea' },
+                    { name: 'translation_ku', label: 'وەرگێران (کوردی)', type: 'textarea' },
+                    { name: 'virtue', label: 'فەزل و خێرا وی', type: 'textarea' },
+                    { name: 'audio_url', label: 'لینکێ دەنگی', type: 'text' }
+                ]
+            },
+            fiqh: {
+                name: 'فقهـ و حوکم',
+                fields: [
+                    { name: 'topic', label: 'بابەتێ سەرەکی', type: 'text', required: true },
+                    { name: 'question', label: 'پرسیار / مەسەلە', type: 'textarea', required: true },
+                    { name: 'answer', label: 'بەرسڤ و حوکم', type: 'textarea' },
+                    { name: 'source_reference', label: 'ژێدەر و بەلگە', type: 'text' }
+                ]
+            },
+            books: {
+                name: 'پەرتوکخانە',
+                fields: [
+                    { name: 'title', label: 'ناڤێ پەرتووکێ', type: 'text', required: true },
+                    { name: 'author', label: 'نڤیسەر', type: 'text' },
+                    { name: 'category', label: 'بابەت', type: 'text' },
+                    { name: 'coverImage', label: 'لینکێ وێنەیێ بەرگی', type: 'text' },
+                    { name: 'readUrl', label: 'لینکێ خواندنێ (PDF)', type: 'text', required: true },
+                    { name: 'downloadUrl', label: 'لینکێ داگرتنێ (PDF)', type: 'text' }
+                ]
+            },
+            bookSales: {
+                 name: 'فرۆتنا پەرتووکان',
+                 fields: [
+                    { name: 'title', label: 'ناڤێ پەرتووکێ', type: 'text', required: true },
+                    { name: 'author', label: 'نڤیسەر', type: 'text' },
+                    { name: 'price', label: 'بها', type: 'text', required: true },
+                    { name: 'description', label: 'کورتە باسەک', type: 'textarea' },
+                    { name: 'coverImage', label: 'لینکێ وێنەیێ بەرگی', type: 'text' },
+                    { name: 'purchaseLink', label: 'لینکێ کرینێ', type: 'text', required: true },
+                    { name: 'isAvailable', label: 'بەردەستە بۆ فرۆتنێ؟', type: 'boolean' }
+                 ]
+            },
+            locations: {
+                name: 'خەریتە (جهـ)',
+                fields: [
+                    { name: 'locationName', label: 'ناڤێ جهی (بۆ نموونە: مزگەفتا ...)', type: 'text', required: true },
+                    { name: 'teacherId', label: 'مامۆستایێ وانەبێژ', type: 'select', optionsSource: 'teachers' },
+                    { name: 'lessonTaught', label: 'ناڤێ وانەیا لێ دهێتە گوتن', type: 'text' },
+                    { name: 'schedule', label: 'دەمی وانەیێ', type: 'text' },
+                    { name: 'coordinates', label: 'پۆتان (Coordinates)', type: 'coordinates' }
+                ]
+            },
+            liveCourse: {
+                name: 'خولێن راستەوخۆ',
+                help: 'تێبینی: بتنێ ئێک بابەت ل ڤێرێ هەبیت. ئەگەر بابەتەک هەبیت، دەستکاری بکە، نەک ئێکێ نوو زێدەکەی.',
+                fields: [
+                    { name: 'title', label: 'ناڤنیشانێ خولێ', type: 'text', required: true },
+                    { name: 'teacherId', label: 'مامۆستایێ خولێ', type: 'select', optionsSource: 'teachers', required: true },
+                    { name: 'description', label: 'شروڤەکرنا خولێ', type: 'textarea' },
+                    { name: 'nextSessionDate', label: 'دەمێ جڤینا بهێت', type: 'text', help: 'بڤی شێوەی بنڤیسە: YYYY-MM-DDTHH:MM:SS (بۆ نموونە: 2025-12-31T20:00:00)' },
+                    { name: 'prerequisites', label: 'پێدڤیێن خولێ', type: 'textarea' },
+                    { name: 'topics', label: 'بابەتێن سەرەکی', type: 'dynamic', subfields: [
+                        { name: 'topic', label: 'بابەت', type: 'text' }
+                    ]},
+                    { name: 'schedule', label: 'خشتێ جڤینان', type: 'dynamic', subfields: [
+                        { name: 'session', label: 'جڤین', type: 'text' }
+                    ]}
+                ]
+            },
+            kids: {
+                name: 'بەشێ زارۆیان',
+                fields: [
+                    { name: 'title', label: 'ناڤنیشان', type: 'text', required: true },
+                    { name: 'description', label: 'شروڤەکرن', type: 'textarea' },
+                    { name: 'type', label: 'جۆر', type: 'select', options: [{id: 'video', name: 'ڤیدیۆ'}, {id: 'story', name: 'چیرۆک'}, {id: 'game', name: 'یاری'}] },
+                    { name: 'url', label: 'لینک', type: 'text', required: true },
+                    { name: 'image', label: 'لینکێ وێنەی', type: 'text' }
+                ]
+            },
         };
 
+        // ==== AUTHENTICATION LOGIC ====
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                loginView.classList.remove('visible');
+                adminPanel.style.display = 'flex';
+                initAdminPanel();
+            } else {
+                loginView.classList.add('visible');
+                adminPanel.style.display = 'none';
+            }
+        });
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            auth.signInWithEmailAndPassword(e.target.email.value, e.target.password.value)
+                .catch(error => { document.getElementById('login-error').textContent = "ئیمێل یان پاسۆرد خەلەتە."; });
+        });
+        document.getElementById('logout-btn').addEventListener('click', () => auth.signOut());
+
+        // ==== DYNAMIC UI RENDERING ====
         function initAdminPanel() {
             const nav = document.getElementById('sidebar-nav');
-            nav.innerHTML = Object.keys(collectionsConfig).map(key => `<li><a href="#" data-collection="${key}">${collectionsConfig[key].name}</a></li>`).join('');
-            
+            nav.innerHTML = Object.keys(collectionsConfig)
+                .map(key => `<li><a href="#" data-collection="${key}">${collectionsConfig[key].name}</a></li>`).join('');
             nav.querySelectorAll('a').forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
                     document.querySelector('#sidebar-nav a.active')?.classList.remove('active');
                     e.target.classList.add('active');
-                    const collectionKey = e.target.dataset.collection;
-                    loadCollectionView(collectionKey);
+                    loadCollectionView(e.target.dataset.collection);
                 });
             });
         }
         
-        function loadCollectionView(collectionKey) {
+        async function loadCollectionView(collectionKey) {
             document.getElementById('welcome-message').style.display = 'none';
             contentView.classList.add('visible');
             const config = collectionsConfig[collectionKey];
-            viewTitle.textContent = `بەڕێوەبرنا: ${config.name}`;
-            renderForm(collectionKey, config.fields);
-            renderTable(collectionKey, config.fields);
+            document.getElementById('view-title').innerHTML = `بەڕێوەبرنا: ${config.name} ${config.help ? `<small style="display:block; color:var(--secondary-text); font-size:0.9rem;">${config.help}</small>` : ''}`;
+            await renderForm(collectionKey);
+            await renderTable(collectionKey);
         }
 
-        function renderForm(collectionKey, fields, docData = {}) {
+        async function renderForm(collectionKey, docData = {}) {
+            const formContainer = document.getElementById('form-container');
+            const config = collectionsConfig[collectionKey];
             const docId = docData.id || '';
             let formHTML = `<h3>${docId ? 'دەستکاریکرنا بابەتی' : 'زێدەکرنا بابەتەکێ نوو'}</h3>
-                            <form data-collection="${collectionKey}" data-id="${docId}">`;
-            
-            fields.forEach(field => {
-                const value = getNestedValue(docData, field.name) || '';
-                formHTML += `<div class="form-group">
-                                <label for="${field.name}">${field.label}</label>`;
-                if (field.type === 'textarea') {
-                    formHTML += `<textarea id="${field.name}" name="${field.name}" rows="4">${value}</textarea>`;
-                } else if(field.type === 'dynamic-textarea') {
-                    // Nimûneya destpêkê ji bo dynamic fields
-                    formHTML += `<div class="dynamic-fields-container" data-field-name="${field.name}">`;
-                    (value || [{}]).forEach((item, index) => {
-                         formHTML += `<div class="form-group">
-                                        ${field.subfields.map(sub => `<label>${sub.label}</label><input type="text" name="${field.name}[${index}][${sub.name}]" value="${item[sub.name] || ''}">`).join('')}
-                                     </div>`;
-                    });
-                    formHTML += `</div><button type="button" class="add-dynamic-field" data-field-name="${field.name}">+ زێدەکرنا فیلدەکێ دی</button>`;
-                } else {
-                    formHTML += `<input type="text" id="${field.name}" name="${field.name}" value="${value}">`;
-                }
-                formHTML += `</div>`;
-            });
-            
+                            <form data-collection="${collectionKey}" data-id="${docId}" autocomplete="off">`;
+            for (const field of config.fields) {
+                formHTML += await createFieldHTML(field, docData);
+            }
             formHTML += `<button type="submit">${docId ? 'پاشکەفتکرن' : 'زێدەکرن'}</button>`;
-            if (docId) formHTML += `<button type="button" class="cancel-edit" style="margin-right:10px;">هەلوەشاندن</button>`;
+            if (docId) formHTML += `<button type="button" class="cancel-edit secondary" style="margin-right:10px;">هەلوەشاندن</button>`;
             formHTML += `</form>`;
-
             formContainer.innerHTML = formHTML;
             attachFormListeners();
         }
 
-        function renderTable(collectionKey, fields) {
-            tableContainer.innerHTML = '<h3>لیستا بابەتان</h3><div id="table-wrapper"></div>';
-            const tableWrapper = document.getElementById('table-wrapper');
+        async function createFieldHTML(field, docData, baseName = null, itemData = null) {
+            const fieldName = baseName ? `${baseName}[${field.name}]` : field.name;
+            const value = itemData ? (itemData[field.name] || (field.default !== undefined ? field.default : '')) : (getNestedValue(docData, field.name) || (field.default !== undefined ? field.default : ''));
             
-            db.collection(collectionKey).onSnapshot(snapshot => {
+            let fieldHTML = `<div class="form-group" data-field-name="${fieldName}">
+                                <label for="${fieldName}">${field.label} ${field.required ? '<span style="color:var(--danger-color)">*</span>': ''}</label>`;
+            switch(field.type) {
+                case 'textarea':
+                    fieldHTML += `<textarea id="${fieldName}" name="${fieldName}" rows="5" ${field.required ? 'required' : ''}>${value}</textarea>`;
+                    break;
+                case 'number':
+                    fieldHTML += `<input type="number" id="${fieldName}" name="${fieldName}" value="${value}" ${field.required ? 'required' : ''}>`;
+                    break;
+                case 'boolean':
+                    fieldHTML += `<div class="checkbox-group"><input type="checkbox" id="${fieldName}" name="${fieldName}" ${value ? 'checked' : ''}></div>`;
+                    break;
+                case 'select':
+                    const options = field.optionsSource ? await getSelectOptions(field.optionsSource) : field.options;
+                    fieldHTML += `<select id="${fieldName}" name="${fieldName}" ${field.required ? 'required' : ''}>
+                                    <option value="">-- هەلبژێرە --</option>
+                                    ${options.map(opt => `<option value="${opt.id}" ${opt.id == value ? 'selected' : ''}>${opt.name}</option>`).join('')}
+                                  </select>`;
+                    break;
+                case 'dynamic':
+                    let dynamicItemsHTML = '';
+                    const items = value || [];
+                    for(let i = 0; i < items.length; i++) {
+                        dynamicItemsHTML += await createDynamicItemHTML(field, items[i], i);
+                    }
+                    fieldHTML += `<div class="dynamic-container" data-field-config-name="${field.name}">
+                                    <div class="dynamic-items-wrapper">${dynamicItemsHTML}</div>
+                                    <button type="button" class="add-dynamic-item secondary">+ زێدەکرنا (${field.subfields[0].label})</button>
+                                  </div>`;
+                    break;
+                 case 'coordinates':
+                    const lat = value ? value.latitude || '' : '';
+                    const lon = value ? value.longitude || '' : '';
+                    fieldHTML += `<div style="display:flex; gap:10px;">
+                                    <input type="number" step="any" name="${field.name}.latitude" placeholder="Latitude" value="${lat}">
+                                    <input type="number" step="any" name="${field.name}.longitude" placeholder="Longitude" value="${lon}">
+                                  </div>`;
+                    break;
+                default: // text
+                    fieldHTML += `<input type="text" id="${fieldName}" name="${fieldName}" value="${value}" ${field.required ? 'required' : ''}>`;
+            }
+            if(field.help) fieldHTML += `<small>${field.help}</small>`;
+            fieldHTML += `</div>`;
+            return fieldHTML;
+        }
+
+        async function createDynamicItemHTML(fieldConfig, itemData, index) {
+            let itemHTML = `<div class="dynamic-item">
+                                <button type="button" class="remove-item-btn" title="ژێبرن">&times;</button>
+                                <h4>بابەتا ${index + 1}</h4>`;
+            for (const subfield of fieldConfig.subfields) {
+                itemHTML += await createFieldHTML(subfield, {}, `${fieldConfig.name}[${index}]`, itemData);
+            }
+            itemHTML += `</div>`;
+            return itemHTML;
+        }
+
+        async function renderTable(collectionKey) {
+            const tableContainer = document.getElementById('table-container');
+            const config = collectionsConfig[collectionKey];
+            tableContainer.innerHTML = '<h3>لیستا بابەتان</h3><div id="table-wrapper"><p>د هێنانێ دا...</p></div>';
+            
+            db.collection(collectionKey).onSnapshot(async snapshot => {
                 if (snapshot.empty) {
-                    tableWrapper.innerHTML = "<p>هیچ بابەتەک نەهاتیە تۆمارکرن.</p>";
+                    tableContainer.querySelector('#table-wrapper').innerHTML = "<p>هیچ بابەتەک نەهاتیە تۆمارکرن.</p>";
                     return;
                 }
+                // Cache select options to avoid re-fetching in loop
+                const selectSources = {};
+                for(const field of config.fields) {
+                    if (field.type === 'select' && field.optionsSource && !selectSources[field.optionsSource]) {
+                       selectSources[field.optionsSource] = await getSelectOptions(field.optionsSource);
+                    }
+                }
+
                 let tableHTML = `<table><thead><tr>`;
-                fields.slice(0, 3).forEach(field => tableHTML += `<th>${field.label}</th>`); // Tenê 3 field nîşan dide
+                config.fields.slice(0, 3).forEach(field => tableHTML += `<th>${field.label}</th>`);
                 tableHTML += `<th>کردار</th></tr></thead><tbody>`;
 
-                snapshot.forEach(doc => {
+                snapshot.docs.forEach(doc => {
                     const data = { id: doc.id, ...doc.data() };
                     tableHTML += `<tr>`;
-                    fields.slice(0, 3).forEach(field => {
+                    config.fields.slice(0, 3).forEach(field => {
                         let value = getNestedValue(data, field.name) || '';
-                        if(typeof value === 'object') value = JSON.stringify(value).substring(0, 30) + '...';
-                        tableHTML += `<td>${String(value).substring(0, 50)}</td>`;
+                        if (field.type === 'select' && value && field.optionsSource) {
+                            const found = selectSources[field.optionsSource].find(s => s.id === value);
+                            value = found ? found.name : `ID: ${value}`;
+                        }
+                        if(typeof value === 'object') value = 'کۆمەڵە داتا';
+                        tableHTML += `<td>${String(value).substring(0, 50)}...</td>`;
                     });
                     tableHTML += `<td><div class="action-btns">
                                     <button class="edit-btn" data-id="${doc.id}">دەستکاری</button>
@@ -255,46 +463,48 @@
                 });
 
                 tableHTML += `</tbody></table>`;
-                tableWrapper.innerHTML = tableHTML;
-                attachTableListeners(collectionKey, fields);
+                tableContainer.querySelector('#table-wrapper').innerHTML = tableHTML;
+                attachTableListeners(collectionKey);
             });
         }
         
+        // ==== EVENT LISTENERS & DATA HANDLING ====
         function attachFormListeners(){
-            const form = formContainer.querySelector('form');
-            if(form) {
-                form.addEventListener('submit', handleFormSubmit);
-                const cancelBtn = form.querySelector('.cancel-edit');
-                if (cancelBtn) {
-                    cancelBtn.addEventListener('click', () => {
-                        const collectionKey = document.querySelector('#sidebar-nav a.active').dataset.collection;
-                        loadCollectionView(collectionKey); // Formê reset dike
-                    });
-                }
+            const form = document.querySelector('#form-container form');
+            if(!form) return;
+            form.addEventListener('submit', handleFormSubmit);
+            const cancelBtn = form.querySelector('.cancel-edit');
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', () => loadCollectionView(form.dataset.collection));
             }
-             document.querySelectorAll('.add-dynamic-field').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                     // Lojîka zêdekirina dynamic fields li vir
-                });
+            form.addEventListener('click', async e => {
+                if (e.target.matches('.add-dynamic-item')) {
+                    const container = e.target.previousElementSibling;
+                    const fieldConfigName = e.target.closest('.dynamic-container').dataset.fieldConfigName;
+                    const collectionKey = form.dataset.collection;
+                    const fieldConfig = collectionsConfig[collectionKey].fields.find(f => f.name === fieldConfigName);
+                    const newIndex = container.querySelectorAll('.dynamic-item').length;
+                    container.insertAdjacentHTML('beforeend', await createDynamicItemHTML(fieldConfig, {}, newIndex));
+                }
+                if (e.target.matches('.remove-item-btn')) {
+                    e.target.closest('.dynamic-item').remove();
+                }
             });
         }
 
-        function attachTableListeners(collectionKey, fields) {
-            tableContainer.querySelectorAll('.edit-btn').forEach(btn => {
+        function attachTableListeners(collectionKey) {
+            document.getElementById('table-container').querySelectorAll('.edit-btn').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
                     const docId = e.target.dataset.id;
                     const doc = await db.collection(collectionKey).doc(docId).get();
-                    renderForm(collectionKey, fields, { id: doc.id, ...doc.data() });
+                    await renderForm(collectionKey, { id: doc.id, ...doc.data() });
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                 });
             });
-
-            tableContainer.querySelectorAll('.delete-btn').forEach(btn => {
+            document.getElementById('table-container').querySelectorAll('.delete-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
-                    const docId = e.target.dataset.id;
                     if (confirm('تۆ پشتراستی دێ ڤی بابەتی ژێبەی؟')) {
-                        db.collection(collectionKey).doc(docId).delete()
-                          .then(() => alert('بابەت هاتە ژێبرن.'))
-                          .catch(err => console.error("Error deleting doc:", err));
+                        db.collection(collectionKey).doc(e.target.dataset.id).delete();
                     }
                 });
             });
@@ -305,46 +515,89 @@
             const form = e.target;
             const collectionKey = form.dataset.collection;
             const docId = form.dataset.id;
-            const config = collectionsConfig[collectionKey];
-            
-            let data = {};
-            config.fields.forEach(field => {
-                // Pêdivî ye ku lojîk bo komkirina dynamic fields were zêdekirin
-                if(form.elements[field.name]) {
-                    setNestedValue(data, field.name, form.elements[field.name].value);
-                }
-            });
+            const data = {};
+            const formData = new FormData(form);
 
-            try {
-                if (docId) { // Update
-                    await db.collection(collectionKey).doc(docId).set(data, { merge: true });
-                    alert('بابەت هاتە نووژەنکرن.');
-                } else { // Create
-                    await db.collection(collectionKey).add(data);
-                    alert('بابەت هاتە زێدەکرن.');
+            for (let [key, value] of formData.entries()) {
+                const element = form.elements[key];
+                if (element && element.type === 'checkbox') {
+                    value = element.checked;
                 }
-                form.reset();
-                if(docId) loadCollectionView(collectionKey); // Vegere ser forma vala
+                if (element && element.type === 'number') {
+                    value = Number(value);
+                }
+                // For dynamic fields like "videos[0][title]"
+                if (key.includes('[')) {
+                    const keys = key.replace(/\]/g, '').split('['); // "videos[0][title]" -> ["videos", "0", "title"]
+                    keys.reduce((acc, part, i) => {
+                        if (i === keys.length - 1) {
+                            acc[part] = value;
+                        } else {
+                            const nextPartIsNumber = !isNaN(parseInt(keys[i + 1], 10));
+                            if (!acc[part]) {
+                                acc[part] = nextPartIsNumber ? [] : {};
+                            }
+                        }
+                        return acc[part];
+                    }, data);
+                } else if(key.includes('.')) { // For coordinates
+                     setNestedValue(data, key, value);
+                }else {
+                    data[key] = value;
+                }
+            }
+
+            // Cleanup empty arrays from dynamic fields that were not filled
+            Object.keys(data).forEach(key => {
+                if (Array.isArray(data[key])) data[key] = data[key].filter(item => item);
+            });
+            
+            const submitBtn = form.querySelector('button[type="submit"]');
+            try {
+                submitBtn.textContent = 'د پاشکەفتکرنێ دایە...'; submitBtn.disabled = true;
+                if (docId) {
+                    // For Tafsir, the ID is the Surah number and should not be auto-generated
+                    if(collectionKey === 'tafsir') {
+                         await db.collection(collectionKey).doc(data.surah_number).set(data, { merge: true });
+                    } else {
+                         await db.collection(collectionKey).doc(docId).set(data, { merge: true });
+                    }
+                    alert('بابەت ب سەرکەفتی هاتە نووژەنکرن.');
+                } else {
+                     if(collectionKey === 'tafsir') {
+                        await db.collection(collectionKey).doc(data.surah_number).set(data);
+                     } else {
+                        await db.collection(collectionKey).add(data);
+                     }
+                    alert('بابەت ب سەرکەفتی هاتە زێدەکرن.');
+                }
+                loadCollectionView(collectionKey);
             } catch (err) {
-                console.error("Error saving to Firestore:", err);
-                alert('چەوتیەک روویدا.');
+                console.error("Error saving:", err); alert('چەوتیەک روویدا.');
+                submitBtn.textContent = docId ? 'پاشکەفتکرن' : 'زێدەکرن'; submitBtn.disabled = false;
             }
         }
         
-        // Fonksiyonên alîkar bo nested objects
+        // ==== HELPER FUNCTIONS ====
+        let cachedOptions = {};
+        async function getSelectOptions(collectionKey) {
+            if (cachedOptions[collectionKey]) return cachedOptions[collectionKey];
+            const snapshot = await db.collection(collectionKey).get();
+            const options = snapshot.docs.map(doc => ({ id: doc.id, name: doc.data().name }));
+            cachedOptions[collectionKey] = options;
+            return options;
+        }
         function getNestedValue(obj, path) {
-            return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+            return path.split(/[\.\[\]]/).filter(Boolean).reduce((acc, part) => acc && acc[part], obj);
         }
         function setNestedValue(obj, path, value) {
             const keys = path.split('.');
-            keys.reduce((acc, key, i) => {
-                if (i === keys.length - 1) {
-                    acc[key] = value;
-                } else {
-                    acc[key] = acc[key] || {};
-                }
-                return acc[key];
-            }, obj);
+            let current = obj;
+            for (let i = 0; i < keys.length - 1; i++) {
+                current[keys[i]] = current[keys[i]] || {};
+                current = current[keys[i]];
+            }
+            current[keys[keys.length - 1]] = value;
         }
 
     </script>
