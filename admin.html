@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ئەدمین پانێل - پڕۆژێ ئیسلام (ڤێرژنا داوی)</title>
+<title>ئەدمین پانێل - پڕۆژێ ئیسلام (ڤێرژنا دوماهیێ)</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 <style>
 /* --- CSS گشتی و گۆڕاوەکان (هەمان ستایلێ مالپەرێ سەرەکی) --- */
@@ -60,6 +60,7 @@ body { font-family: var(--font-kurdish); background-color: var(--dark-bg); color
 .form-group input, .form-group textarea, .form-group select { width: 100%; background: var(--dark-bg); border: 1px solid var(--border-color); color: var(--primary-text); padding: 12px; border-radius: 6px; font-family: var(--font-kurdish); }
 .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--accent-color); outline: none; }
 .form-group textarea { min-height: 100px; }
+.form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
 /* === ستایلێ مۆدال === */
 .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); display: none; justify-content: center; align-items: center; z-index: 2000; }
@@ -82,6 +83,9 @@ th, td { padding: 12px 15px; border-bottom: 1px solid var(--border-color); text-
 th { background-color: #1c222c; }
 tr:hover { background-color: #1c222c; }
 .actions-cell button { margin: 0 5px; }
+.status-badge { padding: 3px 8px; border-radius: 12px; font-size: 0.8rem; color: white; }
+.status-visible { background-color: var(--success-color); }
+.status-hidden { background-color: var(--secondary-text); }
 
 /* === ستایلێ تایبەت ب هەر بەشەکی === */
 .level-card { border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 15px; overflow: hidden; }
@@ -117,6 +121,7 @@ tr:hover { background-color: #1c222c; }
             <a href="#" class="nav-link" data-view="levels-view"><i class="fas fa-stairs"></i> رێرەوا فێربوونێ</a>
             <a href="#" class="nav-link" data-view="teachers-view"><i class="fas fa-chalkboard-teacher"></i> مامۆستایان</a>
             <a href="#" class="nav-link" data-view="lectures-view"><i class="fas fa-video"></i> وانەیێن گشتی</a>
+            <a href="#" class="nav-link" data-view="map-view"><i class="fas fa-map-marked-alt"></i> خەریتە</a>
         </nav>
     </aside>
 
@@ -133,7 +138,7 @@ tr:hover { background-color: #1c222c; }
             <div class="content-grid">
                 <div class="item-card"><div class="item-card-content"><h3><i class="fas fa-user-plus"></i> زێدەکرنا مامۆستایەکێ نوو</h3><p>مامۆستایەکێ نوو بۆ سیستەمی زێدە بکە.</p></div><div class="item-card-actions"><button class="btn btn-primary" data-action="open-teacher-modal">زێدەکرن</button></div></div>
                 <div class="item-card"><div class="item-card-content"><h3><i class="fas fa-layer-group"></i> زێدەکرنا ئاستەکێ نوو</h3><p>ئاستەکێ نوو بۆ رێرەوا فێربوونێ زێدە بکە.</p></div><div class="item-card-actions"><button class="btn btn-primary" data-action="open-level-modal">زێدەکرن</button></div></div>
-                <div class="item-card"><div class="item-card-content"><h3><i class="fas fa-video"></i> زێدەکرنا وانەیەکا گشتی</h3><p>وانەیەکا گشتی یا نوو زێدە بکە.</p></div><div class="item-card-actions"><button class="btn btn-primary" data-action="open-lecture-modal">زێدەکرن</button></div></div>
+                <div class="item-card"><div class="item-card-content"><h3><i class="fas fa-map-pin"></i> زێدەکرنا وانەیەکا خەریتەی</h3><p>وانەیەکا نوو بۆ بەشێ خەریتێ زێدە بکە.</p></div><div class="item-card-actions"><button class="btn btn-primary" data-action="open-map-modal">زێدەکرن</button></div></div>
             </div>
         </section>
 
@@ -151,33 +156,44 @@ tr:hover { background-color: #1c222c; }
             <div class="view-header"><h1>وانەیێن گشتی</h1><button class="btn btn-primary" data-action="open-lecture-modal"><i class="fas fa-plus"></i> وانەیەکا نوو</button></div>
             <div id="lectures-grid-container" class="content-grid"></div>
         </section>
+        
+        <section id="map-view" class="admin-view">
+            <div class="view-header"><h1>وانەیێن خەریتەی</h1><button class="btn btn-primary" data-action="open-map-modal"><i class="fas fa-plus"></i> وانەیەکا نوو</button></div>
+            <div id="map-table-container" class="table-responsive"></div>
+        </section>
+
     </main>
 </div>
 
 <!-- === مۆدالەکان === -->
 
 <div class="modal-overlay" id="teacher-modal">
-    <div class="modal-content"><span class="close-modal-btn" data-action="close-modal">&times;</span><h3 id="teacher-modal-title"></h3><form id="teacher-form"><input type="hidden" id="teacher-id"><div class="form-group"><label for="teacher-name">ناڤێ تەمام</label><input type="text" id="teacher-name" required></div><div class="form-group"><label for="teacher-bio">کورتەیەک لسەر مامۆستای</label><textarea id="teacher-bio"></textarea></div><div class="form-group"><label for="teacher-image">لێنکا وێنێ پرۆفایلی</label><input type="url" id="teacher-image" placeholder="https://example.com/image.jpg"></div><h4>تۆرێن جڤاکی (ئارەزوومەندانە)</h4><div class="form-group"><label for="teacher-social-telegram">تێلەگرام</label><input type="url" id="teacher-social-telegram"></div><div class="form-group"><label for="teacher-social-youtube">یوتیوب</label><input type="url" id="teacher-social-youtube"></div><div class="form-group"><label for="teacher-social-facebook">فەیسبوک</label><input type="url" id="teacher-social-facebook"></div><button type="submit" class="btn btn-success" id="save-teacher-btn">تۆمارکرن</button></form></div>
+    <div class="modal-content"><span class="close-modal-btn" data-action="close-modal">&times;</span><h3 id="teacher-modal-title"></h3><form id="teacher-form"><input type="hidden" id="teacher-id"><div class="form-group"><label for="teacher-name">ناڤێ تەمام</label><input type="text" id="teacher-name" required></div><div class="form-group"><label for="teacher-phone">ژمارا موبایلێ (ئارەزوومەندانە)</label><input type="tel" id="teacher-phone"></div><div class="form-group"><label for="teacher-bio">کورتەیەک لسەر مامۆستای</label><textarea id="teacher-bio"></textarea></div><div class="form-group"><label for="teacher-image">لێنکا وێنێ پرۆفایلی</label><input type="url" id="teacher-image" placeholder="https://example.com/image.jpg"></div><div class="form-group"><label for="teacher-location">جهێ نیشتەجیبوونێ (ئارەزوومەندانە)</label><input type="text" id="teacher-location"></div><div class="form-group"><label for="teacher-order">ژمارا رێزبەندیێ (بۆ نموونە: 1, 2, 3..)</label><input type="number" id="teacher-order" placeholder="0"></div><div class="form-group"><label for="teacher-status">بارودۆخ</label><select id="teacher-status"><option value="visible">دیار</option><option value="hidden">ڤەشارتی</option></select></div><h4>تۆرێن جڤاکی (ئارەزوومەندانە)</h4><div class="form-group"><label for="teacher-social-telegram">تێلەگرام</label><input type="url" id="teacher-social-telegram"></div><div class="form-group"><label for="teacher-social-youtube">یوتیوب</label><input type="url" id="teacher-social-youtube"></div><div class="form-group"><label for="teacher-social-instagram">ئینستگرام</label><input type="url" id="teacher-social-instagram"></div><button type="submit" class="btn btn-success" id="save-teacher-btn">تۆمارکرن</button></form></div>
 </div>
 
 <div class="modal-overlay" id="lecture-modal">
-    <div class="modal-content"><span class="close-modal-btn" data-action="close-modal">&times;</span><h3 id="lecture-modal-title"></h3><form id="lecture-form"><input type="hidden" id="lecture-id"><div class="form-group"><label for="lecture-title">ناڤونیشانێ وانەیێ</label><input type="text" id="lecture-title" required></div><div class="form-group"><label for="lecture-teacher">مامۆستا</label><select id="lecture-teacher" required></select></div><div class="form-group"><label for="lecture-category">بابەت (ئارەزوومەندانە)</label><input type="text" id="lecture-category"></div><div class="form-group"><label for="lecture-image">لێنکا وێنەیێ (ئارەزوومەندانە)</label><input type="url" id="lecture-image"></div><div class="form-group"><label for="lecture-pdf">لێنکا PDF (ئارەزوومەندانە)</label><input type="url" id="lecture-pdf"></div><h4>لیستا ڤیدیویان (ئارەزوومەندانە)</h4><div id="lecture-videos-container" class="dynamic-list-container"></div><button type="button" class="btn btn-secondary" data-action="add-video-field" data-container="lecture-videos-container"><i class="fas fa-plus"></i> ڤیدیویەک</button><hr style="border-color: var(--border-color); margin: 20px 0;"><button type="submit" class="btn btn-success" id="save-lecture-btn">تۆمارکرن</button></form></div>
+    <div class="modal-content"><span class="close-modal-btn" data-action="close-modal">&times;</span><h3 id="lecture-modal-title"></h3><form id="lecture-form"><input type="hidden" id="lecture-id"><div class="form-group"><label for="lecture-title">ناڤونیشانێ وانەیێ</label><input type="text" id="lecture-title" required></div><div class="form-group"><label for="lecture-teacher">مامۆستا</label><select id="lecture-teacher" required></select></div><div class="form-group"><label for="lecture-category">بابەت (ئارەزوومەندانە)</label><input type="text" id="lecture-category"></div><div class="form-group"><label for="lecture-image">لێنکا وێنەیێ (ئارەزوومەندانە)</label><input type="url" id="lecture-image"></div><div class="form-group"><label for="lecture-pdf">لێنکا PDF (ئارەزوومەندانە)</label><input type="url" id="lecture-pdf"></div><div class="form-group"><label for="lecture-status">بارودۆخ</label><select id="lecture-status"><option value="visible">دیار</option><option value="hidden">ڤەشارتی</option></select></div><h4>لیستا ڤیدیویان (ئارەزوومەندانە)</h4><div id="lecture-videos-container" class="dynamic-list-container"></div><button type="button" class="btn btn-secondary" data-action="add-video-field" data-container="lecture-videos-container"><i class="fas fa-plus"></i> ڤیدیویەک</button><hr style="border-color: var(--border-color); margin: 20px 0;"><button type="submit" class="btn btn-success" id="save-lecture-btn">تۆمارکرن</button></form></div>
 </div>
 
 <div class="modal-overlay" id="level-modal">
-    <div class="modal-content"><span class="close-modal-btn" data-action="close-modal">&times;</span><h3 id="level-modal-title"></h3><form id="level-form"><input type="hidden" id="level-id"><div class="form-group"><label for="level-name">ناڤێ ئاستی</label><input type="text" id="level-name" required></div><div class="form-group"><label for="level-number">هژمارا ئاستی</label><input type="number" id="level-number" required></div><div class="form-group"><label for="level-points">خالێن پێدڤی (ئارەزوومەندانە)</label><input type="number" id="level-points" placeholder="0"></div><div class="form-group"><label for="level-code">کۆدێ ڤەکرنێ (ئارەزوومەندانە)</label><input type="text" id="level-code"></div><button type="submit" class="btn btn-success" id="save-level-btn">تۆمارکرن</button></form></div>
+    <div class="modal-content"><span class="close-modal-btn" data-action="close-modal">&times;</span><h3 id="level-modal-title"></h3><form id="level-form"><input type="hidden" id="level-id"><div class="form-group"><label for="level-name">ناڤێ ئاستی</label><input type="text" id="level-name" required></div><div class="form-group"><label for="level-number">هژمارا ئاستی</label><input type="number" id="level-number" required></div><div class="form-group"><label for="level-points">خالێن پێدڤی (ئارەزوومەندانە)</label><input type="number" id="level-points" placeholder="0"></div><div class="form-group"><label for="level-code">کۆدێ ڤەکرنێ (ئارەزوومەندانە)</label><input type="text" id="level-code"></div><div class="form-group"><label for="level-status">بارودۆخ</label><select id="level-status"><option value="visible">دیار</option><option value="hidden">ڤەشارتی</option></select></div><button type="submit" class="btn btn-success" id="save-level-btn">تۆمارکرن</button></form></div>
 </div>
 
 <div class="modal-overlay" id="course-modal">
     <div class="modal-content"><span class="close-modal-btn" data-action="close-modal">&times;</span><h3 id="course-modal-title"></h3><form id="course-form"><input type="hidden" id="course-level-id"><input type="hidden" id="course-id"><div class="form-group"><label for="course-title">ناڤونیشانێ وانەیێ</label><input type="text" id="course-title" required></div><div class="form-group"><label for="course-teacher">مامۆستا</label><select id="course-teacher" required></select></div><div class="form-group"><label for="course-pdf">لێنکا PDF (ئارەزوومەندانە)</label><input type="url" id="course-pdf"></div><hr style="border-color: var(--border-color); margin: 20px 0;"><h4>بەشێ ژبەرکرنێ (ئارەزوومەندانە)</h4><div class="form-group"><label for="course-mem-title">ناڤونیشانێ پەرتوکا ژبەرکرنێ</label><input type="text" id="course-mem-title"></div><div class="form-group"><label for="course-mem-pdf">لێنکا PDF یا ژبەرکرنێ</label><input type="url" id="course-mem-pdf"></div><hr style="border-color: var(--border-color); margin: 20px 0;"><h4>لیستا ڤیدیویان (ئارەزوومەندانە)</h4><div id="course-videos-container" class="dynamic-list-container"></div><button type="button" class="btn btn-secondary" data-action="add-video-field" data-container="course-videos-container"><i class="fas fa-plus"></i> ڤیدیویەک</button><hr style="border-color: var(--border-color); margin: 20px 0;"><button type="submit" class="btn btn-success" id="save-course-btn">تۆمارکرن</button></form></div>
 </div>
 
+<div class="modal-overlay" id="map-modal">
+    <div class="modal-content"><span class="close-modal-btn" data-action="close-modal">&times;</span><h3 id="map-modal-title"></h3><form id="map-form"><input type="hidden" id="map-id"><div class="form-group"><label for="map-title">ناڤونیشانێ وانەیێ</label><input type="text" id="map-title" required></div><div class="form-group"><label for="map-teacher">مامۆستا</label><select id="map-teacher" required></select></div><div class="form-group"><label for="map-mosque">ناڤێ مزگەفتێ</label><input type="text" id="map-mosque" required></div><div class="form-grid-2"><div class="form-group"><label for="map-day">رۆژ</label><input type="text" id="map-day" placeholder="بۆ نموونە: هەموو رۆژێن پێنج شەمبی"></div><div class="form-group"><label for="map-time">دەم</label><input type="text" id="map-time" placeholder="بۆ نموونە: پشتی نڤێژا عیشایێ"></div></div><div class="form-grid-2"><div class="form-group"><label for="map-lat">Latitude</label><input type="text" id="map-lat" placeholder="36.862483"></div><div class="form-group"><label for="map-lng">Longitude</label><input type="text" id="map-lng" placeholder="42.990479"></div></div><div class="form-group"><label for="map-status">بارودۆخ</label><select id="map-status"><option value="visible">دیار</option><option value="hidden">ڤەشارتی</option></select></div><button type="submit" class="btn btn-success" id="save-map-btn">تۆمارکرن</button></form></div>
+</div>
+
+
 <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-firestore-compat.js"></script>
 
 <script>
 // ====================================================================================
-// ============================= پرۆژێ ئیسلام - ADMIN PANEL JAVASCRIPT (V5 - FINAL) ====
+// ============================= پرۆژێ ئیسلام - ADMIN PANEL JAVASCRIPT (V11 - STABLE) ====
 // ====================================================================================
 (function() {
 'use strict';
@@ -191,10 +207,22 @@ const firebaseConfig = {
     appId: "1:686343038831:web:8b5e19daa95176000b6a9a"
 };
 
-firebase.initializeApp(firebaseConfig);
+try {
+    firebase.initializeApp(firebaseConfig);
+} catch(e) {
+    console.error("Firebase initialization failed:", e);
+    document.body.innerHTML = '<div class="error-message">پەیوەندی ب فایەربەیسێ سەرنەکەفت. هیڤییه پەیوەندییا خۆ یا ئینتەرنێتێ بجەربینی.</div>';
+    return;
+}
+
 const db = firebase.firestore();
 
-const collections = { teachers: 'teachers', generalLectures: 'generalLectures', levels: 'levels' };
+const collections = { 
+    teachers: 'teachers', 
+    generalLectures: 'generalLectures', 
+    levels: 'levels',
+    mapLectures: 'mapLectures' 
+};
 let allTeachers = [];
 
 // Helper Functions
@@ -204,12 +232,26 @@ const showEmpty = (container, message) => container.innerHTML = `<div class="loa
 const disableButton = (btn, text = 'تۆمارکرن...') => { btn.disabled = true; btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${text}`; };
 const enableButton = (btn, text) => { btn.disabled = false; btn.innerHTML = text; };
 
+// =================================================================
+// === چارەسەریا سەرەکی: ئەگەر بەشەک خراب بوو، یێن دی کار بکەن ===
+// =================================================================
+const safeLoad = async (loaderFn, container) => {
+    showLoader(container);
+    try {
+        await loaderFn(container);
+    } catch (e) {
+        console.error(`Failed to load section: ${container.id}`, e);
+        showError(container, `چەوتیەک د بارکرنا ڤی بەشی دا روویدا. هیڤییە بەشێن دی بجەربینی. [${e.message}]`);
+    }
+};
+
 // View Management
 const viewLoaders = {
-    'dashboard-view': loadDashboardStats,
-    'teachers-view': loadTeachers,
-    'lectures-view': loadLectures,
-    'levels-view': loadLevels
+    'dashboard-view': (container) => safeLoad(loadDashboardStats, container),
+    'teachers-view': (container) => safeLoad(loadTeachers, container),
+    'lectures-view': (container) => safeLoad(loadLectures, container),
+    'levels-view': (container) => safeLoad(loadLevels, container),
+    'map-view': (container) => safeLoad(loadMapLectures, container)
 };
 
 function navigateToView(viewId) {
@@ -217,8 +259,9 @@ function navigateToView(viewId) {
     const targetView = document.getElementById(viewId);
     if (targetView) {
         targetView.classList.add('is-visible');
-        if (viewLoaders[viewId]) {
-            viewLoaders[viewId]();
+        const container = targetView.querySelector('[id$="-container"]');
+        if (viewLoaders[viewId] && container) {
+            viewLoaders[viewId](container);
         }
     }
 }
@@ -229,98 +272,110 @@ function closeModal(modalId) {
     const modal = document.getElementById(modalId);
     if(modal) {
         modal.classList.remove('is-visible');
-        const form = modal.querySelector('form');
-        if (form) form.reset();
     }
 }
 
-// Data Loading
-async function loadDashboardStats() {
-    const container = document.getElementById('dashboard-stats-container');
-    showLoader(container);
-    try {
-        const [teachersSnap, levelsSnap, lecturesSnap] = await Promise.all([
-            db.collection(collections.teachers).get(), db.collection(collections.levels).get(), db.collection(collections.generalLectures).get()
-        ]);
-        container.innerHTML = `<div class="stat-card"><div class="stat-number">${teachersSnap.size}</div><div class="stat-title">مامۆستا</div></div><div class="stat-card"><div class="stat-number">${levelsSnap.size}</div><div class="stat-title">ئاست</div></div><div class="stat-card"><div class="stat-number">${lecturesSnap.size}</div><div class="stat-title">وانەیێن گشتی</div></div>`;
-    } catch (e) { showError(container, "چەوتیەک د وەرگرتنا هژماران دا روویدا."); }
+// Data Loading Functions
+async function loadDashboardStats(container) {
+    const [teachersSnap, levelsSnap, lecturesSnap, mapSnap] = await Promise.all([
+        db.collection(collections.teachers).get(), 
+        db.collection(collections.levels).get(), 
+        db.collection(collections.generalLectures).get(),
+        db.collection(collections.mapLectures).get()
+    ]);
+    container.innerHTML = `<div class="stat-card"><div class="stat-number">${teachersSnap.size}</div><div class="stat-title">مامۆستا</div></div><div class="stat-card"><div class="stat-number">${levelsSnap.size}</div><div class="stat-title">ئاست</div></div><div class="stat-card"><div class="stat-number">${lecturesSnap.size}</div><div class="stat-title">وانەیێن گشتی</div></div><div class="stat-card"><div class="stat-number">${mapSnap.size}</div><div class="stat-title">وانەیێن خەریتەی</div></div>`;
 }
 
-async function loadTeachers() {
-    const container = document.getElementById('teachers-table-container');
-    showLoader(container);
-    try {
-        const snapshot = await db.collection(collections.teachers).get();
-        allTeachers = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        if (snapshot.empty) return showEmpty(container, 'هیچ مامۆستایەک نەهاتیە تۆمارکرن.');
-        
-        container.innerHTML = `<table><thead><tr><th>وێنە</th><th>ناڤ</th><th>کورتە</th><th>کردار</th></tr></thead><tbody>
-            ${allTeachers.map(teacher => `
-                <tr>
-                    <td><img src="${teacher.profileImage || 'https://via.placeholder.com/50'}" alt="${teacher.name}" width="50" height="50" style="border-radius:50%; object-fit:cover;"></td>
-                    <td>${teacher.name || ''}</td>
-                    <td>${(teacher.bio || '').substring(0, 50)}...</td>
-                    <td class="actions-cell">
-                        <button class="btn btn-secondary btn-sm" data-action="open-teacher-modal" data-id="${teacher.id}"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-danger btn-sm" data-action="delete-item" data-id="${teacher.id}" data-collection="${collections.teachers}" data-callback="loadTeachers"><i class="fas fa-trash"></i></button>
-                    </td>
-                </tr>`).join('')}
-            </tbody></table>`;
-    } catch (e) { showError(container, 'چەوتیەک د بارکرنا مامۆستایان دا روویدا.'); }
+async function loadTeachers(container) {
+    await populateTeachersCache();
+    if (allTeachers.length === 0) return showEmpty(container, 'هیچ مامۆستایەک نەهاتیە تۆمارکرن.');
+    
+    container.innerHTML = `<table><thead><tr><th>رێزبەندی</th><th>وێنە</th><th>ناڤ</th><th>جهێ نیشتەجیبوونێ</th><th>بارودۆخ</th><th>کردار</th></tr></thead><tbody>
+        ${allTeachers.map(teacher => `
+            <tr>
+                <td>${teacher.order || 0}</td>
+                <td><img src="${teacher.profileImage || 'https://via.placeholder.com/50'}" alt="${teacher.name}" width="50" height="50" style="border-radius:50%; object-fit:cover;"></td>
+                <td>${teacher.name || ''}</td>
+                <td>${teacher.location || '...'}</td>
+                <td><span class="status-badge ${teacher.status === 'hidden' ? 'status-hidden' : 'status-visible'}">${teacher.status === 'hidden' ? 'ڤەشارتی' : 'دیار'}</span></td>
+                <td class="actions-cell">
+                    <button class="btn btn-secondary btn-sm" data-action="open-teacher-modal" data-id="${teacher.id}"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-danger btn-sm" data-action="delete-item" data-id="${teacher.id}" data-collection="${collections.teachers}" data-callback-view="teachers-view"><i class="fas fa-trash"></i></button>
+                </td>
+            </tr>`).join('')}
+        </tbody></table>`;
 }
 
-async function loadLectures() {
-    const container = document.getElementById('lectures-grid-container');
-    showLoader(container);
-    try {
-        await populateTeachersCache();
-        const snapshot = await db.collection(collections.generalLectures).get();
-        if (snapshot.empty) return showEmpty(container, 'هیچ وانەیەکا گشتی نەهاتیە تۆمارکرن.');
-        
-        container.innerHTML = snapshot.docs.map(doc => {
+async function loadLectures(container) {
+    await populateTeachersCache();
+    const snapshot = await db.collection(collections.generalLectures).get();
+    if (snapshot.empty) return showEmpty(container, 'هیچ وانەیەکا گشتی نەهاتیە تۆمارکرن.');
+    
+    container.innerHTML = snapshot.docs.map(doc => {
+        const lecture = { id: doc.id, ...doc.data() };
+        const teacher = allTeachers.find(t => t.id === lecture.teacherId);
+        const statusBadge = `<span class="status-badge ${lecture.status === 'hidden' ? 'status-hidden' : 'status-visible'}">${lecture.status === 'hidden' ? 'ڤەشارتی' : 'دیار'}</span>`;
+        return `<div class="item-card">
+            <div class="item-card-content"><h3>${lecture.title || ''} ${statusBadge}</h3><p><strong>مامۆستا:</strong> ${teacher?.name || 'نەناسراو'}<br><strong>بابەت:</strong> ${lecture.category || 'بێ بابەت'}</p></div>
+            <div class="item-card-actions">
+                <button class="btn btn-secondary" data-action="open-lecture-modal" data-id="${lecture.id}">دەستکاری</button>
+                <button class="btn btn-danger" data-action="delete-item" data-id="${lecture.id}" data-collection="${collections.generalLectures}" data-callback-view="lectures-view">ژێبرن</button>
+            </div></div>`;
+    }).join('');
+}
+
+async function loadLevels(container) {
+    const snapshot = await db.collection(collections.levels).orderBy('level').get();
+    if (snapshot.empty) return showEmpty(container, 'هیچ ئاستەک نەهاتیە تۆمارکرن.');
+    
+    container.innerHTML = snapshot.docs.map(doc => {
+        const level = { id: doc.id, ...doc.data() };
+        const statusBadge = `<span class="status-badge ${level.status === 'hidden' ? 'status-hidden' : 'status-visible'}">${level.status === 'hidden' ? 'ڤەشارتی' : 'دیار'}</span>`;
+        return `<div class="level-card">
+            <div class="level-header" data-action="toggle-level-content">
+                <h4>ئاستا ${level.level || '?'}: ${level.levelName} ${statusBadge}</h4>
+                <div>
+                    <button class="btn btn-secondary btn-sm" data-action="open-level-modal" data-id="${level.id}"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-danger btn-sm" data-action="delete-item" data-id="${level.id}" data-collection="${collections.levels}" data-callback-view="levels-view"><i class="fas fa-trash"></i></button>
+                </div>
+            </div>
+            <div class="level-content">
+                <h5>وانەیێن ئاستی:</h5>
+                ${(level.courses || []).map(course => `
+                    <div class="course-item">
+                        <span>${course.title}</span>
+                        <div>
+                            <button class="btn btn-secondary btn-sm" data-action="open-course-modal" data-level-id="${level.id}" data-id="${course.id}">دەستکاری</button>
+                            <button class="btn btn-danger btn-sm" data-action="delete-course" data-level-id="${level.id}" data-id="${course.id}">ژێبرن</button>
+                        </div>
+                    </div>`).join('') || '<p style="color:var(--secondary-text)">هیچ وانەیەک بۆ ڤی ئاستی نینە.</p>'}
+                <button class="btn btn-primary" style="margin-top: 15px;" data-action="open-course-modal" data-level-id="${level.id}"><i class="fas fa-plus"></i> وانەیەکا نوو</button>
+            </div></div>`;
+    }).join('');
+}
+
+async function loadMapLectures(container) {
+    await populateTeachersCache();
+    const snapshot = await db.collection(collections.mapLectures).get();
+    if (snapshot.empty) return showEmpty(container, 'هیچ وانەیەکا خەریتەی نەهاتیە تۆمارکرن.');
+    
+    container.innerHTML = `<table><thead><tr><th>ناڤونیشان</th><th>مامۆستا</th><th>مزگەفت</th><th>دەم</th><th>بارودۆخ</th><th>کردار</th></tr></thead><tbody>
+        ${snapshot.docs.map(doc => {
             const lecture = { id: doc.id, ...doc.data() };
             const teacher = allTeachers.find(t => t.id === lecture.teacherId);
-            return `<div class="item-card">
-                <div class="item-card-content"><h3>${lecture.title || ''}</h3><p><strong>مامۆستا:</strong> ${teacher?.name || 'نەناسراو'}<br><strong>بابەت:</strong> ${lecture.category || 'بێ بابەت'}</p></div>
-                <div class="item-card-actions">
-                    <button class="btn btn-secondary" data-action="open-lecture-modal" data-id="${lecture.id}">دەستکاری</button>
-                    <button class="btn btn-danger" data-action="delete-item" data-id="${lecture.id}" data-collection="${collections.generalLectures}" data-callback="loadLectures">ژێبرن</button>
-                </div></div>`;
-        }).join('');
-    } catch (e) { showError(container, 'چەوتیەک د بارکرنا وانەیان دا روویدا.'); }
-}
-
-async function loadLevels() {
-    const container = document.getElementById('levels-list-container');
-    showLoader(container);
-    try {
-        const snapshot = await db.collection(collections.levels).orderBy('level').get();
-        if (snapshot.empty) return showEmpty(container, 'هیچ ئاستەک نەهاتیە تۆمارکرن.');
-        
-        container.innerHTML = snapshot.docs.map(doc => {
-            const level = { id: doc.id, ...doc.data() };
-            return `<div class="level-card">
-                <div class="level-header" data-action="toggle-level-content">
-                    <h4>ئاستا ${level.level || '?'}: ${level.levelName}</h4>
-                    <div>
-                        <button class="btn btn-secondary btn-sm" data-action="open-level-modal" data-id="${level.id}"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-danger btn-sm" data-action="delete-item" data-id="${level.id}" data-collection="${collections.levels}" data-callback="loadLevels"><i class="fas fa-trash"></i></button>
-                    </div>
-                </div>
-                <div class="level-content">
-                    <h5>وانەیێن ئاستی:</h5>
-                    ${(level.courses || []).map(course => `
-                        <div class="course-item">
-                            <span>${course.title}</span>
-                            <div>
-                                <button class="btn btn-secondary btn-sm" data-action="open-course-modal" data-level-id="${level.id}" data-id="${course.id}">دەستکاری</button>
-                                <button class="btn btn-danger btn-sm" data-action="delete-course" data-level-id="${level.id}" data-id="${course.id}">ژێبرن</button>
-                            </div>
-                        </div>`).join('') || '<p style="color:var(--secondary-text)">هیچ وانەیەک بۆ ڤی ئاستی نینە.</p>'}
-                    <button class="btn btn-primary" style="margin-top: 15px;" data-action="open-course-modal" data-level-id="${level.id}"><i class="fas fa-plus"></i> وانەیەکا نوو</button>
-                </div></div>`;
-        }).join('');
-    } catch (e) { showError(container, 'چەوتیەک د بارکرنا ئاستان دا روویدا.'); }
+            return `<tr>
+                <td>${lecture.title || ''}</td>
+                <td>${teacher?.name || '...'}</td>
+                <td>${lecture.mosqueName || ''}</td>
+                <td>${lecture.day || ''} - ${lecture.time || ''}</td>
+                <td><span class="status-badge ${lecture.status === 'hidden' ? 'status-hidden' : 'status-visible'}">${lecture.status === 'hidden' ? 'ڤەشارتی' : 'دیار'}</span></td>
+                <td class="actions-cell">
+                    <button class="btn btn-secondary btn-sm" data-action="open-map-modal" data-id="${lecture.id}"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-danger btn-sm" data-action="delete-item" data-id="${lecture.id}" data-collection="${collections.mapLectures}" data-callback-view="map-view"><i class="fas fa-trash"></i></button>
+                </td>
+            </tr>`;
+        }).join('')}
+    </tbody></table>`;
 }
 
 // Form Handlers & Modal Openers
@@ -339,9 +394,15 @@ async function openTeacherModal(id = null) {
             form.querySelector('#teacher-name').value = teacher.name || '';
             form.querySelector('#teacher-bio').value = teacher.bio || '';
             form.querySelector('#teacher-image').value = teacher.profileImage || '';
-            form.querySelector('#teacher-social-telegram').value = teacher.social?.telegram || '';
-            form.querySelector('#teacher-social-youtube').value = teacher.social?.youtube || '';
-            form.querySelector('#teacher-social-facebook').value = teacher.social?.facebook || '';
+            form.querySelector('#teacher-phone').value = teacher.phone || '';
+            form.querySelector('#teacher-location').value = teacher.location || '';
+            form.querySelector('#teacher-order').value = teacher.order || 0;
+            form.querySelector('#teacher-status').value = teacher.status || 'visible';
+            
+            const social = teacher.social || {};
+            form.querySelector('#teacher-social-telegram').value = social.telegram || '';
+            form.querySelector('#teacher-social-youtube').value = social.youtube || '';
+            form.querySelector('#teacher-social-instagram').value = social.instagram || social.facebook || '';
         }
     }
     openModal('teacher-modal');
@@ -354,11 +415,17 @@ async function handleSaveTeacher(e) {
     
     const id = document.getElementById('teacher-id').value;
     const data = {
-        name: document.getElementById('teacher-name').value, bio: document.getElementById('teacher-bio').value,
+        name: document.getElementById('teacher-name').value, 
+        bio: document.getElementById('teacher-bio').value,
         profileImage: document.getElementById('teacher-image').value,
+        phone: document.getElementById('teacher-phone').value,
+        location: document.getElementById('teacher-location').value,
+        order: parseInt(document.getElementById('teacher-order').value) || 0,
+        status: document.getElementById('teacher-status').value,
         social: {
-            telegram: document.getElementById('teacher-social-telegram').value, youtube: document.getElementById('teacher-social-youtube').value,
-            facebook: document.getElementById('teacher-social-facebook').value,
+            telegram: document.getElementById('teacher-social-telegram').value, 
+            youtube: document.getElementById('teacher-social-youtube').value,
+            instagram: document.getElementById('teacher-social-instagram').value,
         }
     };
 
@@ -367,10 +434,87 @@ async function handleSaveTeacher(e) {
         else await db.collection(collections.teachers).add(data);
         alert('پڕۆسە ب سەرکەفتی بوو!');
         closeModal('teacher-modal');
-        loadTeachers();
-    } catch (err) { alert('چەوتیەک د تۆمارکرنێ دا روویدا.'); } 
+        document.getElementById('teacher-form').reset();
+        allTeachers = []; 
+        navigateToView('teachers-view');
+    } catch (err) { 
+        alert('چەوتیەک د تۆمارکرنێ دا روویدا: ' + err.message); 
+    } 
     finally { enableButton(btn, 'تۆمارکرن'); }
 }
+
+async function openLectureModal(id = null) { /* ... Same as before ... */ }
+async function handleSaveLecture(e) { /* ... Same as before ... */ }
+async function openLevelModal(id = null) { /* ... Same as before ... */ }
+async function handleSaveLevel(e) { /* ... Same as before ... */ }
+async function openCourseModal(levelId, id = null) { /* ... Same as before ... */ }
+async function handleSaveCourse(e) { /* ... Same as before ... */ }
+async function openMapModal(id = null) { /* ... Same as before ... */ }
+async function handleSaveMapLecture(e) { /* ... Same as before ... */ }
+
+
+// Delete Operations
+async function deleteItem(collection, id, viewToReload) {
+    if (confirm('تۆ پشتراستی کو دڤێی ڤی بابەتی ژێببەی؟')) {
+        try {
+            await db.collection(collection).doc(id).delete();
+            alert('بابەت ب سەرکەفتی هاتە ژێبرن.');
+            if (viewToReload) {
+                allTeachers = []; // Cache reset bike heke mamosta hatiba jêbirin
+                navigateToView(viewToReload);
+            }
+        } catch (e) { 
+            alert('چەوتیەک د ژێبرنێ دا روویدا.'); 
+        }
+    }
+}
+
+async function deleteCourse(levelId, id) {
+     if (confirm('تۆ پشتراستی کو دڤێی ڤێ وانەیێ ژ ڤی ئاستی ژێببەی؟')) {
+        try {
+            const levelRef = db.collection(collections.levels).doc(levelId);
+            const doc = await levelRef.get();
+            if (doc.exists) {
+                let courses = (doc.data().courses || []).filter(c => c.id !== id);
+                await levelRef.update({ courses });
+                alert('وانە ب سەرکەفتی هاتە ژێبرن.');
+                navigateToView('levels-view');
+            }
+        } catch(e) { 
+            alert("چەوتیەک د ژێبرنا وانەیێ دا روویدا."); 
+        }
+     }
+}
+
+// Form Helpers
+async function populateTeachersCache() {
+    if (allTeachers.length === 0) {
+       const snapshot = await db.collection(collections.teachers).get();
+       let teachersData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+       teachersData.sort((a, b) => (a.order || 0) - (b.order || 0));
+       allTeachers = teachersData;
+    }
+}
+
+async function populateTeachersDropdown(selectId) {
+    await populateTeachersCache();
+    const select = document.getElementById(selectId);
+    select.innerHTML = '<option value="">مامۆستایەکێ هەلبژێرە...</option>';
+    allTeachers.forEach(teacher => {
+        const option = document.createElement('option');
+        option.value = teacher.id;
+        option.textContent = teacher.name;
+        select.appendChild(option);
+    });
+}
+
+function addVideoField(containerId, title = '', url = '') { /* ... Same as before ... */ }
+function getVideosFromFields(containerId) { /* ... Same as before ... */ }
+
+
+// To save space, the functions that were unchanged are commented out here,
+// but they are included in the final code block below.
+// I will now re-add the unchanged functions to the script for the final output.
 
 async function openLectureModal(id = null) {
     const form = document.getElementById('lecture-form');
@@ -391,6 +535,7 @@ async function openLectureModal(id = null) {
             form.querySelector('#lecture-teacher').value = data.teacherId || '';
             form.querySelector('#lecture-image').value = data.image || '';
             form.querySelector('#lecture-pdf').value = data.pdfUrl || '';
+            form.querySelector('#lecture-status').value = data.status || 'visible';
             if (data.videos) data.videos.forEach(v => addVideoField('lecture-videos-container', v.title, v.url));
         }
     }
@@ -404,9 +549,13 @@ async function handleSaveLecture(e) {
 
     const id = document.getElementById('lecture-id').value;
     const data = {
-        title: document.getElementById('lecture-title').value, category: document.getElementById('lecture-category').value,
-        teacherId: document.getElementById('lecture-teacher').value, image: document.getElementById('lecture-image').value,
-        pdfUrl: document.getElementById('lecture-pdf').value, videos: getVideosFromFields('lecture-videos-container')
+        title: document.getElementById('lecture-title').value, 
+        category: document.getElementById('lecture-category').value,
+        teacherId: document.getElementById('lecture-teacher').value, 
+        image: document.getElementById('lecture-image').value,
+        pdfUrl: document.getElementById('lecture-pdf').value, 
+        status: document.getElementById('lecture-status').value,
+        videos: getVideosFromFields('lecture-videos-container')
     };
 
     try {
@@ -414,8 +563,11 @@ async function handleSaveLecture(e) {
         else await db.collection(collections.generalLectures).add(data);
         alert('پڕۆسە ب سەرکەفتی بوو!');
         closeModal('lecture-modal');
-        loadLectures();
-    } catch (err) { alert('چەوتیەک د تۆمارکرنێ دا روویدا.'); }
+        document.getElementById('lecture-form').reset();
+        navigateToView('lectures-view');
+    } catch (err) { 
+        alert('چەوتیەک د تۆمارکرنێ دا روویدا.'); 
+    }
     finally { enableButton(btn, 'تۆمارکرن'); }
 }
 
@@ -435,6 +587,7 @@ async function openLevelModal(id = null) {
             form.querySelector('#level-number').value = data.level || '';
             form.querySelector('#level-points').value = data.requiredPoints || '';
             form.querySelector('#level-code').value = data.unlockCode || '';
+            form.querySelector('#level-status').value = data.status || 'visible';
         }
     }
     openModal('level-modal');
@@ -450,7 +603,8 @@ async function handleSaveLevel(e) {
         levelName: document.getElementById('level-name').value,
         level: parseInt(document.getElementById('level-number').value) || 0,
         requiredPoints: parseInt(document.getElementById('level-points').value) || 0,
-        unlockCode: document.getElementById('level-code').value
+        unlockCode: document.getElementById('level-code').value,
+        status: document.getElementById('level-status').value,
     };
 
     try {
@@ -462,8 +616,11 @@ async function handleSaveLevel(e) {
         }
         alert('پڕۆسە ب سەرکەفتی بوو!');
         closeModal('level-modal');
-        loadLevels();
-    } catch (err) { alert('چەوتیەک د تۆمارکرنێ دا روویدا.'); } 
+        document.getElementById('level-form').reset();
+        navigateToView('levels-view');
+    } catch (err) { 
+        alert('چەوتیەک د تۆمارکرنێ دا روویدا.'); 
+    } 
     finally { enableButton(btn, 'تۆمارکرن'); }
 }
 
@@ -483,6 +640,7 @@ async function openCourseModal(levelId, id = null) {
             const course = (doc.data().courses || []).find(c => c.id === id);
             if (course) {
                 form.querySelector('#course-id').value = id;
+                form.querySelector('#course-level-id').value = levelId;
                 form.querySelector('#course-title').value = course.title || '';
                 form.querySelector('#course-teacher').value = course.teacherId || '';
                 form.querySelector('#course-pdf').value = course.pdfUrl || '';
@@ -504,7 +662,8 @@ async function handleSaveCourse(e) {
     const id = document.getElementById('course-id').value;
     const data = {
         id: id || new Date().getTime().toString(),
-        title: document.getElementById('course-title').value, teacherId: document.getElementById('course-teacher').value,
+        title: document.getElementById('course-title').value, 
+        teacherId: document.getElementById('course-teacher').value,
         pdfUrl: document.getElementById('course-pdf').value,
         memorizationPdfTitle: document.getElementById('course-mem-title').value,
         memorizationPdfUrl: document.getElementById('course-mem-pdf').value,
@@ -521,58 +680,70 @@ async function handleSaveCourse(e) {
             await levelRef.update({ courses });
             alert('پڕۆسە ب سەرکەفتی بوو!');
             closeModal('course-modal');
-            loadLevels();
+            document.getElementById('course-form').reset();
+            navigateToView('levels-view');
         }
-    } catch(err) { alert('چەوتیەک د تۆمارکرنێ دا روویدا.'); }
+    } catch(err) { 
+        alert('چەوتیەک د تۆمارکرنێ دا روویدا.'); 
+    }
     finally { enableButton(btn, 'تۆمارکرن'); }
 }
 
-// Delete Operations
-async function deleteItem(collection, id, callbackName) {
-    if (confirm('تۆ پشتراستی کو دڤێی ڤی بابەتی ژێببەی؟')) {
-        try {
-            await db.collection(collection).doc(id).delete();
-            alert('بابەت ب سەرکەفتی هاتە ژێبرن.');
-            if (viewLoaders[callbackName]) viewLoaders[callbackName]();
-            else if (typeof window[callbackName] === 'function') window[callbackName]();
+async function openMapModal(id = null) {
+    const form = document.getElementById('map-form');
+    form.reset();
+    form.querySelector('#map-id').value = '';
+    await populateTeachersDropdown('map-teacher');
+    document.getElementById('map-modal-title').textContent = 'وانەیەکا نوو بۆ خەریتەی';
 
-        } catch (e) { alert('چەوتیەک د ژێبرنێ دا روویدا.'); }
+    if (id) {
+        document.getElementById('map-modal-title').textContent = 'دەستکاریکرنا وانەیا خەریتەی';
+        const doc = await db.collection(collections.mapLectures).doc(id).get();
+        if (doc.exists) {
+            const data = doc.data();
+            form.querySelector('#map-id').value = id;
+            form.querySelector('#map-title').value = data.title || '';
+            form.querySelector('#map-teacher').value = data.teacherId || '';
+            form.querySelector('#map-mosque').value = data.mosqueName || '';
+            form.querySelector('#map-day').value = data.day || '';
+            form.querySelector('#map-time').value = data.time || '';
+            form.querySelector('#map-lat').value = data.latitude || '';
+            form.querySelector('#map-lng').value = data.longitude || '';
+            form.querySelector('#map-status').value = data.status || 'visible';
+        }
     }
+    openModal('map-modal');
 }
 
-async function deleteCourse(levelId, id) {
-     if (confirm('تۆ پشتراستی کو دڤێی ڤێ وانەیێ ژ ڤی ئاستی ژێببەی؟')) {
-        try {
-            const levelRef = db.collection(collections.levels).doc(levelId);
-            const doc = await levelRef.get();
-            if (doc.exists) {
-                let courses = (doc.data().courses || []).filter(c => c.id !== id);
-                await levelRef.update({ courses });
-                alert('وانە ب سەرکەفتی هاتە ژێبرن.');
-                loadLevels();
-            }
-        } catch(e) { alert("چەوتیەک د ژێبرنا وانەیێ دا روویدا."); }
-     }
-}
+async function handleSaveMapLecture(e) {
+    e.preventDefault();
+    const btn = document.getElementById('save-map-btn');
+    disableButton(btn);
 
-// Form Helpers
-async function populateTeachersCache() {
-    if (allTeachers.length === 0) {
-       const snapshot = await db.collection(collections.teachers).get();
-       allTeachers = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const id = document.getElementById('map-id').value;
+    const data = {
+        title: document.getElementById('map-title').value,
+        teacherId: document.getElementById('map-teacher').value,
+        mosqueName: document.getElementById('map-mosque').value,
+        day: document.getElementById('map-day').value,
+        time: document.getElementById('map-time').value,
+        latitude: document.getElementById('map-lat').value,
+        longitude: document.getElementById('map-lng').value,
+        status: document.getElementById('map-status').value
+    };
+
+    try {
+        if (id) await db.collection(collections.mapLectures).doc(id).update(data);
+        else await db.collection(collections.mapLectures).add(data);
+        alert('پڕۆسە ب سەرکەفتی بوو!');
+        closeModal('map-modal');
+        document.getElementById('map-form').reset();
+        navigateToView('map-view');
+    } catch (err) {
+        alert('چەوتیەک د تۆمارکرنێ دا روویدا.');
+    } finally {
+        enableButton(btn, 'تۆمارکرن');
     }
-}
-
-async function populateTeachersDropdown(selectId) {
-    const select = document.getElementById(selectId);
-    select.innerHTML = '<option value="">مامۆستایەکێ هەلبژێرە...</option>';
-    await populateTeachersCache();
-    allTeachers.forEach(teacher => {
-        const option = document.createElement('option');
-        option.value = teacher.id;
-        option.textContent = teacher.name;
-        select.appendChild(option);
-    });
 }
 
 function addVideoField(containerId, title = '', url = '') {
@@ -597,11 +768,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const link = e.target.closest('.nav-link');
         if (!link) return;
         e.preventDefault();
-        const viewId = link.dataset.view;
-        if (document.querySelector('.nav-link.active')) {
-            document.querySelector('.nav-link.active').classList.remove('active');
+        
+        const activeLink = document.querySelector('.nav-link.active');
+        if (activeLink) {
+            activeLink.classList.remove('active');
         }
+        
         link.classList.add('active');
+        const viewId = link.dataset.view;
         navigateToView(viewId);
     });
 
@@ -610,19 +784,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const target = e.target.closest('[data-action]');
         if (!target) return;
 
-        const { action, id, collection, callback, levelId, container } = target.dataset;
+        const { action, id, collection, callbackView, levelId, container } = target.dataset;
 
         switch (action) {
             case 'open-teacher-modal': openTeacherModal(id); break;
             case 'open-lecture-modal': openLectureModal(id); break;
             case 'open-level-modal': openLevelModal(id); break;
             case 'open-course-modal': openCourseModal(levelId, id); break;
-            case 'delete-item': deleteItem(collection, id, callback); break;
+            case 'open-map-modal': openMapModal(id); break;
+            case 'delete-item': deleteItem(collection, id, callbackView); break;
             case 'delete-course': deleteCourse(levelId, id); break;
             case 'add-video-field': addVideoField(container); break;
             case 'remove-parent': target.parentElement.remove(); break;
             case 'toggle-level-content': 
-                const content = target.nextElementSibling;
+                const content = target.closest('.level-card').querySelector('.level-content');
                 if(content) content.style.display = (content.style.display === 'block' ? 'none' : 'block');
                 break;
             case 'close-modal':
@@ -637,6 +812,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('lecture-form').addEventListener('submit', handleSaveLecture);
     document.getElementById('level-form').addEventListener('submit', handleSaveLevel);
     document.getElementById('course-form').addEventListener('submit', handleSaveCourse);
+    document.getElementById('map-form').addEventListener('submit', handleSaveMapLecture);
 
     navigateToView('dashboard-view');
 });
