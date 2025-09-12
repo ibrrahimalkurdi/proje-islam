@@ -45,30 +45,66 @@ a { color: var(--accent-color); text-decoration: none; }
 a:hover { text-decoration: underline; }
 .container { width: 90%; max-width: 1200px; margin: auto; }
 
-/* --- ستایلێ نوو بۆ شاشەیا چاڤەڕوانیێ --- */
-#loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--dark-bg); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.8s ease-out, visibility 0.8s; visibility: visible; opacity: 1; }
-#loading-screen.fade-out { opacity: 0; visibility: hidden; }
-.loading-logo { text-align: center; animation: fadeInUp 1s ease-out; }
-.loading-logo .logo-top { display: block; font-family: var(--font-logo); font-weight: 800; font-size: 4rem; color: #E6EDF3; letter-spacing: 2px; margin-bottom: 0; text-shadow: 0px 2px 5px rgba(0, 0, 0, 0.5); }
-.loading-logo .logo-bottom { display: block; font-family: var(--font-logo); font-weight: 800; font-size: 5.5rem; line-height: 1; background: linear-gradient(160deg, #58A6FF, #2581F3); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-fill-color: transparent; text-shadow: 0 0 70px rgba(88, 166, 255, 0.4); }
-.welcome-text { font-size: 1.5rem; color: var(--secondary-text); text-align: center; margin-top: 25px; margin-bottom: 30px; animation: fadeInUp 1s ease-out 0.3s both; }
-#loading-message { font-size: 1rem; color: var(--secondary-text); height: 20px; transition: all 0.3s; }
-.loading-bar-container { width: 150px; height: 4px; background-color: var(--border-color); border-radius: 2px; margin-top: 15px; overflow: hidden; animation: fadeInUp 1s ease-out 0.6s both; }
-.loading-bar { width: 100%; height: 100%; background-color: var(--accent-color); border-radius: 2px; animation: loadingAnimation 2s infinite ease-in-out; }
+/* --- شاشەیا چاڤەڕوانیێ (Loading Screen) --- */
+#loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, var(--dark-bg) 0%, #1a1f2e 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.5s ease-out; }
+#loading-screen.fade-out { opacity: 0; pointer-events: none; }
+.loading-logo { text-align: center; }
+.loading-logo .logo-top {
+    display: block;
+    font-family: var(--font-logo);
+    font-weight: 800;
+    font-size: 5rem;
+    color: #E6EDF3;
+    letter-spacing: 2px;
+    margin-bottom: 0;
+    text-shadow: 0px 2px 5px rgba(0, 0, 0, 0.5);
+}
+.loading-logo .logo-bottom {
+    display: block;
+    font-family: var(--font-logo);
+    font-weight: 800;
+    font-size: 6rem;
+    line-height: 1;
+    background: linear-gradient(160deg, #58A6FF, #2581F3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+    text-shadow: 0 0 70px rgba(88, 166, 255, 0.4);
+}
+
+.welcome-text { font-size: 1.5rem; color: var(--secondary-text); text-align: center; margin-top: 20px; margin-bottom: 30px; animation: fadeInUp 1s ease-out 0.5s both; }
+.loading-spinner { width: 50px; height: 50px; border: 3px solid var(--border-color); border-top: 3px solid var(--accent-color); border-radius: 50%; animation: spin 1s linear infinite; }
 
 /* --- ئەنیمەیشنەکان --- */
 @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes loadingAnimation { 0% { transform: translateX(-100%); } 50% { transform: translateX(0); } 100% { transform: translateX(100%); } }
 
 /* --- سەرە (Header) و پێ (Footer) --- */
 header { position: sticky; top: 0; width: 100%; padding: 10px 0; z-index: 1000; background: rgba(13, 17, 23, 0.8); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border-color); }
 header .container { display: flex; justify-content: space-between; align-items: center; }
 .logo { text-decoration: none; display: flex; align-items: baseline; gap: 8px; }
-.logo .logo-top { font-family: var(--font-logo); font-weight: 800; font-size: 1.2rem; color: #E6EDF3; }
-.logo .logo-bottom { font-family: var(--font-logo); font-weight: 800; font-size: 1.8rem; line-height: 1; background: linear-gradient(160deg, #58A6FF, #2581F3); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-fill-color: transparent; }
+.logo .logo-top {
+    font-family: var(--font-logo);
+    font-weight: 800;
+    font-size: 1.2rem;
+    color: #E6EDF3;
+}
+.logo .logo-bottom {
+    font-family: var(--font-logo);
+    font-weight: 800;
+    font-size: 1.8rem;
+    line-height: 1;
+    background: linear-gradient(160deg, #58A6FF, #2581F3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+}
+
+
 .header-actions { display: flex; align-items: center; gap: 15px; }
 .header-icon-btn { background: none; border: none; color: var(--secondary-text); font-size: 1.3rem; cursor: pointer; transition: color 0.3s, transform 0.3s; }
 .header-icon-btn:hover { color: var(--primary-text); transform: scale(1.1); text-decoration: none; }
@@ -84,26 +120,25 @@ footer { padding: 40px 20px; text-align: center; border-top: 1px solid var(--bor
 .view-section { padding: 50px 0; display: none; }
 .view-section.is-visible { display: block; animation: fadeIn 0.5s ease-in-out; }
 .page-header { text-align: center; padding: 50px 20px; }
-.page-header h1 { font-size: 2.8rem; margin-bottom: 10px; background: linear-gradient(120deg, var(--primary-text), var(--accent-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-fill-color: transparent; }
+.page-header h1 { font-size: 2.5rem; margin-bottom: 10px; background: linear-gradient(120deg, var(--primary-text), var(--accent-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-fill-color: transparent; }
 .empty-state-message { text-align: center; color: var(--secondary-text); padding: 50px 20px; font-size: 1.1rem; }
 
-/* === ستایلی نوو و سەرنجراکێش بۆ مالپەرێ سەرەکی === */
+/* === ستایلی نوو بۆ مالپەرێ سەرەکی === */
 #home-view.is-visible { padding: 0; }
 .home-hero-section { min-height: 70vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 60px 20px; background: linear-gradient(160deg, rgba(13, 17, 23, 0.95), rgba(22, 40, 60, 0.8)), url('https://images.unsplash.com/photo-1585036919222-91184de2a58b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80') no-repeat center center/cover; border-bottom: 2px solid var(--accent-color); }
 .home-hero-section h1 { font-size: 4rem; font-weight: 700; color: #fff; margin-bottom: 20px; text-shadow: 0 5px 20px rgba(0,0,0,0.5); animation: fadeInUp 1s ease-out; }
 .home-hero-section h1 span { background: linear-gradient(120deg, #ffffff, var(--accent-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-fill-color: transparent; }
-.home-hero-section p { font-size: 1.4rem; color: var(--primary-text); max-width: 800px; margin: 0 auto 30px auto; animation: fadeInUp 1.2s ease-out; }
+.home-hero-section p { font-size: 1.3rem; color: var(--primary-text); max-width: 800px; margin: 0 auto 30px auto; animation: fadeInUp 1.2s ease-out; }
 .home-hero-section .hero-cta-btn { animation: fadeInUp 1.4s ease-out; }
 .home-navigation-container { padding: 80px 20px; }
-.home-navigation-container h2 { text-align: center; font-size: 2.8rem; margin-bottom: 50px; color: var(--primary-text); position: relative; padding-bottom: 15px; }
+.home-navigation-container h2 { text-align: center; font-size: 2.5rem; margin-bottom: 50px; color: var(--primary-text); position: relative; padding-bottom: 15px; }
 .home-navigation-container h2::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 80px; height: 4px; background-color: var(--accent-color); border-radius: 2px; }
 
-/* --- ستایلێ نوو بۆ کارتێن سەرەکی --- */
+/* GUHERTINA LI GOR DAXWAZÊ: Kartên rûpela sereke hatin piçûkkirin */
 .main-navigation-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 20px;
-    justify-content: center;
 }
 .main-navigation-card {
     display: flex;
@@ -112,6 +147,7 @@ footer { padding: 40px 20px; text-align: center; border-top: 1px solid var(--bor
     justify-content: center;
     text-align: center;
     padding: 15px;
+    gap: 10px;
     background: linear-gradient(145deg, var(--card-bg), #1a1f2e);
     border: 1px solid var(--border-color);
     border-radius: 12px;
@@ -119,17 +155,17 @@ footer { padding: 40px 20px; text-align: center; border-top: 1px solid var(--bor
     transition: all 0.3s ease-in-out;
     position: relative;
     overflow: hidden;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 1 / 1; /* Ji bo çargoşekirinê */
 }
 .main-navigation-card:hover {
-    transform: translateY(-5px) scale(1.05);
+    transform: translateY(-5px) scale(1.03);
     box-shadow: 0 10px 30px rgba(88, 166, 255, 0.15);
     border-color: var(--accent-color);
     text-decoration: none;
 }
 .main-navigation-card i.main-icon {
-    font-size: 2.5rem;
-    margin-bottom: 12px;
+    font-size: 2rem;
+    margin-bottom: 5px;
     background: -webkit-linear-gradient(45deg, var(--accent-color), #79c0ff);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -139,22 +175,40 @@ footer { padding: 40px 20px; text-align: center; border-top: 1px solid var(--bor
     transform: scale(1.1) rotate(5deg);
 }
 .main-navigation-card .card-text-content {
-    flex-grow: 0;
+    flex-grow: 1;
 }
 .main-navigation-card h3 {
-    font-size: 1.1rem;
+    font-size: 1rem;
+    margin-bottom: 3px;
     color: var(--primary-text);
-    line-height: 1.3;
 }
 .main-navigation-card p {
-    display: none;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    color: var(--secondary-text);
+    display: none; /* Danasîn hate veşartin da ku cîh bibe */
 }
 .main-navigation-card.locked { opacity: 0.6; cursor: not-allowed; filter: grayscale(80%); }
 .main-navigation-card.locked:hover { transform: none; box-shadow: none; border-color: var(--border-color); }
 .main-navigation-card .lock-icon { position: absolute; top: 10px; left: 10px; font-size: 1rem; color: var(--warning-color); }
 
+
 /* ستایلێن داشبۆردێ و گەیمیفیکەیشن */
-#dashboard-view .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+/* GUHERTINA LI GOR DAXWAZÊ: Dîmena dashboardê hate başkirin */
+#dashboard-view .dashboard-grid { 
+    display: grid; 
+    grid-template-columns: 1fr; 
+    gap: 25px; 
+}
+@media (min-width: 768px) {
+    #dashboard-view .dashboard-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .full-width-card {
+        grid-column: 1 / -1;
+    }
+}
+
 .dashboard-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 25px; }
 .dashboard-card-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
 .dashboard-card-header i { font-size: 1.5rem; color: var(--accent-color); }
@@ -181,7 +235,7 @@ footer { padding: 40px 20px; text-align: center; border-top: 1px solid var(--bor
 .dashboard-favorites-item span { font-size: 0.8rem; color: var(--secondary-text); }
 .view-all-btn { display: block; text-align: center; margin-top: 15px; padding: 8px; background-color: var(--border-color); border-radius: 6px; }
 
-/* ستایلێ نوو بۆ ئەرکێن ڕۆژانە */
+/* --- ستایلێ نوو بۆ ئەرکێن ڕۆژانە --- */
 .daily-tasks-card .task-item { display: flex; align-items: center; gap: 15px; padding: 12px 0; border-bottom: 1px solid var(--border-color); }
 .daily-tasks-card .task-item:last-child { border-bottom: none; }
 .daily-tasks-card .task-item input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--success-color); cursor: pointer; flex-shrink: 0; }
@@ -191,6 +245,39 @@ footer { padding: 40px 20px; text-align: center; border-top: 1px solid var(--bor
 .streak-info span { font-weight: bold; color: var(--primary-text); }
 .streak-info .broken-streak { color: var(--danger-color); }
 .daily-tasks-timer { font-weight: bold; color: var(--accent-color); background-color: var(--dark-bg); padding: 5px 10px; border-radius: 6px; border: 1px solid var(--border-color); }
+
+/* GUHERTINA LI GOR DAXWAZÊ: Stîla beşa Auth di nav Dashboardê de */
+#auth-container-in-dashboard {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    padding: 30px;
+    border-radius: 10px;
+    max-width: 450px;
+    margin: 40px auto;
+}
+.auth-toggle-link {
+    text-align: center;
+    margin-top: 15px;
+}
+.auth-toggle-link a, #forgot-password-link {
+    cursor: pointer;
+    font-weight: bold;
+}
+.form-submit-btn { 
+    width: 100%; 
+    padding: 12px; 
+    font-size: 1.1rem; 
+    background-color: var(--accent-color); 
+    color: white; border: none; 
+    border-radius: 8px; 
+    cursor: pointer; 
+    font-family: var(--font-kurdish); 
+    transition: background-color .3s; 
+}
+.form-submit-btn.signup-btn {
+    background-color: var(--success-color);
+}
+.form-submit-btn:hover { opacity: .9; }
 
 /* ستایلێن مۆدالا لێگەریانێ */
 #global-search-modal .modal-content { max-width: 700px; padding: 25px; display: flex; flex-direction: column; height: 80vh; }
@@ -216,13 +303,74 @@ footer { padding: 40px 20px; text-align: center; border-top: 1px solid var(--bor
 .favorite-item-actions .remove-btn { color: var(--secondary-text); }
 .favorite-item-actions .remove-btn:hover { color: var(--danger-color); }
 
-/* ستایلێ نوو بۆ دوگمەیا Add to Home */
-#install-app-banner { position: fixed; bottom: -150px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 500px; background: var(--card-bg); border: 1px solid var(--border-color); border-top: 3px solid var(--accent-color); border-radius: 12px 12px 0 0; padding: 20px; box-shadow: 0 -5px 20px rgba(0,0,0,0.3); z-index: 5000; display: flex; justify-content: space-between; align-items: center; gap: 15px; transition: bottom 0.5s ease-in-out; }
-#install-app-banner.visible { bottom: 0; }
-.install-app-text h4 { margin: 0 0 5px 0; color: var(--primary-text); }
-.install-app-text p { margin: 0; font-size: 0.9rem; color: var(--secondary-text); }
-#install-app-btn { background: var(--accent-color); color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-family: var(--font-kurdish); cursor: pointer; white-space: nowrap; }
-#dismiss-install-btn { background: none; border: none; color: var(--secondary-text); font-size: 1.5rem; cursor: pointer; padding: 5px; }
+/* --- ستایلێ نوو بۆ دوگمەیا Add to Home --- */
+#install-app-banner {
+    position: fixed;
+    bottom: -150px; /* Destpêkê veşartî ye */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 500px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-top: 3px solid var(--accent-color);
+    border-radius: 12px 12px 0 0;
+    padding: 20px;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.3);
+    z-index: 5000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    transition: bottom 0.5s ease-in-out;
+}
+#install-app-banner.visible {
+    bottom: 0; /* Dema diyar dibe, tê jor */
+}
+.install-app-text h4 {
+    margin: 0 0 5px 0;
+    color: var(--primary-text);
+}
+.install-app-text p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--secondary-text);
+}
+#install-app-btn {
+    background: var(--accent-color);
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-family: var(--font-kurdish);
+    cursor: pointer;
+    white-space: nowrap;
+}
+#dismiss-install-btn {
+    background: none;
+    border: none;
+    color: var(--secondary-text);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px;
+}
+
+@media (max-width: 768px) {
+    .home-hero-section h1 { font-size: 2.8rem; }
+    .home-hero-section p { font-size: 1.1rem; }
+    .loading-logo .logo-top { font-size: 4rem; }
+    .loading-logo .logo-bottom { font-size: 5rem; }
+    .page-header h1 { font-size: 2rem; }
+}
+@media (max-width: 480px) {
+    .main-navigation-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 15px;
+    }
+    .waneyan-grid, .pirtuk-grid, .book-sales-grid, #teachers-view .teachers-grid {
+        grid-template-columns: 1fr;
+    }
+}
 
 /* === مابەننا ستایلان وەک خۆ === */
 .hero-section { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, rgba(22, 27, 34, 0.1), rgba(13, 17, 23, 0.3)), var(--dark-bg); border-radius: 12px; margin-bottom: 50px; border: 1px solid var(--border-color); }
@@ -272,14 +420,13 @@ footer { padding: 40px 20px; text-align: center; border-top: 1px solid var(--bor
 .purchase-btn { background-color: var(--success-color); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: all 0.3s; }
 .purchase-btn:hover { opacity: 0.9; text-decoration: none; }
 .purchase-btn:disabled { background-color: var(--secondary-text); cursor: not-allowed; opacity: 0.7; }
-/* بچویککرنا کارتێن مامۆستایان */
-#teachers-view .teachers-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
-.teacher-card-simple { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 10px; text-align: center; padding: 20px; transition: all 0.3s ease; }
+#teachers-view .teachers-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 25px; }
+.teacher-card-simple { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 10px; text-align: center; padding: 25px; transition: all 0.3s ease; }
 .teacher-card-simple:hover { transform: translateY(-5px); border-color: var(--accent-color); }
-.teacher-card-simple img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid var(--dark-bg); box-shadow: 0 0 0 3px var(--border-color); margin-bottom: 15px; }
-.teacher-card-simple h3 { font-size: 1.1rem; color: var(--primary-text); margin-bottom: 5px; }
-.teacher-card-simple p { color: var(--secondary-text); font-size: 0.85rem; margin-bottom: 15px; }
-.teacher-card-simple .profile-btn-simple { background: var(--accent-color); color: white; padding: 8px 18px; border-radius: 6px; text-decoration: none; display: inline-block; font-size: 0.9rem; }
+.teacher-card-simple img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--dark-bg); box-shadow: 0 0 0 3px var(--border-color); margin-bottom: 15px; }
+.teacher-card-simple h3 { font-size: 1.2rem; color: var(--primary-text); margin-bottom: 5px; }
+.teacher-card-simple p { color: var(--secondary-text); font-size: 0.9rem; margin-bottom: 15px; }
+.teacher-card-simple .profile-btn-simple { background: var(--accent-color); color: white; padding: 8px 20px; border-radius: 6px; text-decoration: none; display: inline-block; font-size: 0.9rem; }
 .fatwa-controls-new, .hadith-controls-new { display: flex; flex-direction: column; gap: 20px; margin-bottom: 30px; background: var(--card-bg); padding: 20px; border-radius: 10px; border: 1px solid var(--border-color); }
 .fatwa-filter-group { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px; }
 .fatwa-filter-group h4 { margin: 0 15px 0 0; font-weight: 500; color: var(--primary-text); }
@@ -314,7 +461,6 @@ audio::-webkit-media-controls-fullscreen-button { color: var(--primary-text); }
 #location-list-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
 .location-list-item { background: var(--card-bg); border: 1px solid var(--border-color); border-left: 4px solid var(--border-color); border-radius: 8px; padding: 20px; cursor: pointer; transition: all 0.3s ease; }
 .location-list-item:hover { transform: translateY(-4px); border-left-color: var(--accent-color); background-color: #1c222c; }
-.location-list-item.no-map:hover { transform: none; border-left-color: var(--border-color); background-color: var(--card-bg); cursor: default; }
 .location-list-item h4 { font-size: 1.2rem; color: var(--primary-text); margin-bottom: 15px; }
 .location-list-item p { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; color: var(--secondary-text); }
 .location-list-item p i { color: var(--accent-color); font-size: 1rem; margin-top: 4px; }
@@ -322,7 +468,7 @@ audio::-webkit-media-controls-fullscreen-button { color: var(--primary-text); }
 .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); display: none; justify-content: center; align-items: center; z-index: 2000; }
 .modal-overlay.is-visible { display: flex; animation: fadeIn 0.3s; }
 .modal-content { position: relative; width: 90%; background:var(--card-bg); border-radius:10px; max-height: 85vh; overflow-y: auto; }
-.close-modal-btn { position: absolute; top: 15px; right: 20px; color: var(--secondary-text); font-size: 2rem; cursor: pointer; z-index: 10; background: rgba(0,0,0,0.3); border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; line-height: 1;}
+.close-modal-btn { position: absolute; top: 15px; right: 20px; color: var(--secondary-text); font-size: 2rem; cursor: pointer; z-index: 10; }
 #lesson-list-modal .modal-content { max-width: 600px; padding: 30px; }
 #lesson-list-modal h3 { margin-bottom: 20px; text-align: center; font-size: 1.5rem; }
 .lesson-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-radius: 6px; margin-bottom: 8px; background: rgba(0,0,0,0.2); border-right: 3px solid var(--border-color); transition: all .3s; }
@@ -330,18 +476,45 @@ audio::-webkit-media-controls-fullscreen-button { color: var(--primary-text); }
 .lesson-item span { font-size: 1rem; }
 .lesson-item.clickable { cursor: pointer; }
 .watch-btn { background: none; border: 1px solid var(--accent-color); color: var(--accent-color); padding: 5px 12px; border-radius: 5px; cursor: pointer; }
-/* گوهارتنا ستایلا مۆدالێن میدیایێ */
-#media-player-modal .modal-content, #pdf-viewer-modal .modal-content { width: 95%; max-width: 1200px; height: 90vh; padding: 15px; background-color: var(--dark-bg); overflow: hidden; display: flex; flex-direction: column; }
-#media-player-modal .close-modal-btn, #pdf-viewer-modal .close-modal-btn { top: 10px; right: 15px; color: var(--primary-text); }
-#media-player-title { font-size: 1.2rem; margin-bottom: 15px; text-align: center; flex-shrink: 0; }
-.media-player-container { position: relative; width: 100%; flex-grow: 1; padding-top: 56.25%; } /* default for video */
-.media-player-container.audio-container { padding-top: 0; display:flex; align-items:center; justify-content:center;}
-.media-player-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-.media-player-container audio { width: 100%; }
-#pdf-viewer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-shrink: 0; }
-#pdf-viewer-title { font-size: 1.2rem; margin: 0; }
-.pdf-iframe-container { position: relative; width: 100%; flex-grow: 1; }
-.pdf-iframe-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+
+/* GUHERTINA LI GOR DAXWAZÊ: Modala vîdyo û PDF-ê mezintir bû */
+#media-player-modal .modal-content,
+#pdf-viewer-modal .modal-content {
+    width: 95vw;
+    height: 95vh;
+    max-width: 1600px;
+    max-height: 900px;
+    padding: 20px;
+    background-color: var(--dark-bg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+#media-player-modal .close-modal-btn,
+#pdf-viewer-modal .close-modal-btn {
+    top: 10px; right: 15px; color: var(--primary-text);
+}
+#media-player-title, #pdf-viewer-title { 
+    font-size: 1.4rem; 
+    margin-bottom: 15px; 
+    text-align: center; 
+    flex-shrink: 0;
+}
+.media-player-container, .pdf-iframe-container { 
+    position: relative; 
+    width: 100%; 
+    flex-grow: 1; 
+}
+.media-player-container iframe, .pdf-iframe-container iframe { 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    border: none; 
+}
+.media-player-container audio { width: 100%; margin-top: 20px; }
+
 
 #teacher-profile-modal .modal-content { max-width: 800px; padding: 0; overflow: hidden; background-color: var(--dark-bg); }
 #profile-dynamic-content { max-height: 85vh; overflow-y: auto; }
@@ -388,23 +561,37 @@ audio::-webkit-media-controls-fullscreen-button { color: var(--primary-text); }
 .form-group input:focus, .form-group textarea:focus { border-color: var(--accent-color); outline: none; }
 .form-group textarea { min-height: 120px; resize: vertical; }
 .form-group-checkbox { display: flex; align-items: center; justify-content: flex-end; gap: 10px; }
-.form-submit-btn { width: 100%; padding: 12px; font-size: 1.1rem; background-color: var(--success-color); color: white; border: none; border-radius: 8px; cursor: pointer; font-family: var(--font-kurdish); transition: background-color .3s; }
-.form-submit-btn:hover { opacity: .9; }
 .form-submit-btn:disabled { background-color: var(--secondary-text); cursor: not-allowed; }
 .live-registration-form { max-width: 600px; margin: 20px auto; background: var(--card-bg); padding: 30px; border-radius: 10px; border: 1px solid var(--border-color); }
-/* ستایلێ نوو بۆ فورمێن چوونەژوورێ د ناڤ داشبۆردێ دا */
-.auth-prompt-card { max-width: 450px; margin: 40px auto; padding: 30px; background-color: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color); }
-.auth-prompt-card h3 { text-align: center; margin-bottom: 25px; font-size: 1.6rem; }
-.auth-prompt-card .form-group label { font-size: 0.9rem; }
-.auth-prompt-card .form-submit-btn { margin-top: 10px; }
-.auth-prompt-card p { text-align: center; margin-top: 20px; font-size: 0.95rem; }
-.auth-prompt-card #login-error, .auth-prompt-card #signup-error { color:var(--danger-color); text-align:center; margin-top:10px; display:none; }
-
-.level-guidance-card { background: var(--card-bg); border: 1px solid var(--border-color); border-left: 4px solid var(--accent-color); border-radius: 10px; padding: 25px; margin-bottom: 40px; }
-.level-guidance-card h3 { font-size: 1.5rem; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
-.level-guidance-card ul { list-style: none; padding-right: 0; }
-.level-guidance-card ul li { margin-bottom: 10px; display: flex; align-items: flex-start; gap: 12px; }
-.level-guidance-card ul li .icon { color: var(--success-color); margin-top: 5px; }
+.level-guidance-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--accent-color);
+    border-radius: 10px;
+    padding: 25px;
+    margin-bottom: 40px;
+}
+.level-guidance-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.level-guidance-card ul {
+    list-style: none;
+    padding-right: 0;
+}
+.level-guidance-card ul li {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+.level-guidance-card ul li .icon {
+    color: var(--success-color);
+    margin-top: 5px;
+}
 .levels-container { display: flex; flex-direction: column; gap: 30px; }
 .level-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; transition: all 0.3s ease; }
 .level-card-header { padding: 20px 25px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
@@ -477,50 +664,35 @@ audio::-webkit-media-controls-fullscreen-button { color: var(--primary-text); }
 .tafsir-meta-item { font-size: 0.95rem; color: var(--secondary-text); }
 .tafsir-meta-item span { color: var(--primary-text); font-weight: bold; }
 .tafsir-content-full { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 30px; white-space: pre-wrap; line-height: 1.9; font-size: 1.1rem; }
-.reset-progress-container { background-color: rgba(248, 81, 73, 0.1); border: 1px solid var(--danger-color); border-radius: 10px; padding: 20px; margin-top: 30px; text-align: center; }
-.reset-progress-btn { background-color: var(--danger-color); color: white; padding: 10px 20px; border-radius: 8px; cursor: pointer; border: none; font-family: var(--font-kurdish); font-weight: bold; }
-
-/* ستایلێن تایبەت ب مۆبایلێ و بجیککرنا قەباران */
-@media (max-width: 768px) {
-    .home-hero-section h1 { font-size: 2.8rem; }
-    .home-hero-section p { font-size: 1.1rem; }
-    .loading-logo .logo-top { font-size: 3.5rem; }
-    .loading-logo .logo-bottom { font-size: 5rem; }
-    .page-header h1 { font-size: 2.2rem; }
-    .hero-title { font-size: 2.2rem; }
-    .home-navigation-container h2, .live-view-content h1 { font-size: 2rem; }
-    .waneyan-grid, .pirtuk-grid, #location-list-container { grid-template-columns: 1fr; }
-    .main-navigation-grid { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; }
-    .main-navigation-card i.main-icon { font-size: 2rem; }
-    .main-navigation-card h3 { font-size: 1rem; }
-    #teachers-view .teachers-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.reset-progress-container {
+    background-color: rgba(248, 81, 73, 0.1);
+    border: 1px solid var(--danger-color);
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 30px;
+    text-align: center;
 }
-
-@media (max-width: 480px) {
-    .main-navigation-grid { grid-template-columns: repeat(2, 1fr); }
-    #dashboard-view .dashboard-grid { grid-template-columns: 1fr; }
-    .dashboard-card { padding: 20px; }
-    .points-number { font-size: 2.8rem; }
-    .teacher-card-simple { padding: 15px; }
-    .hadith-text-new { font-size: 1.1rem; }
-    .fatwa-question h4 { font-size: 1rem; }
-    .level-card-header, .level-course-item-new { flex-direction: column; align-items: flex-start; gap: 10px; }
-    .level-meta, .level-progress-bar { width: 100%; }
+.reset-progress-btn {
+    background-color: var(--danger-color);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: none;
+    font-family: var(--font-kurdish);
+    font-weight: bold;
 }
 </style>
 </head>
 <body>
 <!-- شاشەیا چاڤەڕوانیێ -->
 <div id="loading-screen">
-    <div class="loading-logo">
-        <span class="logo-top">پڕۆژێ</span>
-        <span class="logo-bottom">ئیسلام</span>
-    </div>
-    <div class="welcome-text">بخێر هاتن...</div>
-    <div id="loading-message"></div>
-    <div class="loading-bar-container">
-        <div class="loading-bar"></div>
-    </div>
+<div class="loading-logo">
+    <span class="logo-top">پڕۆژێ</span>
+    <span class="logo-bottom">ئیسلام</span>
+</div>
+<div class="welcome-text">بخێر هاتن...<br><span id="loading-message" style="font-size:1rem;"></span></div>
+<div class="loading-spinner"></div>
 </div>
 
 <!-- سەرە (Header) -->
@@ -537,7 +709,8 @@ audio::-webkit-media-controls-fullscreen-button { color: var(--primary-text); }
             <button class="header-icon-btn" onclick="navigateToView('dashboard-view')" title="داشبۆرد">
                 <i class="fas fa-user-circle"></i>
             </button>
-            <button class="header-icon-btn" id="auth-btn" onclick="handleAuthClick()" title="چوونەژوور / دەرکەفتن">
+            <!-- GUHERTINA LI GOR DAXWAZÊ: Ev duikme naha ji bo çûn û derketinê ye û berê bikarhêner dide dashboardê -->
+            <button class="header-icon-btn" id="auth-btn" onclick="handleAuthClick()" title="چوونەژوور">
                 <i class="fas fa-right-to-bracket"></i>
             </button>
             <a href="#" id="back-to-home-btn" onclick="showHomeView()">
@@ -573,19 +746,7 @@ audio::-webkit-media-controls-fullscreen-button { color: var(--primary-text); }
 <div class="modal-overlay" id="lesson-list-modal"> <div class="modal-content"> <span class="close-modal-btn" onclick="closeModal('lesson-list-modal')">&times;</span> <h3 id="lesson-list-title"></h3> <div id="lesson-list-container"></div> </div> </div>
 <div class="modal-overlay" id="teacher-profile-modal"> <div class="modal-content profile-modal-content"> <span class="close-modal-btn" onclick="closeModal('teacher-profile-modal')">&times;</span> <div id="profile-dynamic-content"></div> </div> </div>
 <div class="modal-overlay" id="media-player-modal"> <div class="modal-content"> <span class="close-modal-btn" onclick="closeModal('media-player-modal')">&times;</span> <h3 id="media-player-title"></h3> <div id="media-player-container" class="media-player-container"></div> </div> </div>
-
-<!-- GUHERTIN: مۆدالا PDFێ ب دوگمەیا داگرتنێ ڤە -->
-<div class="modal-overlay" id="pdf-viewer-modal"> 
-    <div class="modal-content"> 
-        <span class="close-modal-btn" onclick="closeModal('pdf-viewer-modal')">&times;</span> 
-        <div id="pdf-viewer-header">
-            <h3 id="pdf-viewer-title"></h3>
-            <a id="pdf-download-btn" href="#" target="_blank" rel="noopener noreferrer" class="card-btn-small" style="text-decoration: none; padding: 8px 15px; flex: 0 1 auto;"><i class="fas fa-download"></i> داگرتن</a>
-        </div>
-        <div class="pdf-iframe-container"> <iframe id="pdf-iframe" src="" frameborder="0"></iframe> </div> 
-    </div> 
-</div>
-
+<div class="modal-overlay" id="pdf-viewer-modal"> <div class="modal-content"> <span class="close-modal-btn" onclick="closeModal('pdf-viewer-modal')">&times;</span> <h3 id="pdf-viewer-title"></h3> <div class="pdf-iframe-container"> <iframe id="pdf-iframe" src="" frameborder="0"></iframe> </div> </div> </div>
 
 <!-- مۆدالا لێگەریانا گشتی -->
 <div class="modal-overlay" id="global-search-modal">
@@ -605,8 +766,10 @@ audio::-webkit-media-controls-fullscreen-button { color: var(--primary-text); }
         ژمارا گشتی یا سەرەدانکەران: 
         <span id="visitor-counter" style="font-weight: bold; color: var(--primary-text); direction: ltr; display: inline-block;">...</span>
     </div>
-    <!-- GUHERTIN: لنکی پەیوەندیێ -->
-    <p style="margin-top: 10px; font-size: 0.9rem;">بۆ هەر کێشەیەک، <a href="mailto:piyawkrd@gmail.com">پەیوەندیێ ب مە بکە</a>.</p>
+    <!-- GUHERTINA LI GOR DAXWAZÊ: Lînka peywendiyê hate zêdekirin -->
+     <div style="margin-top: 15px;">
+        <a href="https://t.me/your_telegram_contact" target="_blank" rel="noopener noreferrer">بۆ هەر کێشەیەک پەیوەندیێ ب مە بکە</a>
+    </div>
     <div class="footer-social-links">
         <a href="#" target="_blank" rel="noopener noreferrer" title="Telegram"><i class="fab fa-telegram"></i></a>
         <a href="#" target="_blank" rel="noopener noreferrer" title="YouTube"><i class="fab fa-youtube"></i></a>
@@ -658,7 +821,6 @@ const auth = firebase.auth();
 // === [ 1. حالەتێ گشتی و گۆڕاوەکان ] ===
 let currentUser = null; 
 
-// GUHERTIN: ژێبرنا collectionێن نەپێدڤی
 const collections = {
     teachers: 'teachers', 
     generalLectures: 'generalLectures', 
@@ -675,7 +837,6 @@ const collections = {
     userProgress: 'userProgress'
 };
 
-// GUHERTIN: ژێبرنا داتایێن نەپێدڤی
 let allData = { 
     teachers: {}, 
     generalLectures: [], 
@@ -697,12 +858,8 @@ let dailyTaskTimerInterval = null;
 
 async function syncLocalDataWithFirestore() {
     if (!currentUser) return;
-    const loadingMessage = document.getElementById('loading-message');
-    if (loadingMessage) loadingMessage.textContent = 'هەڤدەمکرنا پێشکەفتنا تە...';
-    
     const userProgressRef = db.collection(collections.userProgress).doc(currentUser.uid);
     const doc = await userProgressRef.get();
-
     if (doc.exists) {
         console.log("Datayên bikarhêner ji Firestore hatin wergirtin.");
         const cloudData = doc.data();
@@ -725,7 +882,6 @@ function saveLocalDataToFirestore() {
         'islamProjectProgress_ReadHadiths', 'islamProject_Favorites', 'islamProject_Badges',
         'islamProject_DailyStreak', 'islamProject_Points', 'islamProject_DailyTasks'
     ];
-
     keysToSync.forEach(key => {
         const item = localStorage.getItem(key);
         if (item) {
@@ -736,13 +892,13 @@ function saveLocalDataToFirestore() {
             }
         }
     });
-
     if (Object.keys(localData).length > 0) {
         db.collection(collections.userProgress).doc(currentUser.uid).set(localData, { merge: true })
             .then(() => console.log("Datayên lokal bi serkeftî li Firestore hatin tomarkirin."))
             .catch(error => console.error("Çewtî di tomarkirina datayan de:", error));
     }
 }
+
 
 // === بەڕێوەبەرێن حالەتان (State Managers) ===
 const progressManager = {
@@ -819,7 +975,11 @@ const dailyTaskManager = {
         { id: 'adhkar', text: 'کرنا زکرێن سپێدە و ئێڤاران', points: 5 },
         { id: 'progress', text: 'پێشکەفتن د ڕێرەوا فێربوونێ دا', points: 10 }
     ],
-    getData: function() { try { return JSON.parse(localStorage.getItem(this.key)) || { date: '', completedTasks: [], consecutiveStreak: 0, brokenStreak: 0, points: 0 }; } catch(e) { return { date: '', completedTasks: [], consecutiveStreak: 0, brokenStreak: 0, points: 0 }; } },
+    getData: function() {
+        try {
+            return JSON.parse(localStorage.getItem(this.key)) || { date: '', completedTasks: [], consecutiveStreak: 0, brokenStreak: 0, points: 0 };
+        } catch(e) { return { date: '', completedTasks: [], consecutiveStreak: 0, brokenStreak: 0, points: 0 }; }
+    },
     saveData: function(data) { localStorage.setItem(this.key, JSON.stringify(data)); if(currentUser) saveLocalDataToFirestore(); },
     checkAndUpdateTasks: function() {
         let data = this.getData();
@@ -866,14 +1026,12 @@ document.addEventListener('DOMContentLoaded', () => {
     auth.onAuthStateChanged(user => {
         const loadingScreen = document.getElementById('loading-screen');
         if (user) {
-            console.log("Bikarhêner çû jûrê:", user.email);
             currentUser = user;
             updateAuthUI(true);
             syncLocalDataWithFirestore().then(() => {
                  initializeApp(loadingScreen);
             });
         } else {
-            console.log("Bikarhêner derket.");
             currentUser = null;
             updateAuthUI(false);
             initializeApp(loadingScreen);
@@ -882,10 +1040,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function initializeApp(loadingScreen) {
-    const loadingMessage = document.getElementById('loading-message');
     try {
-        await loadDataFromFirestore(loadingMessage);
-        if(loadingMessage) loadingMessage.textContent = 'رێکخستنا دیتنان...';
+        await loadDataFromFirestore();
         dailyTaskManager.checkAndUpdateTasks();
         buildAllViews();
         updateAndShowVisitorCount();
@@ -900,38 +1056,39 @@ async function initializeApp(loadingScreen) {
         loadingScreen.innerHTML = '<div class="welcome-text" style="animation:none; opacity:1;">چەوتیەک روویدا د وەرگرتنا زانیارییان دا.<br>هیڤیدارین پەیوەندیێ ب پشتەڤانیا تەکنیکی بکە.</div>'; 
         return; 
     } finally { 
-        if(loadingMessage) loadingMessage.textContent = 'سەرکەفتی بوو!';
-        setTimeout(() => {
-            loadingScreen.classList.add('fade-out'); 
-        }, 500);
+        loadingScreen.classList.add('fade-out'); 
     }
 }
 
 function setupEventListeners() { document.querySelectorAll('.modal-overlay').forEach(overlay => { overlay.addEventListener('click', function(event) { if (event.target === this) closeModal(this.id); }); }); }
 
 // === [ 3. وەرگرتن و پرۆسێسا داتایان ژ FIREBASE ] ===
-async function loadDataFromFirestore(loadingMessage) {
-    if(loadingMessage) loadingMessage.textContent = "زانیاری ژ Firebase دهێنە وەرگرتن...";
-    console.log("Fetching new data from Firestore...");
-
+async function loadDataFromFirestore() {
+    const loadingMessage = document.getElementById('loading-message');
+    loadingMessage.textContent = "زانیاری ژ Firebase دهێنە وەرگرتن...";
     try {
         const fetchCollection = async (collectionName) => {
             const snapshot = await db.collection(collectionName).get();
             return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         };
-
         const [
             teachersDocs, generalLecturesDocs, booksDocs, bookSalesDocs,
             locationsDocs, liveCourseDocs, levelsDocs, fatwasDocs,
             hadithsDocs, tafsirDocs, viewStatusDocs,
             adhkarDocs
         ] = await Promise.all([
-            fetchCollection(collections.teachers), fetchCollection(collections.generalLectures),
-            fetchCollection(collections.books), fetchCollection(collections.bookSales),
-            fetchCollection(collections.locations), fetchCollection(collections.liveCourse),
-            fetchCollection(collections.levels), fetchCollection(collections.fatwas),
-            fetchCollection(collections.hadiths), fetchCollection(collections.tafsir),
-            fetchCollection(collections.viewStatus), fetchCollection(collections.adhkar)
+            fetchCollection(collections.teachers),
+            fetchCollection(collections.generalLectures),
+            fetchCollection(collections.books),
+            fetchCollection(collections.bookSales),
+            fetchCollection(collections.locations),
+            fetchCollection(collections.liveCourse),
+            fetchCollection(collections.levels),
+            fetchCollection(collections.fatwas),
+            fetchCollection(collections.hadiths),
+            fetchCollection(collections.tafsir),
+            fetchCollection(collections.viewStatus),
+            fetchCollection(collections.adhkar)
         ]);
 
         allData.teachers = teachersDocs.reduce((acc, teacher) => { acc[teacher.id] = teacher; return acc; }, {});
@@ -946,9 +1103,8 @@ async function loadDataFromFirestore(loadingMessage) {
         allData.tafsir = tafsirDocs.reduce((acc, surah) => { acc[surah.id] = surah; return acc; }, {});
         allData.viewStatuses = viewStatusDocs.reduce((acc, status) => { acc[status.viewId] = status.statusCode; return acc; }, {});
         allData.adhkar = adhkarDocs;
-        
-        console.log("Data fetched from Firestore successfully.", allData);
 
+        console.log("Data fetched from Firestore successfully.");
     } catch (error) { 
         console.error('شکەستن د بارکرنا داتایان ژ Firebase:', error);
         throw error;
@@ -961,13 +1117,13 @@ function closeModal(modalId) { const modal = document.getElementById(modalId); i
 
 // === [ 5. ئاڤاکەرێن دیتنان (View Builders) ] ===
 function buildAllViews() {
-    // GUHERTIN: ژێبرنا view builders یێن نەپێدڤی
     const viewBuilders = { 
         'home-view': buildHomeView, 'levels-view': buildLevelsView, 'waneyan-view': buildWaneyanView, 
         'pirtukxane-view': buildPirtukxaneView, 'teachers-view': buildTeachersView, 'fatwas-view': buildFatwasView, 
         'map-view': buildMapView, 'live-view': buildLiveView, 'hadith-view': buildHadithView, 'tafsir-view': buildTafsirView, 
         'book-sales-view': buildBookSalesView, 'dashboard-view': buildDashboardView, 'favorites-view': buildFavoritesView,
-        'adhkar-view': buildAdhkarView, 'prayer-times-view': buildPrayerTimesView, 'kids-view': buildKidsView
+        'adhkar-view': buildAdhkarView,
+        'prayer-times-view': buildPrayerTimesView, 'kids-view': buildKidsView
     };
     Object.keys(viewBuilders).forEach(viewId => {
         const viewContainer = document.getElementById(viewId);
@@ -985,21 +1141,21 @@ const createEmptyStateMessage = (message) => `<div class="empty-state-message">$
 
 function buildHomeView() {
     const container = document.getElementById('home-view');
-    // GUHERTIN: ژێبرنا بەشێن (Seerah) و (Fiqh)
+    // GUHERTINA LI GOR DAXWAZÊ: Beşên Fiqh û Sîret hatin rakirin
     const allNavItems = [
-        { viewId: 'levels-view', icon: 'fas fa-stairs', title: 'رێرەوا فێربوونێ' }, 
-        { viewId: 'waneyan-view', icon: 'fas fa-video', title: 'وانەیێن گشتی' }, 
-        { viewId: 'tafsir-view', icon: 'fas fa-quran', title: 'تەفسیرا قورئانێ' }, 
-        { viewId: 'hadith-view', icon: 'fas fa-book-quran', title: 'کتێبخانەیا حەدیسێ' }, 
-        { viewId: 'fatwas-view', icon: 'fas fa-question-circle', title: 'پرسیار و بەرسڤ' }, 
-        { viewId: 'teachers-view', icon: 'fas fa-chalkboard-teacher', title: 'مامۆستایان' }, 
-        { viewId: 'adhkar-view', icon: 'fas fa-mosque', title: 'دوعا و زکران' },
-        { viewId: 'pirtukxane-view', icon: 'fas fa-swatchbook', title: 'پەرتوکخانە' }, 
-        { viewId: 'book-sales-view', icon: 'fas fa-shopping-cart', title: 'فرۆتنا پەرتووکان' },
-        { viewId: 'map-view', icon: 'fas fa-map-marked-alt', title: 'ناوەند و چالاکی' }, 
-        { viewId: 'live-view', icon: 'fas fa-satellite-dish', title: 'خولێن ڕاستەوخۆ' },
-        { viewId: 'prayer-times-view', icon: 'fas fa-clock', title: 'کاتی نڤێژان' },
-        { viewId: 'kids-view', icon: 'fas fa-child', title: 'بەشێ زارۆیان' }
+        { viewId: 'levels-view', icon: 'fas fa-stairs', title: 'رێرەوا فێربوونێ', desc: 'فێربوونا رێکخستی ژ ئاستێ 1' }, 
+        { viewId: 'waneyan-view', icon: 'fas fa-video', title: 'وانەیێن گشتی', desc: 'ل زنجیرە وانەیان بگەڕە' }, 
+        { viewId: 'tafsir-view', icon: 'fas fa-quran', title: 'تەفسیرا قورئانێ', desc: 'تەفسیرا سورەتان بخوینە' }, 
+        { viewId: 'hadith-view', icon: 'fas fa-book-quran', title: 'کتێبخانەیا حەدیسێ', desc: 'ل حەدیسان بگەڕە' }, 
+        { viewId: 'fatwas-view', icon: 'fas fa-question-circle', title: 'پرسیار و بەرسڤ', desc: 'بەرسڤا پرسیارێن شەرعی' }, 
+        { viewId: 'teachers-view', icon: 'fas fa-chalkboard-teacher', title: 'مامۆستایان', desc: 'پرۆفایلا مامۆستایان ببینە' }, 
+        { viewId: 'adhkar-view', icon: 'fas fa-mosque', title: 'دوعا و زکران', desc: 'زکرێن رۆژانە و دوعایێن گرنگ' },
+        { viewId: 'pirtukxane-view', icon: 'fas fa-swatchbook', title: 'پەرتوکخانە', desc: 'پەرتوکێن هەلبژارتی بخوینە' }, 
+        { viewId: 'book-sales-view', icon: 'fas fa-shopping-cart', title: 'فرۆتنا پەرتووکان', desc: 'پەرتوکێن بەردەست بۆ کرینێ' },
+        { viewId: 'map-view', icon: 'fas fa-map-marked-alt', title: 'خەریتە', desc: 'جهێ وانەگوتنێ ببینە' }, 
+        { viewId: 'live-view', icon: 'fas fa-satellite-dish', title: 'خولێن ڕاستەوخۆ', desc: 'پشکداریێ د خولان دا بکە' },
+        { viewId: 'prayer-times-view', icon: 'fas fa-clock', title: 'کاتی نڤێژان', desc: 'دەمێن نڤێژان و ئاراستا قبلێ' },
+        { viewId: 'kids-view', icon: 'fas fa-child', title: 'بەشێ زارۆیان', desc: 'ناڤەرۆکەکا تایبەت بۆ زارۆیان' }
     ];
 
     const unlockedItems = [];
@@ -1015,19 +1171,18 @@ function buildHomeView() {
     });
 
     const renderCard = (item, isLocked) => {
-        const cardTitle = isLocked ? item.title : item.title;
         if (isLocked) {
             const lockIconClass = item.status === '1' ? 'fa-hourglass-half' : 'fa-lock';
             const titleText = item.status === '1' ? 'ئەڤ بەشە د کارکرنێ دایە' : 'ئەڤ بەشە قفلە';
             return `<div class="main-navigation-card locked" title="${titleText}">
                         <i class="lock-icon fas ${lockIconClass}"></i>
                         <i class="${item.icon} main-icon"></i>
-                        <div class="card-text-content"><h3>${cardTitle}</h3></div>
+                        <div class="card-text-content"><h3>${item.title}</h3><p>${item.desc}</p></div>
                     </div>`;
         } else {
-            return `<a href="#" onclick="navigateToView('${item.viewId}')" class="main-navigation-card" title="${cardTitle}">
+            return `<a href="#" onclick="navigateToView('${item.viewId}')" class="main-navigation-card">
                         <i class="${item.icon} main-icon"></i>
-                        <div class="card-text-content"><h3>${cardTitle}</h3></div>
+                        <div class="card-text-content"><h3>${item.title}</h3><p>${item.desc}</p></div>
                     </a>`;
         }
     };
@@ -1035,24 +1190,103 @@ function buildHomeView() {
     const unlockedHTML = unlockedItems.map(item => renderCard(item, false)).join('');
     const lockedHTML = lockedItems.map(item => renderCard(item, true)).join('');
     const navigationGridHTML = unlockedHTML + lockedHTML;
-
     container.innerHTML = `<div class="home-hero-section"><h1>پرۆژێ <span>ئیسلام</span></h1><p>دەروازەیەکا مودێرن و رێکخستی بۆ فێربوون و تێگەهشتنا ئیسلامێ، ژ ژێدەرێن باوەرپێکری.</p><a href="#" onclick="navigateToView('levels-view')" class="hero-cta-btn"><i class="fas fa-play"></i> دەستپێبکە</a></div><div class="home-navigation-container"><h2>بەشێن سەرەکی</h2><div class="main-navigation-grid">${navigationGridHTML}</div></div>`;
 }
 
-// GUHERTIN: گوهارتنا تەماما فەنکشنێ داشبۆردێ
+// GUHERTINA LI GOR DAXWAZÊ: Fonksiyona Dashboardê hate nûjenkirin da ku beşa login-ê tê de be
 function buildDashboardView() {
     const container = document.getElementById('dashboard-view');
     
-    if (!currentUser) {
-        // Nîşandana forma çûnê jûrê eger bikarhêner neçûbe jûrê
+    if (currentUser) {
+        // Bikarhêner çûye jûrê, dashboard-a wî nîşan bide
+        const points = gamificationManager.recalculateTotalPoints();
+        const dailyStreak = gamificationManager.getDailyStreak();
+        const dailyTasksData = dailyTaskManager.getData();
+        const consecutiveTaskStreak = dailyTasksData.consecutiveStreak;
+        const brokenTaskStreak = dailyTasksData.brokenStreak;
+        const unlockedBadges = gamificationManager.getUnlockedBadges();
+
+        const badgesHTML = Object.entries(gamificationManager.badgesData).map(([id, badge]) => {
+            const isUnlocked = unlockedBadges.includes(id);
+            return `<div class="badge-item" title="${badge.title} - ${isUnlocked ? 'دەستکەفتیە' : 'دەستنەکەفتیە'}">
+                <i class="fas ${badge.icon} badge-icon ${isUnlocked ? 'unlocked' : ''}"></i>
+                <span class="badge-title">${badge.title}</span>
+            </div>`;
+        }).join('');
+
+        const tasksHTML = dailyTaskManager.tasks.map(task => {
+            const isCompleted = dailyTasksData.completedTasks.includes(task.id);
+            return `<div class="task-item ${isCompleted ? 'completed' : ''}">
+                <input type="checkbox" id="task-${task.id}" onchange="dailyTaskManager.toggleTask('${task.id}')" ${isCompleted ? 'checked' : ''}>
+                <label for="task-${task.id}">${task.text} (+${task.points} خال)</label>
+            </div>`;
+        }).join('');
+
+        const completedCourses = progressManager.getCompletedCourses();
+        const totalLevelCourses = allData.levels.reduce((sum, level) => sum + (level.courses ? level.courses.length : 0), 0);
+        const progressPercentage = totalLevelCourses > 0 ? (completedCourses.length / totalLevelCourses) * 100 : 0;
+
+        const favorites = favoritesManager.getFavorites();
+        const favoritesSummaryHTML = favorites.length > 0
+            ? `<ul class="dashboard-favorites-list">
+                   ${favorites.slice(0, 4).map(fav => `<li class="dashboard-favorites-item"><a href="#" onclick="navigateToFavorite('${fav.type}', '${fav.id}')">${fav.title.substring(0, 30)}...</a><span>${new Date(fav.addedOn).toLocaleDateString()}</span></li>`).join('')}
+               </ul><a href="#" onclick="navigateToView('favorites-view')" class="view-all-btn">نیشاندانا هەمیان</a>`
+            : createEmptyStateMessage('هیچ دڵخوازەک نینە.');
+        
+        const resetProgressSection = `
+            <div class="reset-progress-container">
+                <h4><i class="fas fa-exclamation-triangle"></i> ژێبرنا هەمی پێشکەفتنێ</h4>
+                <p style="color:var(--secondary-text); margin: 10px 0;">ئاگاداربە! بکارئینانا ڤێ دوگمەیێ دێ هەمی پێشکەفتنێن تە (خال، ئاست، وانە...) ژێبەت و ناهێنە ڤەگەڕاندن.</p>
+                <button class="reset-progress-btn" onclick="resetAllProgress()">من دڤێت پێشکەفتنا خۆ ژێببەم</button>
+            </div>
+        `;
+
+        container.innerHTML = `
+            <header class="page-header"><h1>داشبۆرد</h1><p>پێشکەفتن و چالاکیێن خۆ لڤێرێ ببینە</p></header>
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <div class="dashboard-card-header"><i class="fas fa-star"></i><h3>خالێن تە</h3></div>
+                    <div class="points-display"><div class="points-number">${points}</div><div class="points-label">خال</div></div>
+                    ${dailyStreak > 1 ? `<div class="daily-streak-display"><i class="fas fa-fire"></i><span>${dailyStreak} رۆژێن لسەر ئێک (سەرەدان)</span></div>` : ''}
+                </div>
+                <div class="dashboard-card">
+                    <div class="dashboard-card-header"><i class="fas fa-bookmark"></i><h3>دڵخوازێن من</h3></div>
+                    ${favoritesSummaryHTML}
+                </div>
+                <div class="dashboard-card daily-tasks-card full-width-card">
+                    <div class="dashboard-card-header"><i class="fas fa-tasks"></i><h3>ئەرکێن تە یێن ڕۆژانە</h3></div>
+                    <div id="daily-tasks-container">${tasksHTML}</div>
+                    <div class="daily-tasks-footer">
+                        <div class="streak-info"><i class="fas fa-calendar-check"></i> پابەندبوون: <span>${consecutiveTaskStreak} ڕۆژ</span></div>
+                        <div id="daily-tasks-timer-container">دەمێ مای: <span class="daily-tasks-timer" id="daily-tasks-timer-display">--:--:--</span></div>
+                        <div class="streak-info"><i class="fas fa-calendar-times"></i> پابەندنەبوون: <span class="broken-streak">${brokenTaskStreak} ڕۆژ</span></div>
+                    </div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="dashboard-card-header"><i class="fas fa-chart-line"></i><h3>پێشکەفتنا گشتی</h3></div>
+                    <div class="progress-item"><div class="progress-item-title"><span>رێرەوا فێربوونێ</span><span>${completedCourses.length} ژ ${totalLevelCourses}</span></div><div class="progress-bar-container"><div class="progress-bar-fill" style="width: ${progressPercentage.toFixed(1)}%;"></div></div></div>
+                    <div class="progress-item"><div class="progress-item-title"><span>وانەیێن گشتی</span><span>${progressManager.getWatchedLectures().length}</span></div></div>
+                    <div class="progress-item"><div class="progress-item-title"><span>پەرتوکێن خواندی</span><span>${progressManager.getReadLibraryBooks().length}</span></div></div>
+                    <div class="progress-item"><div class="progress-item-title"><span>حەدیسێن خواندی</span><span>${hadithTracker.getReadHadiths().length} ژ ${allData.hadiths.length}</span></div></div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="dashboard-card-header"><i class="fas fa-trophy"></i><h3>نیشان و دەستکەفت</h3></div>
+                    <div id="badges-container">${badgesHTML || createEmptyStateMessage('هیچ نیشانەکا دەستکەفتی نینە.')}</div>
+                </div>
+                <div class="full-width-card">${resetProgressSection}</div>
+            </div>`;
+        startDailyTaskTimer();
+    } else {
+        // Bikarhêner neçûye jûrê, forma login-ê nîşan bide
         container.innerHTML = `
             <header class="page-header">
-                <h1>هەژمارا من</h1>
-                <p>بچۆ ژوور یان هەژمارەکا نوو دروست بکە دا پێشکەفتنا خۆ تۆمار بکەی.</p>
+                <h1>هەژمارا تە</h1>
+                <p>بچۆ ژوور دا کو پێşkeftina xwe tomar bikî an jî hejmarek nû çêke.</p>
             </header>
-            <div class="auth-prompt-card">
+            <div id="auth-container-in-dashboard">
+                <!-- Login Form -->
                 <div id="login-form">
-                    <h3>چوونەژوور</h3>
+                    <h3 style="text-align: center; margin-bottom: 20px;">چوونەژوور</h3>
                     <form onsubmit="event.preventDefault(); handleLogin()">
                         <div class="form-group">
                             <label for="login-email">ئیمێل</label>
@@ -1062,18 +1296,19 @@ function buildDashboardView() {
                             <label for="login-password">پاسورد</label>
                             <input type="password" id="login-password" required>
                         </div>
+                        <div style="text-align:right; margin-bottom:15px; font-size: 0.9rem;">
+                            <a href="#" id="forgot-password-link" onclick="handleForgotPassword()">Te şîfreya xwe ji bîr kiriye?</a>
+                        </div>
                         <button type="submit" class="form-submit-btn">چوونەژوور</button>
-                        <p id="login-error"></p>
+                        <p id="login-error" style="color:var(--danger-color); text-align:center; margin-top:10px; display:none;"></p>
                     </form>
-                    <p>
-                        <a href="#" onclick="event.preventDefault(); handlePasswordReset()">ژمارا نهێنی ژبیرکر؟</a>
-                    </p>
-                    <p>
-                        هەژمارا تە نینە؟ <a href="#" onclick="event.preventDefault(); toggleAuthForm()">ئێکێ نوو دروست بکە</a>
+                    <p class="auth-toggle-link">
+                        ئەکوانتێ تە نینە؟ <a href="#" onclick="toggleAuthForm()">ئەکوانتەکێ نوو دروست بکە</a>
                     </p>
                 </div>
+                <!-- Signup Form (hidden by default) -->
                 <div id="signup-form" style="display: none;">
-                     <h3>دروستکرنا هەژمارێ</h3>
+                     <h3 style="text-align: center; margin-bottom: 20px;">دروستکرنا ئەکوانتەکێ نوو</h3>
                     <form onsubmit="event.preventDefault(); handleSignup()">
                         <div class="form-group">
                             <label for="signup-email">ئیمێل</label>
@@ -1083,114 +1318,33 @@ function buildDashboardView() {
                             <label for="signup-password">پاسورد (ل کێمی ٦ پیت بن)</label>
                             <input type="password" id="signup-password" required>
                         </div>
-                        <button type="submit" class="form-submit-btn">دروستکرن</button>
-                         <p id="signup-error"></p>
+                        <button type="submit" class="form-submit-btn signup-btn">دروستکرن</button>
+                         <p id="signup-error" style="color:var(--danger-color); text-align:center; margin-top:10px; display:none;"></p>
                     </form>
-                    <p>
-                        ژڤری هەژمارا تە هەیە؟ <a href="#" onclick="event.preventDefault(); toggleAuthForm()">بچۆ ژوور</a>
+                    <p class="auth-toggle-link">
+                        ژڤری ئەکوانتێ تە هەیە؟ <a href="#" onclick="toggleAuthForm()">بچۆ ژوور</a>
                     </p>
                 </div>
             </div>`;
-        return;
     }
-
-    // Nîşandana dashboard-a normal eger bikarhêner çûbe jûrê
-    const points = gamificationManager.recalculateTotalPoints();
-    const dailyStreak = gamificationManager.getDailyStreak();
-    const dailyTasksData = dailyTaskManager.getData();
-    const consecutiveTaskStreak = dailyTasksData.consecutiveStreak;
-    const brokenTaskStreak = dailyTasksData.brokenStreak;
-    const unlockedBadges = gamificationManager.getUnlockedBadges();
-
-    const badgesHTML = Object.entries(gamificationManager.badgesData).map(([id, badge]) => {
-        const isUnlocked = unlockedBadges.includes(id);
-        return `<div class="badge-item" title="${badge.title} - ${isUnlocked ? 'دەستکەفتیە' : 'دەستنەکەفتیە'}">
-            <i class="fas ${badge.icon} badge-icon ${isUnlocked ? 'unlocked' : ''}"></i>
-            <span class="badge-title">${badge.title}</span>
-        </div>`;
-    }).join('');
-
-    const tasksHTML = dailyTaskManager.tasks.map(task => {
-        const isCompleted = dailyTasksData.completedTasks.includes(task.id);
-        return `<div class="task-item ${isCompleted ? 'completed' : ''}">
-            <input type="checkbox" id="task-${task.id}" onchange="dailyTaskManager.toggleTask('${task.id}')" ${isCompleted ? 'checked' : ''}>
-            <label for="task-${task.id}">${task.text} (+${task.points} خال)</label>
-        </div>`;
-    }).join('');
-
-    const completedCourses = progressManager.getCompletedCourses();
-    const totalLevelCourses = allData.levels.reduce((sum, level) => sum + (level.courses ? level.courses.length : 0), 0);
-    const progressPercentage = totalLevelCourses > 0 ? (completedCourses.length / totalLevelCourses) * 100 : 0;
-    const favorites = favoritesManager.getFavorites();
-    const favoritesSummaryHTML = favorites.length > 0
-        ? `<ul class="dashboard-favorites-list">
-               ${favorites.slice(0, 4).map(fav => `<li class="dashboard-favorites-item"><a href="#" onclick="navigateToFavorite('${fav.type}', '${fav.id}')">${fav.title.substring(0, 30)}...</a><span>${new Date(fav.addedOn).toLocaleDateString()}</span></li>`).join('')}
-           </ul><a href="#" onclick="navigateToView('favorites-view')" class="view-all-btn">نیشاندانا هەمیان</a>`
-        : createEmptyStateMessage('هیچ دڵخوازەک نینە.');
-    
-    const resetProgressSection = `
-        <div class="reset-progress-container">
-            <h4><i class="fas fa-exclamation-triangle"></i> ژێبرنا هەمی پێشکەفتنێ</h4>
-            <p style="color:var(--secondary-text); margin: 10px 0;">ئاگاداربە! بکارئینانا ڤێ دوگمەیێ دێ هەمی پێشکەفتنێن تە (خال، ئاست، وانە...) ژێبەت و ناهێنە ڤەگەڕاندن.</p>
-            <button class="reset-progress-btn" onclick="resetAllProgress()">من دڤێت پێشکەفتنا خۆ ژێببەم</button>
-        </div>`;
-
-    container.innerHTML = `
-        <header class="page-header">
-            <h1>داشبۆرد</h1>
-            <p style="font-size: 1rem; color: var(--secondary-text);">بخێرهاتی, ${currentUser.email}</p>
-        </header>
-        <div class="dashboard-grid">
-            <div class="dashboard-card">
-                <div class="dashboard-card-header"><i class="fas fa-star"></i><h3>خالێن تە</h3></div>
-                <div class="points-display"><div class="points-number">${points}</div><div class="points-label">خال</div></div>
-                ${dailyStreak > 1 ? `<div class="daily-streak-display"><i class="fas fa-fire"></i><span>${dailyStreak} رۆژێن لسەر ئێک (سەرەدان)</span></div>` : ''}
-            </div>
-            <div class="dashboard-card">
-                <div class="dashboard-card-header"><i class="fas fa-bookmark"></i><h3>دڵخوازێن من</h3></div>
-                ${favoritesSummaryHTML}
-            </div>
-            <div class="dashboard-card daily-tasks-card" style="grid-column: 1 / -1;">
-                <div class="dashboard-card-header"><i class="fas fa-tasks"></i><h3>ئەرکێن تە یێن ڕۆژانە</h3></div>
-                <div id="daily-tasks-container">${tasksHTML}</div>
-                <div class="daily-tasks-footer">
-                    <div class="streak-info"><i class="fas fa-calendar-check"></i> پابەندبوون: <span>${consecutiveTaskStreak} ڕۆژ</span></div>
-                    <div id="daily-tasks-timer-container">دەمێ مای: <span class="daily-tasks-timer" id="daily-tasks-timer-display">--:--:--</span></div>
-                    <div class="streak-info"><i class="fas fa-calendar-times"></i> پابەندنەبوون: <span class="broken-streak">${brokenTaskStreak} ڕۆژ</span></div>
-                </div>
-            </div>
-            <div class="dashboard-card">
-                <div class="dashboard-card-header"><i class="fas fa-chart-line"></i><h3>پێشکەفتنا گشتی</h3></div>
-                <div class="progress-item"><div class="progress-item-title"><span>رێرەوا فێربوونێ</span><span>${completedCourses.length} ژ ${totalLevelCourses}</span></div><div class="progress-bar-container"><div class="progress-bar-fill" style="width: ${progressPercentage.toFixed(1)}%;"></div></div></div>
-                <div class="progress-item"><div class="progress-item-title"><span>وانەیێن تەماشەکری</span><span>${progressManager.getWatchedLectures().length}</span></div></div>
-                <div class="progress-item"><div class="progress-item-title"><span>پەرتوکێن خواندی</span><span>${progressManager.getReadLibraryBooks().length}</span></div></div>
-                <div class="progress-item"><div class="progress-item-title"><span>حەدیسێن خواندی</span><span>${hadithTracker.getReadHadiths().length} ژ ${allData.hadiths.length}</span></div></div>
-            </div>
-            <div class="dashboard-card">
-                <div class="dashboard-card-header"><i class="fas fa-trophy"></i><h3>نیشان و دەستکەفت</h3></div>
-                <div id="badges-container">${badgesHTML || createEmptyStateMessage('هیچ نیشانەکا دەستکەفتی نینە.')}</div>
-            </div>
-        </div>
-        ${resetProgressSection}
-    `;
-    startDailyTaskTimer();
 }
 
+// === Ev beşên li jêr wek xwe dimînin, ji ber ku guhertinên me li jor hatin kirin ===
 function buildFavoritesView() { const container = document.getElementById('favorites-view'); const favorites = favoritesManager.getFavorites(); let content = `<header class="page-header"><h1>دڵخوازێن من</h1><p>هەمی ئەو بابەتێن تە نیشانکرین</p></header>`; if (favorites.length === 0) { content += createEmptyStateMessage('تە هیچ بابەتەک نیشان نەکریە وەک دڵخواز.'); } else { content += `<div class="favorites-grid">${favorites.reverse().map(fav => { let itemTypeLabel = ''; switch(fav.type) { case 'hadith': itemTypeLabel = 'حەدیس'; break; case 'fatwa': itemTypeLabel = 'پرسیار'; break; case 'lecture': itemTypeLabel = 'وانە'; break; default: itemTypeLabel = 'بابەت'; } return `<div class="favorite-item-card" id="fav-card-${fav.id}"><div class="favorite-item-content"><h4>${fav.title}</h4><p>${itemTypeLabel}</p></div><div class="favorite-item-actions"><button class="go-to-btn" onclick="navigateToFavorite('${fav.type}', '${fav.id}')" title="چوون بۆ بابەتی"><i class="fas fa-external-link-alt"></i></button><button class="remove-btn" onclick="removeFavorite('${fav.id}')" title="ژێبرن ژ دڵخوازان"><i class="fas fa-trash-alt"></i></button></div></div>`; }).join('')}</div>`; } container.innerHTML = content; }
 function buildAdhkarView() { const container = document.getElementById('adhkar-view'); container.innerHTML = `<header class="page-header"><h1>دوعا و زکران</h1><p>زکرێن رۆژانە و دوعایێن گرنگ</p></header>` + (allData.adhkar && allData.adhkar.length > 0 ? `<div><!-- TODO: Render Adhkar Content Here --></div>` : createEmptyStateMessage('هیچ دوعا و زکرەک نەهاتیە تۆمارکرن.')); }
-function buildPrayerTimesView() { /* Ev dê ji aliyê displayStatusMessage ve were birêvebirin */ }
-function buildKidsView() { /* Ev dê ji aliyê displayStatusMessage ve were birêvebirin */ }
-function buildLevelsView() { const container = document.getElementById('levels-view'); let guidanceSection = `<div class="level-guidance-card"><h3><i class="fas fa-info-circle"></i> رێنمایێن رێرەوا فێربوونێ</h3><p>بخێرهاتن بۆ رێبازا فێربوونێ. بۆ دەربازبوون ژ هەر ئاستەکێ بۆ ئاستێ دی، ئەڤ مەرجێن ل خارێ پێتڤی نە:</p><ul><li><span class="icon"><i class="fas fa-check-circle"></i></span><div><strong>تەمامکرنا وانەیان:</strong> پێتڤیە هەمی وانەیێن ئاستی بهێنە تەمامکرن.</div></li><li><span class="icon"><i class="fas fa-check-circle"></i></span><div><strong>ژبەرکرنا پەرتوکان:</strong> ئەگەر پەرتوکەک بۆ ژبەرکرنێ هەبیت، پێتڤیە بهێتە ژبەرکرن.</div></li><li><span class="icon"><i class="fas fa-check-circle"></i></span><div><strong>بدەستڤەئینانا خالان:</strong> پێتڤیە تە ژمارا پێدڤی یا خالان هەبیت بۆ ڤەکرنا ئاستێ بهێت.</div></li><li><span class="icon"><i class="fas fa-check-circle"></i></span><div><strong>تاقیکرن یان کۆد:</strong> ل دوماهیێ، پێتڤیە تاقیکرنەکێ ئەنجام بدەی یان کۆدێ ڤەکرنێ بکاربینی.</div></li></ul></div>`; let content = `<header class="page-header"><div class="page-header-container"><h1>رێرەوا فێربوونێ</h1></div><p>ئەڤە رێبازا رێکخستیە بۆ فێربوونێ. ژ ئاستێ ئێکێ دەستپێبکە و قوناغ ب قوناغ پێشبکەڤە.</p></header>`; if (!allData.levels || allData.levels.length === 0) { content += createEmptyStateMessage('چ ئاستەک یان وانەیەک بۆ ڤی بەشی نەهاتیە تومارکرن.'); } else { content += guidanceSection; content += '<div class="levels-container" id="levels-container-anchor">'; const userPoints = gamificationManager.getPoints(); allData.levels.forEach((level, levelIndex) => { const courses = level.courses || []; const isUnlocked = progressManager.isLevelUnlocked(levelIndex); const prevLevel = levelIndex > 0 ? allData.levels[levelIndex - 1] : null; const prevLevelCourses = prevLevel ? prevLevel.courses || [] : []; const isPrevLevelComplete = prevLevel ? prevLevelCourses.every(c => progressManager.isCourseComplete(c.id) && (!c.memorizationPdfUrl || progressManager.isPdfMemorized(c.id))) : true; const completedCoursesCount = courses.filter(c => progressManager.isCourseComplete(c.id)).length; const totalCourses = courses.length; const progressPercentage = totalCourses > 0 ? (completedCoursesCount / totalCourses) * 100 : 0; content += `<div class="level-card"><div class="level-card-header"><div class="level-title-group"><span class="level-number-badge">${levelIndex + 1}</span><h2>${level.levelName}</h2></div><div class="level-meta"><span>${completedCoursesCount} / ${totalCourses} وانە تەمامکرینە</span><div class="level-progress-bar"><div class="level-progress-bar-inner" style="width: ${progressPercentage}%;"></div></div></div></div>`; if (isUnlocked) { content += `<div class="level-courses-list">${courses.map(course => { const isCompleted = progressManager.isCourseComplete(course.id); const isMemorized = progressManager.isPdfMemorized(course.id); const teacher = allData.teachers[course.teacherId]; const pdfButton = course.pdfUrl ? `<button class="level-pdf-btn" onclick="showPdfInModal('${course.pdfUrl}', '${course.title}')"><i class="fas fa-file-pdf"></i><span>PDF</span></button>` : ''; const memorizationSectionHTML = course.memorizationPdfUrl ? `<div class="memorization-pdf-section"><div class="memorization-info"><i class="fas fa-brain"></i><span>${course.memorizationPdfTitle}</span></div><div class="memorization-actions"><button class="memorization-btn" onclick="showPdfInModal('${course.memorizationPdfUrl}', '${course.title} - بۆ ژەبەرکرنێ')"><i class="fas fa-book-open"></i> پەرتوکێ ببینە</button><button class="toggle-complete-btn ${isMemorized ? 'is-completed' : 'not-completed'}" onclick="togglePdfMemorization('${course.id}')"><i class="fas fa-${isMemorized ? 'times-circle' : 'check-circle'}"></i><span>${isMemorized ? 'هەلوەشاندن' : 'من ژبەرکر'}</span></button></div></div>` : ''; return `<div class="level-course-wrapper">${memorizationSectionHTML}<div class="level-course-item-new"><div class="course-info-group"><i class="fas fa-book-open"></i><div class="course-title-teacher"><h4>${course.title}</h4><p>دگەل: <a href="#" onclick="event.preventDefault(); showTeacherProfile('${course.teacherId}')">${teacher?.name || 'نەناسراو'}</a></p></div></div><div class="course-actions-group"><a href="#" onclick="event.preventDefault(); showLevelCourseLessons(${levelIndex}, ${courses.indexOf(course)})" class="view-lessons-btn"><i class="fas fa-list-ul"></i> لیستا وانەیان</a>${pdfButton}<button class="toggle-complete-btn ${isCompleted ? 'is-completed' : 'not-completed'}" onclick="toggleCourseCompletion('${course.id}')"><i class="fas fa-${isCompleted ? 'times-circle' : 'check-circle'}"></i><span>${isCompleted ? 'تەمام کر' : 'هەلوەشاندن'}</span></button></div></div></div>`; }).join('')}</div>`; } else { const requiredPoints = level.requiredPoints || 0; const hasEnoughPoints = userPoints >= requiredPoints; let lockReason = ''; if (!isPrevLevelComplete) { lockReason += `پێتڤیە ئاستێ ${levelIndex} ب تەمامی ب دوماهیک بینی.`; } if (!hasEnoughPoints) { const neededPoints = requiredPoints - userPoints; if (lockReason) lockReason += '<br>'; lockReason += `پێتڤی ب <strong>${neededPoints}</strong> خالێن دی هەنە بۆ ڤەکرنا ڤی ئاستی.`; } if (isPrevLevelComplete && hasEnoughPoints) { content += `<div class="level-unlock-section"><i class="fas fa-tasks"></i><h4>تاقیکرن و دەربازبوون بۆ ئاستێ ${levelIndex + 1}</h4><p>پیرۆزە! تە هەمی مەرجێن پێدڤی بۆ ڤەکرنا ڤی ئاستی بجهـ ئینان. نوکە دشێی تاقیکرنێ بکەی یان کۆدێ ڤەکرنێ بکاربینی.</p><a href="https://t.me/your_telegram_contact" target="_blank" rel="noopener noreferrer" class="exam-contact-btn"><i class="fab fa-telegram-plane"></i> پەیوەندیێ بکە بۆ تاقیکرنێ</a><div style="margin: 20px 0; color: var(--secondary-text);">یان</div><div style="display:flex; justify-content:center; gap:10px; max-width: 400px; margin-left:auto; margin-right:auto;"><input type="text" id="unlock-code-input-${levelIndex}" class="search-input-new" placeholder="کۆدێ ڤەکرنێ داخل بکە"><button class="exam-contact-btn" style="background-color: var(--accent-color);" onclick="checkLevelUnlockCode(${levelIndex})">ڤەکرن</button></div><p id="unlock-status-${levelIndex}" style="margin-top:10px; font-weight:bold;"></p></div>`; } else { content += `<div class="level-locked-overlay"><i class="fas fa-lock"></i><h4>ئەڤ ئاستە قفلە</h4><p>${lockReason}</p></div>`; } } content += `</div>`; }); content += '</div>'; } container.innerHTML = content; }
+function buildPrayerTimesView() { /* This will be handled by displayStatusMessage from buildAllViews */ }
+function buildKidsView() { /* This will be handled by displayStatusMessage from buildAllViews */ }
+function buildLevelsView() { const container = document.getElementById('levels-view'); let guidanceSection = `<div class="level-guidance-card"><h3><i class="fas fa-info-circle"></i> رێنمایێن رێرەوا فێربوونێ</h3><p>بخێرهاتن بۆ رێبازا فێربوونێ. بۆ دەربازبوون ژ هەر ئاستەکێ بۆ ئاستێ دی، ئەڤ مەرجێن ل خارێ پێتڤی نە:</p><ul><li><span class="icon"><i class="fas fa-check-circle"></i></span><div><strong>تەمامکرنا وانەیان:</strong> پێتڤیە هەمی وانەیێن ئاستی بهێنە تەمامکرن.</div></li><li><span class="icon"><i class="fas fa-check-circle"></i></span><div><strong>ژبەرکرنا پەرتوکان:</strong> ئەگەر پەرتوکەک بۆ ژبەرکرنێ هەبیت، پێتڤیە بهێتە ژبەرکرن.</div></li><li><span class="icon"><i class="fas fa-check-circle"></i></span><div><strong>بدەستڤەئینانا خالان:</strong> پێتڤیە تە ژمارا پێدڤی یا خالان هەبیت بۆ ڤەکرنا ئاستێ بهێت.</div></li><li><span class="icon"><i class="fas fa-check-circle"></i></span><div><strong>تاقیکرن یان کۆد:</strong> ل دوماهیێ، پێتڤیە تاقیکرنەکێ ئەنجام بدەی یان کۆدێ ڤەکرنێ بکاربینی.</div></li></ul></div>`; let content = `<header class="page-header"><div class="page-header-container"><h1>رێرەوا فێربوونێ</h1></div><p>ئەڤە رێبازا رێکخستیە بۆ فێربوونێ. ژ ئاستێ ئێکێ دەستپێبکە و قوناغ ب قوناغ پێشبکەڤە.</p></header>`; if (!allData.levels || allData.levels.length === 0) { content += createEmptyStateMessage('چ ئاستەک یان وانەیەک بۆ ڤی بەشی نەهاتیە تومارکرن.'); } else { content += guidanceSection; content += '<div class="levels-container" id="levels-container-anchor">'; const userPoints = gamificationManager.getPoints(); allData.levels.forEach((level, levelIndex) => { const courses = level.courses || []; const isUnlocked = progressManager.isLevelUnlocked(levelIndex); const prevLevel = levelIndex > 0 ? allData.levels[levelIndex - 1] : null; const prevLevelCourses = prevLevel ? prevLevel.courses || [] : []; const isPrevLevelComplete = prevLevel ? prevLevelCourses.every(c => progressManager.isCourseComplete(c.id) && (!c.memorizationPdfUrl || progressManager.isPdfMemorized(c.id))) : true; const completedCoursesCount = courses.filter(c => progressManager.isCourseComplete(c.id)).length; const totalCourses = courses.length; const progressPercentage = totalCourses > 0 ? (completedCoursesCount / totalCourses) * 100 : 0; content += `<div class="level-card"><div class="level-card-header"><div class="level-title-group"><span class="level-number-badge">${levelIndex + 1}</span><h2>${level.levelName}</h2></div><div class="level-meta"><span>${completedCoursesCount} / ${totalCourses} وانە</span><div class="level-progress-bar"><div class="level-progress-bar-inner" style="width: ${progressPercentage}%;"></div></div></div></div>`; if (isUnlocked) { content += `<div class="level-courses-list">${courses.map(course => { const isCompleted = progressManager.isCourseComplete(course.id); const isMemorized = progressManager.isPdfMemorized(course.id); const teacher = allData.teachers[course.teacherId]; const pdfButton = course.pdfUrl ? `<button class="level-pdf-btn" onclick="showPdfInModal('${course.pdfUrl}', '${course.title}')"><i class="fas fa-file-pdf"></i><span>PDF</span></button>` : ''; const memorizationSectionHTML = course.memorizationPdfUrl ? `<div class="memorization-pdf-section"><div class="memorization-info"><i class="fas fa-brain"></i><span>${course.memorizationPdfTitle}</span></div><div class="memorization-actions"><button class="memorization-btn" onclick="showPdfInModal('${course.memorizationPdfUrl}', '${course.title} - بۆ ژەبەرکرنێ')"><i class="fas fa-book-open"></i> پەرتوکێ ببینە</button><button class="toggle-complete-btn ${isMemorized ? 'is-completed' : 'not-completed'}" onclick="togglePdfMemorization('${course.id}')"><i class="fas fa-${isMemorized ? 'times-circle' : 'check-circle'}"></i><span>${isMemorized ? 'هەلوەشاندن' : 'من ژبەرکر'}</span></button></div></div>` : ''; return `<div class="level-course-wrapper">${memorizationSectionHTML}<div class="level-course-item-new"><div class="course-info-group"><i class="fas fa-book-open"></i><div class="course-title-teacher"><h4>${course.title}</h4><p>دگەل: <a href="#" onclick="event.preventDefault(); showTeacherProfile('${course.teacherId}')">${teacher?.name || 'نەناسراو'}</a></p></div></div><div class="course-actions-group"><a href="#" onclick="event.preventDefault(); showLevelCourseLessons(${levelIndex}, ${courses.indexOf(course)})" class="view-lessons-btn"><i class="fas fa-list-ul"></i> لیستا وانەیان</a>${pdfButton}<button class="toggle-complete-btn ${isCompleted ? 'is-completed' : 'not-completed'}" onclick="toggleCourseCompletion('${course.id}')"><i class="fas fa-${isCompleted ? 'times-circle' : 'check-circle'}"></i><span>${isCompleted ? 'تەمام کر' : 'هەلوەشاندن'}</span></button></div></div></div>`; }).join('')}</div>`; } else { const requiredPoints = level.requiredPoints || 0; const hasEnoughPoints = userPoints >= requiredPoints; let lockReason = ''; if (!isPrevLevelComplete) { lockReason += `پێتڤیە ئاستێ ${levelIndex} ب تەمامی ب دوماهیک بینی.`; } if (!hasEnoughPoints) { const neededPoints = requiredPoints - userPoints; if (lockReason) lockReason += '<br>'; lockReason += `پێتڤی ب <strong>${neededPoints}</strong> خالێن دی هەنە بۆ ڤەکرنا ڤی ئاستی.`; } if (isPrevLevelComplete && hasEnoughPoints) { content += `<div class="level-unlock-section"><i class="fas fa-tasks"></i><h4>تاقیکرن و دەربازبوون بۆ ئاستێ ${levelIndex + 1}</h4><p>پیرۆزە! تە هەمی مەرجێن پێدڤی بۆ ڤەکرنا ڤی ئاستی بجهـ ئینان.</p><a href="https://t.me/your_telegram_contact" target="_blank" rel="noopener noreferrer" class="exam-contact-btn"><i class="fab fa-telegram-plane"></i> پەیوەندیێ بکە بۆ تاقیکرنێ</a><div style="margin: 20px 0; color: var(--secondary-text);">یان</div><div style="display:flex; justify-content:center; gap:10px; max-width: 400px; margin-left:auto; margin-right:auto;"><input type="text" id="unlock-code-input-${levelIndex}" class="search-input-new" placeholder="کۆدێ ڤەکرنێ داخل بکە"><button class="exam-contact-btn" style="background-color: var(--accent-color);" onclick="checkLevelUnlockCode(${levelIndex})">ڤەکرن</button></div><p id="unlock-status-${levelIndex}" style="margin-top:10px; font-weight:bold;"></p></div>`; } else { content += `<div class="level-locked-overlay"><i class="fas fa-lock"></i><h4>ئەڤ ئاستە قفلە</h4><p>${lockReason}</p></div>`; } } content += `</div>`; }); content += '</div>'; } container.innerHTML = content; }
 function buildWaneyanView() { const container = document.getElementById('waneyan-view'); let content = `<header class="page-header"><h1>وانەیێن گشتی</h1><p>وانە و زنجیرەیێن جودا جودا</p></header>`; if (!allData.generalLectures || allData.generalLectures.length === 0) { content += createEmptyStateMessage('هیچ وانەیەکا گشتی نەهاتیە تۆمارکرن.'); } else { const categories = ['all', ...new Set(allData.generalLectures.map(l => l.category).filter(Boolean))]; const teachers = ['all', ...new Set(allData.generalLectures.map(l => l.teacherId).filter(Boolean))]; content += `<div class="filters-container" id="waneyan-filters"><div class="filter-group"><h4>بابەت:</h4>${categories.map(cat => `<button class="filter-btn ${cat === 'all' ? 'active' : ''}" data-filter-type="category" data-filter-value="${cat}">${cat === 'all' ? 'هەمووی' : cat}</button>`).join('')}</div><div class="filter-group"><h4>مامۆستا:</h4>${teachers.map(tId => `<button class="filter-btn ${tId === 'all' ? 'active' : ''}" data-filter-type="teacher" data-filter-value="${tId}">${tId === 'all' ? 'هەمووی' : (allData.teachers[tId]?.name || tId)}</button>`).join('')}</div></div><div class="waneyan-grid" id="waneyan-grid"></div>`; } container.innerHTML = content; if (allData.generalLectures.length > 0) { document.querySelectorAll('#waneyan-filters .filter-btn').forEach(btn => btn.addEventListener('click', function() { document.querySelectorAll(`#waneyan-filters .filter-btn[data-filter-type="${this.dataset.filterType}"]`).forEach(b => b.classList.remove('active')); this.classList.add('active'); filterLectures(); })); filterLectures(); } }
 function buildPirtukxaneView() { const container = document.getElementById('pirtukxane-view'); let content = `<header class="page-header"><h1>پەرتوکخانە</h1><p>کۆمەڵێک پەرتوکی پێشنیارکراو</p></header>`; if (!allData.pirtukxane || allData.pirtukxane.length === 0) { content += createEmptyStateMessage('هیچ پەرتوکەک نەهاتیە تۆمارکرن.'); } else { content += `<div class="pirtuk-grid">${allData.pirtukxane.map(book => { const isRead = progressManager.isLibraryBookRead(book.title); return `<div class="pirtuk-card"><img src="${book.coverImage}" class="pirtuk-card-img" alt="بەرگێ پەرتووکێ" loading="lazy"><div class="pirtuk-card-content"><h3>${book.title}</h3><p><strong>نووسەر:</strong> ${book.author}</p><div class="card-btn-group"><button onclick="showPdfInModal('${book.readUrl}', '${book.title}')" class="card-btn-small">خواندن</button><a href="${book.downloadUrl}" target="_blank" rel="noopener noreferrer" class="card-btn-small secondary">داگرتن</a></div><div class="card-btn-group" style="padding-top: 5px;"><button class="card-btn-small ${isRead ? 'is-completed' : 'secondary'}" onclick="toggleLibraryBookRead('${book.title}')"><i class="fas fa-${isRead ? 'check' : 'book-reader'}"></i> ${isRead ? 'هەلوەشاندن' : 'نیشانکرن'}</button></div></div></div>` }).join('')}</div>`; } container.innerHTML = content; }
 function buildTeachersView() { const container = document.getElementById('teachers-view'); let content = `<header class="page-header"><h1>مامۆستایان</h1><p>پرۆفایلا مامۆستایێن بەرێز ببینە</p></header>`; const teachers = Object.values(allData.teachers); teachers.sort((a, b) => (a.order || 0) - (b.order || 0)); if (teachers.length === 0) { content += createEmptyStateMessage('هیچ مامۆستایەک نەهاتیە تۆمارکرن.'); } else { content += `<div class="teachers-grid">${teachers.map(teacher => `<div class="teacher-card-simple"><img src="${teacher.profileImage}" alt="${teacher.name}" loading="lazy"><h3>${teacher.name}</h3><p>${(teacher.bio || '').substring(0, 50)}...</p><a href="#" onclick="event.preventDefault(); showTeacherProfile('${teacher.id}')" class="profile-btn-simple">پرۆفایل ببینە</a></div>`).join('')}</div>`; } container.innerHTML = content; }
 function buildFatwasView() { const container = document.getElementById('fatwas-view'); let content = `<header class="page-header"><h1>پرسیار و بەرسڤ</h1><p>بەرسڤا پرسیارێن شەرعی ژ مامۆستایێن باوەرپێکری</p></header>`; if (!allData.fatwas || allData.fatwas.length === 0) { content += createEmptyStateMessage('هیچ پرسیار و بەرسڤەک نەهاتیە تۆمارکرن.'); } else { const fatwaTeacherIds = [...new Set(allData.fatwas.map(f => f.teacherId))]; let scholarFilterButtons = fatwaTeacherIds.map(tId => { const teacher = allData.teachers[tId]; return `<button class="fatwa-scholar-btn" data-teacher-id="${tId}" onclick="selectFatwaTeacher(this, '${tId}')">${teacher ? teacher.name : 'نەناسراو'}</button>`; }).join(''); content += `<div class="fatwa-controls-new"><div class="fatwa-filter-group"><h4>پۆلێنکرن بەپێی مامۆستا:</h4><button class="fatwa-scholar-btn active" data-teacher-id="all" onclick="selectFatwaTeacher(this, 'all')">هەمووی</button>${scholarFilterButtons}</div><input type="text" id="fatwa-search-input" class="search-input-new" placeholder="ل پرسیارەکێ بگەڕە..." onkeyup="filterFatwas()"></div><div id="fatwa-accordion-container"></div>`; filterFatwas(); } container.innerHTML = content; }
-function buildMapView() { const container = document.getElementById('map-view'); container.innerHTML = `<header class="page-header"><h1>ناوەند و چالاکی</h1><p>جهێن وانەگوتنێ و چالاکیێن دی ببینە</p></header><div id="map-view-layout"><div class="map-controls"><input type="text" id="map-search-input" class="map-search-input" placeholder="ل ناڤێ جهی، مامۆستای، یان وانەیێ بگەڕە..." onkeyup="renderLocationList()"></div><div id="main-map-container"></div><div id="location-list-container"></div></div>`; if (!allData.locations || allData.locations.length === 0) { document.getElementById('location-list-container').innerHTML = createEmptyStateMessage('هیچ جهـ یان چالاکیەک نەهاتیە تۆمارکرن.'); } else { renderLocationList(); } }
+function buildMapView() { const container = document.getElementById('map-view'); container.innerHTML = `<header class="page-header"><h1>خەریتە</h1><p>جهێ وانەگوتنێ لسەر خەریتەی ببینە و لێ بگەڕە</p></header><div id="map-view-layout"><div class="map-controls"><input type="text" id="map-search-input" class="map-search-input" placeholder="ل ناڤێ جهی، مامۆستای، یان وانەیێ بگەڕە..." onkeyup="renderLocationList()"></div><div id="main-map-container"></div><div id="location-list-container"></div></div>`; if (!allData.locations || allData.locations.length === 0) { document.getElementById('map-view-layout').innerHTML += createEmptyStateMessage('هیچ جهەک لسەر خەریتەی نەهاتیە تۆمارکرن. بۆ کارکرنا ڤی بەشی، پێدڤیە داتایên cîhan (locations) د Firebase da hebin.'); } else { renderLocationList(); } }
 function buildLiveView() { const container = document.getElementById('live-view'); const course = allData.liveCourse; if (!course || !course.teacherId) { container.innerHTML = `<header class="page-header"><h1>خولێن ڕاستەوخۆ</h1></header>${createEmptyStateMessage('نوکە چ خولێن ڕاستەوخۆ بەردەست نینن.')}`; return; } const teacher = allData.teachers[course.teacherId]; if (!teacher) { container.innerHTML = createEmptyStateMessage('چەوتی: مامۆستایێ ڤێ خولێ نەهاتە دیتن.'); return; } container.innerHTML = `<div class="live-view-content"><span class="live-badge">ڕاستەوخۆ</span><h1>${course.title}</h1><p class="live-teacher-info">دگەل: <a href="#" onclick="event.preventDefault(); showTeacherProfile('${course.teacherId}')">${teacher.name}</a></p><p style="max-width: 700px; margin: 0 auto 30px;">${course.description}</p><h3 style="margin-bottom: 10px;">جڤینا بهێت دێ دەستپێکەت پشتی:</h3><div id="live-countdown"></div><div class="live-details-section"><h3 class="profile-section-title-new" style="text-align: right; border:none; padding-bottom: 0;">زانیاریێن زێدەتر</h3><h4><i class="fas fa-bullseye" style="color:var(--accent-color); margin-left: 8px;"></i>بابەتێن سەرەکی:</h4><ul style="margin-bottom: 20px;">${(course.topics || []).map(t => `<li>${t}</li>`).join('')}</ul><h4><i class="fas fa-tasks" style="color:var(--accent-color); margin-left: 8px;"></i>پێدڤیێن خولێ:</h4><p style="margin-bottom: 20px;">${course.prerequisites}</p><h4><i class="fas fa-calendar-alt" style="color:var(--accent-color); margin-left: 8px;"></i>خشتێ جڤینان:</h4><ul>${(course.schedule || []).map(s => `<li>${s}</li>`).join('')}</ul></div><div id="live-registration-section"><h2 class="profile-section-title-new" style="text-align:center; border-bottom-width:2px; max-width:400px; margin: 40px auto 20px auto;">فورما پشکداریێ</h2><p style="color: var(--secondary-text); max-width: 600px; margin: 0 auto 20px;">ئەگەر تۆ حەزدکەی پشکداریێ بکەی، ڤێ فورمێ پر بکە.</p><form action="https://formspree.io/f/mvgqdwav" method="POST" class="live-registration-form"><input type="hidden" name="_subject" value="داواکاریەکا نووی بۆ خولا راستەوخۆ!"><div class="form-group"><label for="fullname">ناڤێ سیانی:</label><input type="text" id="fullname" name="ناڤ" required></div><div class="form-group"><label for="email">ئیمێل:</label><input type="email" id="email" name="ئیمێل" required></div><div class="form-group"><label for="whatsapp">ژمارا موبایلێ (واتسئاپ):</label><input type="tel" id="whatsapp" name="ژمارا_واتسئاپ" required></div><div class="form-group form-group-checkbox"><input type="checkbox" id="prereq" name="مەرج_قەبیلکرن" value="بەڵێ" required><label for="prereq">ئەز پشتراستم کو من مەرجێن پێدڤی هەنە</label></div><button type="submit" class="form-submit-btn">هنارتن</button></form></div></div>`; startCountdown(course.nextSessionDate); }
 function buildHadithView() { const container = document.getElementById('hadith-view'); let content = `<header class="page-header"><h1>کتێبخانەیا حەدیسێ</h1><p>ل حەدیسێن پێغەمبەری ﷺ بگەڕە و زانیاریێن وان ببینە</p></header>`; if (!allData.hadiths || allData.hadiths.length === 0) { content += createEmptyStateMessage('هیچ حەدیسەک نەهاتیە تۆمارکرن.'); } else { const categories = ['all', ...new Set(allData.hadiths.map(h => h.category))]; content += `<div class="hadith-controls-new"><div class="filter-group"><h4>بابەت:</h4>${categories.map(cat => `<button class="filter-btn ${cat === 'all' ? 'active' : ''}" data-filter-type="category" onclick="selectHadithFilter(this, 'category')">${cat === 'all' ? 'هەمووی' : cat}</button>`).join('')}</div><input type="text" id="hadith-search-input" class="search-input-new" placeholder="ل دەقێ حەدیسێ بگەڕە..." onkeyup="filterHadiths(true)"></div><div id="hadith-list-container"></div><div id="hadith-pagination-container" class="pagination-controls"></div>`; } container.innerHTML = content; if (allData.hadiths.length > 0) { filterHadiths(); } }
 function buildTafsirView() { const container = document.getElementById('tafsir-view'); let content = `<header class="page-header"><h1>تەفسیرا قورئانا پیرۆز</h1><p>سورەتەکێ هەلبژێرە یان ل ناڤێ وێ بگەڕە</p></header>`; if (Object.keys(allData.tafsir).length === 0) { content += createEmptyStateMessage('هیچ تەفسیرەک نەهاتیە تۆمارکرن.'); } else { content += `<div id="surah-selection-area"><div class="tafsir-controls"><input type="text" id="surah-search-input" class="search-input-new" placeholder="ل ناڤێ سورەتێ بگەڕە..." onkeyup="filterSurahButtons()"></div><div id="surah-selection-grid">${Object.entries(allData.tafsir).sort((a, b) => parseInt(a[0]) - parseInt(b[0])).map(([num, data]) => `<button class="surah-btn" data-surah-name="${data.surahName}" onclick="displaySurahTafsir('${num}')"><span class="surah-btn-number">سورەتا ${num}</span><span class="surah-btn-name">${data.surahName}</span></button>`).join('')}</div></div><div id="tafsir-display-area" style="display:none;"></div>`; } container.innerHTML = content; }
 function buildBookSalesView() { const container = document.getElementById('book-sales-view'); let content = `<header class="page-header"><h1>فرۆتنا پەرتووکان</h1><p>پەرتوکێن هەلبژارتی بۆ فرۆتنێ</p></header>`; if (!allData.bookSales || allData.bookSales.length === 0) { content += createEmptyStateMessage('نوکە هیچ پەرتوکەک بۆ فرۆتنێ بەردەست نینە.'); } else { content += `<div class="book-sales-grid">${allData.bookSales.map(book => { const purchaseButton = book.isAvailable ? `<a href="${book.purchaseLink}" target="_blank" rel="noopener noreferrer" class="purchase-btn">کرین</a>` : `<button class="purchase-btn" disabled>بۆ فرۆتنێ نییە</button>`; return `<div class="book-sale-card"><div class="book-sale-card-img-wrapper"><img src="${book.coverImage}" class="book-sale-card-img" alt="بەرگێ پەرتووکێ" loading="lazy"></div><div class="book-sale-card-content"><h3>${book.title}</h3><p class="book-sale-card-author">نووسەر: ${book.author}</p><p class="book-sale-card-desc">${book.description}</p><div class="book-sale-footer"><span class="book-price">${book.price}</span>${purchaseButton}</div></div></div>`; }).join('')}</div>`; } container.innerHTML = content; }
-function displayStatusMessage(viewId, stpCode) { const container = document.getElementById(viewId); if (!container) return; let icon = 'fa-info-circle', iconClass = 'status-info', title = 'تێبینی', text = 'ئەڤ بەشە نوکە نە بەردەستە.'; switch (stpCode) { case '1': icon = 'fa-hourglass-half'; iconClass = 'status-info'; title = 'دەمەکێ نێزیک'; text = 'ئەڤ بەشە د کارکرنێ دایە و دێ ل پاشەرۆژەکا نێزیک بەردەست بیت. سوپاس بۆ ل هیڤیبوونا تە.'; break; case '2': icon = 'fa-exclamation-triangle'; iconClass = 'status-danger'; title = 'ئاریشەیەکا تەکنیکی'; text = 'ئاریشەیەک د ڤی بەشی دا روویدایە. تیمێ مە یێ تەکنیکی کار لسەر چارەسەرکرنا وێ دکەت.'; break; case '3': icon = 'fa-cogs'; iconClass = 'status-warning'; title = 'ژێر چاککرنێ دایە'; text = 'ئەم نوکە کار لسەر باشترکرنا ڤی بەشی دکەین. دێ ب زووترین دەم زڤرین.'; break; case '4': icon = 'fa-sync-alt'; iconClass = 'status-info'; title = 'ناڤەرۆک دهێتە نووژەنکرن'; text = 'ناڤەرۆکا ڤی بەشی دهێتە نووژەنکرن دا زانیاریێن نووی و باشتر بهێنە پێشکێشکرن.'; break; case '5': icon = 'fa-pause-circle'; iconClass = 'status-warning'; title = 'بۆ دەمەکێ کورت هاتیە راوەستاندن'; text = 'ئەڤ بەشە بۆ دەمەکێ کورت هاتیە راوەستاندن و دێ ل دەمەکێ دی بەردەست بیت.'; break; case '6': icon = 'fa-hands-helping'; iconClass = 'status-success'; title = 'پێدڤی ب پشکداریا تەیە'; text = 'ئەم دخوازین ڤی بەشی ب پشکداریێن هەوە دەولەمەند بکەین. ئەگەر تە چ پێشنیار هەبن, <a href="#" onclick="event.preventDefault(); openModal(\'contribution-modal\')">پشکداریێ بکە</a>.'; break; case '8': icon = 'fa-lock'; iconClass = 'status-warning'; title = 'قفلە'; text = 'ئەڤ بەشە نوکە قفلە و بەردەست نینە.'; break; } container.innerHTML = `<div class="status-message-container"><i class="fas ${icon} status-icon ${iconClass}"></i><h2 class="status-title">${title}</h2><p class="status-text">${text}</p></div>`; }
+function displayStatusMessage(viewId, stpCode) { const container = document.getElementById(viewId); if (!container) return; let icon = 'fa-info-circle', iconClass = 'status-info', title = 'تێبینی', text = 'ئەڤ بەشە نوکە نە بەردەستە.'; switch (stpCode) { case '1': icon = 'fa-hourglass-half'; iconClass = 'status-info'; title = 'دەمەکێ نێزیک'; text = 'ئەڤ بەشە د کارکرنێ دایە و دێ ل پاشەرۆژەکا نێزیک بەردەست بیت.'; break; case '2': icon = 'fa-exclamation-triangle'; iconClass = 'status-danger'; title = 'ئاریشەیەکا تەکنیکی'; text = 'ئاریشەیەک د ڤی بەشی دا روویدایە.'; break; case '3': icon = 'fa-cogs'; iconClass = 'status-warning'; title = 'ژێر چاککرنێ دایە'; text = 'ئەم نوکە کار لسەر باشترکرنا ڤی بەشی دکەین.'; break; case '4': icon = 'fa-sync-alt'; iconClass = 'status-info'; title = 'ناڤەرۆک دهێتە نووژەنکرن'; text = 'ناڤەرۆکا ڤی بەشی دهێتە نووژەنکرن.'; break; case '8': icon = 'fa-lock'; iconClass = 'status-warning'; title = 'قفلە'; text = 'ئەڤ بەشە نوکە قفلە و بەردەست نینە.'; break; } container.innerHTML = `<div class="status-message-container"><i class="fas ${icon} status-icon ${iconClass}"></i><h2 class="status-title">${title}</h2><p class="status-text">${text}</p></div>`; }
 
 // === [ 6. لۆژیکێ تایبەت ب هەر بەشەکی ] ===
 function filterLectures() { const activeCategory = document.querySelector('#waneyan-filters .filter-btn[data-filter-type="category"].active').dataset.filterValue; const activeTeacher = document.querySelector('#waneyan-filters .filter-btn[data-filter-type="teacher"].active').dataset.filterValue; const grid = document.getElementById('waneyan-grid'); const filteredLectures = allData.generalLectures.filter(l => (activeCategory === 'all' || l.category === activeCategory) && (activeTeacher === 'all' || l.teacherId === activeTeacher)); if (filteredLectures.length === 0) { grid.innerHTML = '<p style="text-align:center; grid-column: 1 / -1; color: var(--secondary-text);">هیچ وانەیەک لسەر ڤان فیلتەران نەهاتە دیتن.</p>'; return; } grid.innerHTML = filteredLectures.map(lecture => { const teacher = allData.teachers[lecture.teacherId]; const pdfButton = lecture.pdfUrl ? `<button onclick="showPdfInModal('${lecture.pdfUrl}', '${lecture.title}')" class="card-btn-small pdf-btn-card" title="PDF ببینە"><i class="fas fa-file-pdf"></i></button>` : ''; const isWatched = progressManager.isLectureWatched(lecture.id); return `<div class="wana-card"><img src="${lecture.image}" class="wana-card-img" alt="وێنەیا وانەیێ" loading="lazy"><div class="wana-card-content"><h3>${lecture.title}</h3><p><strong>مامۆستا:</strong> <a href="#" onclick="event.preventDefault(); showTeacherProfile('${lecture.teacherId}')">${teacher?.name || 'نەناسراو'}</a></p><p><strong>بابەت:</strong> ${lecture.category}</p><div class="card-btn-group"><button class="card-btn-small" onclick="showLessonList('${lecture.id}')">لیستا وانەیان</button>${pdfButton}</div><div class="card-btn-group" style="padding-top: 5px;"><button class="card-btn-small ${isWatched ? 'is-completed' : 'secondary'}" onclick="toggleLectureWatched('${lecture.id}')"><i class="fas fa-${isWatched ? 'check' : 'eye'}"></i> ${isWatched ? 'هەلوەشاندن' : 'تەماشەکرن'}</button></div></div></div>`; }).join(''); }
@@ -1201,9 +1355,9 @@ function toggleLibraryBookRead(bookTitle) { progressManager.toggleLibraryBookRea
 function selectFatwaTeacher(button) { document.querySelectorAll('#fatwas-view .fatwa-scholar-btn').forEach(btn => btn.classList.remove('active')); button.classList.add('active'); filterFatwas(); }
 function filterFatwas() { const searchInput = document.getElementById('fatwa-search-input'); const searchTerm = searchInput ? searchInput.value.toLowerCase() : ''; const container = document.getElementById('fatwa-accordion-container'); if (!container) return; const activeTeacherBtn = document.querySelector('#fatwas-view .fatwa-scholar-btn.active'); const activeTeacherId = activeTeacherBtn ? activeTeacherBtn.dataset.teacherId : 'all'; const filteredFatwas = allData.fatwas.filter(f => (activeTeacherId === 'all' || f.teacherId === activeTeacherId) && (f.question.toLowerCase().includes(searchTerm) || f.answer.toLowerCase().includes(searchTerm))); if (filteredFatwas.length === 0) { container.innerHTML = createEmptyStateMessage('هیچ پرسیار و بەرسڤەک لدویڤ لێگەریانا تە نەهاتە دیتن.'); return; } container.innerHTML = filteredFatwas.map(fatwa => { const teacher = allData.teachers[fatwa.teacherId]; const audioPlayer = fatwa.audioUrl ? `<div class="audio-player-wrapper"><p><i class="fas fa-volume-up"></i>گوێبیستی وەڵام بە بە دەنگ:</p><audio controls src="${fatwa.audioUrl}"></audio></div>` : ''; return `<div class="fatwa-accordion-item"><div class="fatwa-question" onclick="toggleFatwa(this)"><h4>${fatwa.question}</h4><i class="fas fa-chevron-down"></i></div><div class="fatwa-answer"><div class="fatwa-answer-content"><p>${fatwa.answer}</p>${audioPlayer}<p class="fatwa-teacher-info" style="margin-top: 15px; border-top: 1px dashed var(--border-color); padding-top: 10px;">بەرسڤ ژلایێ: <a href="#" onclick="event.preventDefault(); showTeacherProfile('${fatwa.teacherId}')">${teacher ? teacher.name : 'مامۆستایەکێ نەناس'}</a></p></div></div></div>`; }).join(''); }
 function toggleFatwa(element) { const item = element.closest('.fatwa-accordion-item'); const answer = item.querySelector('.fatwa-answer'); item.classList.toggle('active'); if (item.classList.contains('active')) { answer.style.maxHeight = answer.scrollHeight + 'px'; } else { answer.style.maxHeight = '0px'; } }
-function initializeMainMap() { if (mapInitialized || !document.getElementById('main-map-container')) return; map = L.map('main-map-container').setView([36.85, 42.98], 10); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors' }).addTo(map); mapMarkers = {}; allData.locations.forEach(location => { if (location.coordinates && location.coordinates.length === 2) { const teacher = allData.teachers[location.teacherId]; const marker = L.marker(location.coordinates).addTo(map); const popupContent = `<div style="text-align:center;font-family:var(--font-kurdish);"><h4 style="margin:0;font-size:1.1rem;">${location.locationName}</h4><p style="margin:5px 0;"><strong>مامۆستا:</strong> ${teacher ? teacher.name : 'نەناسراو'}</p><p style="margin:5px 0;font-size:0.9rem;"><strong>وانە:</strong> ${location.lessonTaught}</p>${teacher ? `<a href="#" onclick="event.preventDefault(); showTeacherProfile('${location.teacherId}')" class="profile-link-in-popup">بینینا پرۆفایلێ</a>` : ''}</div>`; marker.bindPopup(popupContent); mapMarkers[location.id] = marker; } }); mapInitialized = true; }
-function focusOnMapLocation(locationId) { if (!map || !mapMarkers[locationId]) return; const location = allData.locations.find(l => l.id === locationId); if (!location || !location.coordinates) return; map.setView(location.coordinates, 15); mapMarkers[locationId].openPopup(); document.getElementById('main-map-container').scrollIntoView({ behavior: 'smooth', block: 'center' }); }
-function renderLocationList() { const container = document.getElementById('location-list-container'); const searchInput = document.getElementById('map-search-input'); if (!container || !searchInput) return; const searchTerm = searchInput.value.toLowerCase(); const filteredLocations = allData.locations.filter(loc => { const teacherName = allData.teachers[loc.teacherId]?.name || ''; return (loc.locationName || "").toLowerCase().includes(searchTerm) || (loc.lessonTaught || "").toLowerCase().includes(searchTerm) || teacherName.toLowerCase().includes(searchTerm); }); container.innerHTML = filteredLocations.map(loc => { const teacher = allData.teachers[loc.teacherId]; const hasMap = loc.coordinates && loc.coordinates.length === 2; const clickAction = hasMap ? `onclick="focusOnMapLocation('${loc.id}')"` : ''; const cardClass = hasMap ? 'location-list-item' : 'location-list-item no-map'; return `<div class="${cardClass}" ${clickAction}><h4>${loc.locationName}</h4><p><i class="fas fa-chalkboard-teacher"></i> <span><strong>مامۆستا:</strong> ${teacher ? teacher.name : 'نەناسراو'}</span></p><p><i class="fas fa-book-open"></i> <span><strong>وانە/چالاکی:</strong> ${loc.lessonTaught}</span></p><p><i class="fas fa-clock"></i> <span><strong>کەنگی:</strong> ${loc.schedule}</span></p></div>`; }).join(''); }
+function initializeMainMap() { if (mapInitialized || !document.getElementById('main-map-container')) return; map = L.map('main-map-container').setView([36.85, 42.98], 10); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors' }).addTo(map); mapMarkers = {}; allData.locations.forEach(location => { const teacher = allData.teachers[location.teacherId]; const marker = L.marker(location.coordinates).addTo(map); const popupContent = `<div style="text-align:center;font-family:var(--font-kurdish);"><h4 style="margin:0;font-size:1.1rem;">${location.locationName}</h4><p style="margin:5px 0;"><strong>مامۆستا:</strong> ${teacher ? teacher.name : 'نەناسراو'}</p><p style="margin:5px 0;font-size:0.9rem;"><strong>وانە:</strong> ${location.lessonTaught}</p>${teacher ? `<a href="#" onclick="event.preventDefault(); showTeacherProfile('${location.teacherId}')" class="profile-link-in-popup">بینینا پرۆفایلێ</a>` : ''}</div>`; marker.bindPopup(popupContent); mapMarkers[location.id] = marker; }); mapInitialized = true; }
+function focusOnMapLocation(locationId) { if (!map || !mapMarkers[locationId]) return; const location = allData.locations.find(l => l.id === locationId); if (!location) return; map.setView(location.coordinates, 15); mapMarkers[locationId].openPopup(); document.getElementById('main-map-container').scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+function renderLocationList() { const container = document.getElementById('location-list-container'); const searchInput = document.getElementById('map-search-input'); if (!container || !searchInput) return; const searchTerm = searchInput.value.toLowerCase(); const filteredLocations = allData.locations.filter(loc => { const teacherName = allData.teachers[loc.teacherId]?.name || ''; return (loc.locationName || "").toLowerCase().includes(searchTerm) || (loc.lessonTaught || "").toLowerCase().includes(searchTerm) || teacherName.toLowerCase().includes(searchTerm); }); container.innerHTML = filteredLocations.map(loc => { const teacher = allData.teachers[loc.teacherId]; return `<div class="location-list-item" onclick="focusOnMapLocation('${loc.id}')"><h4>${loc.locationName}</h4><p><i class="fas fa-chalkboard-teacher"></i> <span><strong>مامۆستا:</strong> ${teacher ? teacher.name : 'نەناسراو'}</span></p><p><i class="fas fa-book-open"></i> <span><strong>وانە:</strong> ${loc.lessonTaught}</span></p><p><i class="fas fa-clock"></i> <span><strong>کەنگی:</strong> ${loc.schedule}</span></p></div>`; }).join(''); }
 function startCountdown(targetDateStr) { const countdownContainer = document.getElementById('live-countdown'); if(!countdownContainer || !targetDateStr) return; const targetDate = new Date(targetDateStr).getTime(); const interval = setInterval(() => { const distance = targetDate - new Date().getTime(); if (distance < 0) { clearInterval(interval); countdownContainer.innerHTML = "<h3>خول دەستپێکریە یان ب دوماهیک هاتیە!</h3>"; return; } const time = { days: Math.floor(distance / 864e5), hours: Math.floor((distance % 864e5) / 36e5), minutes: Math.floor((distance % 36e5) / 6e4), seconds: Math.floor((distance % 6e4) / 1e3) }; countdownContainer.innerHTML = `<div class="countdown-box"><div class="number">${time.days}</div><div class="label">ڕۆژ</div></div><div class="countdown-box"><div class="number">${time.hours}</div><div class="label">دەمژمێر</div></div><div class="countdown-box"><div class="number">${time.minutes}</div><div class="label">خولەک</div></div><div class="countdown-box"><div class="number">${time.seconds}</div><div class="label">چرکە</div></div>`; }, 1000); }
 function selectHadithFilter(button, type) { document.querySelectorAll(`#hadith-view .filter-btn[data-filter-type="${type}"]`).forEach(btn => btn.classList.remove('active')); button.classList.add('active'); filterHadiths(true); }
 function filterHadiths(resetPage = false) { if (resetPage) hadithCurrentPage = 1; const searchInput = document.getElementById('hadith-search-input'); const searchTerm = searchInput ? searchInput.value.toLowerCase() : ''; const activeCategoryBtn = document.querySelector('#hadith-view .filter-btn[data-filter-type="category"].active'); const activeCategory = activeCategoryBtn ? activeCategoryBtn.textContent : 'هەمووی'; const filtered = allData.hadiths.filter(h => (activeCategory === 'هەمووی' || h.category === activeCategory) && (h.text.toLowerCase().includes(searchTerm))); renderHadithPage(filtered); }
@@ -1221,8 +1375,8 @@ function showLevelCourseLessons(levelIndex, courseIndex) { const course = allDat
 function showTeacherProfile(teacherId) { const teacher = allData.teachers[teacherId]; if (!teacher) return; openModal('teacher-profile-modal'); const container = document.getElementById('profile-dynamic-content'); let contactHTML = Object.entries(teacher.social || {}).map(([platform, url]) => { if(url) return `<a href="${url}" target="_blank" rel="noopener noreferrer"><i class="fab fa-${platform.toLowerCase()}"></i> ${platform.charAt(0).toUpperCase() + platform.slice(1)}</a>`; return ''; }).join(''); if (teacher.phone) { contactHTML = `<a href="tel:${teacher.phone}"><i class="fas fa-phone"></i> ${teacher.phone}</a>` + contactHTML; } const teacherLectures = allData.generalLectures.filter(l => l.teacherId === teacherId); const lessonsHTML = teacherLectures.map(l => { const pdfButton = l.pdfUrl ? `<button class="pdf-btn-new" onclick="showPdfInModal('${l.pdfUrl}', '${l.title}')" title="PDF ببینە"><i class="fas fa-file-pdf"></i></button>` : ''; return `<div class="lesson-item-new"><div class="lesson-info"><i class="fas fa-video"></i> <span>${l.title}</span></div><div class="lesson-actions">${pdfButton}<button class="watch-btn-new" onclick="closeModal('teacher-profile-modal');showLessonList('${l.id}')">وانەکان ببینە</button></div></div>`; }).join(''); const teacherLocations = allData.locations.filter(loc => loc.teacherId === teacherId); let locationsHTML = ''; if (teacherLocations.length > 0) { locationsHTML = `<div class="profile-info-card"><h3 class="profile-section-title-new"><i class="fas fa-map-marker-alt"></i> جهێن وانەگوتنێ</h3><div class="profile-locations-panel" style="display: grid; gap: 15px;">${teacherLocations.map(loc => `<div class="location-list-item" onclick="goToMapLocation('${loc.id}')"><h4>${loc.locationName}</h4><p><i class="fas fa-book-open"></i> <span><strong>وانە:</strong> ${loc.lessonTaught}</span></p><p><i class="fas fa-clock"></i> <span><strong>کەنگی:</strong> ${loc.schedule}</span></p></div>`).join('')}</div></div>`; } container.innerHTML = `<div class="profile-new-header"><div class="profile-header-img-wrapper"><img src="${teacher.profileImage}" alt="Wêneyê Profaylê" loading="lazy"></div></div><div style="text-align: center; margin-top: -60px; position:relative; z-index:2;"><h2 id="profile-header-name-new">${teacher.name}</h2><p id="profile-header-bio-new">${teacher.bio}</p></div><div class="profile-new-content-wrapper"><div class="profile-info-card"><h3 class="profile-section-title-new"><i class="fas fa-link"></i> پەیوەندی</h3><div class="profile-contact-buttons">${contactHTML || '<p style="color:var(--secondary-text);">هیچ زانیارییەکی پەیوەندی نییە.</p>'}</div></div><div class="profile-info-card"><h3 class="profile-section-title-new"><i class="fas fa-book-reader"></i> وانەیێن گشتی</h3><div class="profile-lessons-panel">${lessonsHTML || '<p style="color:var(--secondary-text); text-align:center;">هیچ وانەیەک بۆ ڤی مامۆستای نەهاتیە تۆمارکرن.</p>'}</div></div>${locationsHTML}</div>`; }
 function updateAndShowVisitorCount() { const counterElement = document.getElementById('visitor-counter'); if (!counterElement) return; fetch(`https://api.countapi.xyz/hit/proje-islam-badini/visits`).then(res => res.json()).then(data => { counterElement.textContent = new Intl.NumberFormat('en-US').format(data.value); }).catch(err => { console.error("Çewtî di wergirtina jimara seredankera da:", err); counterElement.textContent = "N/A"; }); }
 function convertYoutubeUrlToEmbed(url) { if (!url) return ''; let videoId = null; const patterns = [/(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([^&]+)/, /(?:https?:\/\/)?(?:www\.)?youtu\.be\/([^?]+)/, /(?:https?:\/\/)?(?:www\.)?youtube\.com\/embed\/([^?]+)/]; for (const pattern of patterns) { const match = url.match(pattern); if (match && match[1]) { videoId = match[1]; break; } } return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0` : url; }
-function playMediaInModal(url, title) { document.getElementById('media-player-title').textContent = title || 'تەماشاكرنا وانەیێ'; const container = document.getElementById('media-player-container'); let embedHtml = ''; if (url.includes('youtube.com') || url.includes('youtu.be')) { container.className = 'media-player-container'; const embedUrl = convertYoutubeUrlToEmbed(url); embedHtml = `<iframe src="${embedUrl}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`; } else if (url.includes('facebook.com/')) { container.className = 'media-player-container'; const encodedUrl = encodeURIComponent(url); const embedUrl = `https://www.facebook.com/plugins/video.php?href=${encodedUrl}&show_text=false&width=560&autoplay=true`; embedHtml = `<iframe src="${embedUrl}" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>`; } else if (url.match(/\.(mp3|wav|ogg|m4a)$/i)) { container.className = 'media-player-container audio-container'; embedHtml = `<audio src="${url}" controls autoplay style="width: 100%;"></audio>`; } else { container.className = 'media-player-container audio-container'; embedHtml = `<p style="color:var(--warning-color); text-align:center;">نەهاتە پشتراستکرن کا ئەڤ لینکە دشێت بهێتە نیشاندان.</p>`; } container.innerHTML = embedHtml; openModal('media-player-modal'); }
-function showPdfInModal(url, title) { document.getElementById('pdf-viewer-title').textContent = title || 'خواندن'; document.getElementById('pdf-iframe').src = url; document.getElementById('pdf-download-btn').href = url; openModal('pdf-viewer-modal'); }
+function playMediaInModal(url, title) { document.getElementById('media-player-title').textContent = title || 'تەماشاكرنا وانەیێ'; const container = document.getElementById('media-player-container'); let embedHtml = ''; if (url.includes('youtube.com') || url.includes('youtu.be')) { const embedUrl = convertYoutubeUrlToEmbed(url); embedHtml = `<iframe src="${embedUrl}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`; } else if (url.includes('facebook.com/')) { const encodedUrl = encodeURIComponent(url); const embedUrl = `https://www.facebook.com/plugins/video.php?href=${encodedUrl}&show_text=false&width=560&autoplay=true`; embedHtml = `<iframe src="${embedUrl}" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>`; } else if (url.match(/\.(mp3|wav|ogg|m4a)$/i)) { embedHtml = `<audio src="${url}" controls autoplay style="width: 100%; margin-top: 20px;"></audio>`; } else { embedHtml = `<p style="color:var(--warning-color); text-align:center;">نەهاتە پشتراستکرن کا ئەڤ لینکە دشێت بهێتە نیشاندان.</p>`; } container.innerHTML = embedHtml; openModal('media-player-modal'); }
+function showPdfInModal(url, title) { document.getElementById('pdf-viewer-title').textContent = title || 'خواندن'; document.getElementById('pdf-iframe').src = url; openModal('pdf-viewer-modal'); }
 function goToMapLocation(locationId) { closeModal('teacher-profile-modal'); navigateToView('map-view'); setTimeout(() => { focusOnMapLocation(locationId); }, 300); }
 function checkLevelUnlockCode(levelIndex) { const level = allData.levels[levelIndex]; const input = document.getElementById(`unlock-code-input-${levelIndex}`); const statusMsg = document.getElementById(`unlock-status-${levelIndex}`); if (!level || !input || !statusMsg) return; const enteredCode = input.value.trim(); const correctCode = level.unlockCode; if (!correctCode) { statusMsg.textContent = 'ئەڤ ئاستە ب کۆدی ناهێتە ڤەکرن.'; statusMsg.style.color = 'var(--warning-color)'; return; } if (enteredCode === correctCode) { statusMsg.textContent = 'پیرۆزە! کۆد راستە. ئاست هاتە ڤەکرن.'; statusMsg.style.color = 'var(--success-color)'; progressManager.unlockLevel(levelIndex); setTimeout(buildLevelsView, 1500); } else { statusMsg.textContent = 'کۆد نە راستە. هیڤیدارین دووبارە هەول بدە.'; statusMsg.style.color = 'var(--danger-color)'; input.focus(); } }
 function resetAllProgress() { const confirmationCode = Math.floor(1000 + Math.random() * 9000).toString(); const userInput = prompt(`ئاگاداری! تۆ لسەر وێی هەمی پێشکەفتنا خۆ ژێببەی. ئەڤ کارە ناهێتە ڤەگەڕاندن.\n\nبۆ پشتراستکرنێ، هیڤی یە ڤێ ژمارەیێ بنڤیسە: ${confirmationCode}`); if (userInput === confirmationCode) { localStorage.clear(); if(currentUser) { db.collection(collections.userProgress).doc(currentUser.uid).delete(); } alert("پێشکەفتنا تە ب سەرکەفتی هاتە ژێبرن. مالپەر دێ نوو بیت."); location.reload(); } else { alert("ژمارە نە راست بوو. ژێبرن هاتە هەلوەشاندن."); } }
@@ -1236,26 +1390,26 @@ function handleGlobalSearch() { const searchTerm = document.getElementById('glob
 function navigateToSearchResult(type, id) { closeModal('global-search-modal'); switch (type) { case 'hadith': navigateToView('hadith-view'); setTimeout(() => { const card = document.getElementById(`hadith-card-${id}`); if (card) card.scrollIntoView({behavior: 'smooth', block: 'center'}); }, 200); break; case 'fatwa': navigateToView('fatwas-view'); document.getElementById('fatwa-search-input').value = id; filterFatwas(); setTimeout(() => { const firstAccordionItem = document.querySelector('.fatwa-accordion-item'); if (firstAccordionItem) { firstAccordionItem.scrollIntoView({ behavior: 'smooth', block: 'center' }); toggleFatwa(firstAccordionItem.querySelector('.fatwa-question')); } }, 200); break; case 'lecture': navigateToView('waneyan-view'); setTimeout(() => showLessonList(id), 200); break; } }
 function startDailyTaskTimer() { const timerDisplay = document.getElementById('daily-tasks-timer-display'); if (!timerDisplay) return; if (dailyTaskTimerInterval) clearInterval(dailyTaskTimerInterval); dailyTaskTimerInterval = setInterval(() => { const now = new Date(); const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1); const diff = tomorrow - now; const hours = Math.floor(diff / (1000 * 60 * 60)); const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)); const seconds = Math.floor((diff % (1000 * 60)) / 1000); timerDisplay.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`; if (diff < 0) { dailyTaskManager.checkAndUpdateTasks(); buildDashboardView(); } }, 1000); }
 
-// === [ 8. FONKSIYONÊN AUTHENTICATION ] ===
+// === [ 8. FONKSIYONÊN AUTHENTICATION ÊN NÛ ] ===
 function handleAuthClick() { if (currentUser) { handleLogout(); } else { navigateToView('dashboard-view'); } }
 function updateAuthUI(isLoggedIn) { const authBtn = document.getElementById('auth-btn'); if (isLoggedIn) { authBtn.title = "دەرکەفتن"; authBtn.innerHTML = `<i class="fas fa-right-from-bracket"></i>`; } else { authBtn.title = "چوونەژوور"; authBtn.innerHTML = `<i class="fas fa-right-to-bracket"></i>`; } }
 function toggleAuthForm() { const loginForm = document.getElementById('login-form'); const signupForm = document.getElementById('signup-form'); if (!loginForm || !signupForm) return; if (loginForm.style.display === 'none') { loginForm.style.display = 'block'; signupForm.style.display = 'none'; } else { loginForm.style.display = 'none'; signupForm.style.display = 'block'; } }
-function handleLogin() { const email = document.getElementById('login-email').value; const password = document.getElementById('login-password').value; const errorP = document.getElementById('login-error'); auth.signInWithEmailAndPassword(email, password).then(userCredential => { console.log('Successfully logged in:', userCredential.user); errorP.style.display = 'none'; }).catch(error => { console.error('Login error:', error); errorP.textContent = "ئیمێل یان پاسورد خەلەتە."; errorP.style.display = 'block'; }); }
-function handleSignup() { const email = document.getElementById('signup-email').value; const password = document.getElementById('signup-password').value; const errorP = document.getElementById('signup-error'); if (password.length < 6) { errorP.textContent = "پێتڤیە پاسورد ل کێمی ٦ پیت بن."; errorP.style.display = 'block'; return; } auth.createUserWithEmailAndPassword(email, password).then(userCredential => { console.log('Successfully signed up:', userCredential.user); errorP.style.display = 'none'; }).catch(error => { console.error('Signup error:', error); if(error.code == 'auth/email-already-in-use') { errorP.textContent = "ئەڤ ئیمێلە ژڤری هاتیە بکارئینان."; } else { errorP.textContent = "چەوتیەک روویدا. هیڤیدارین دووبارە هەول بدە."; } errorP.style.display = 'block'; }); }
-function handleLogout() { if (confirm("تۆ پشتراستی کو دڤێی ژ هەژمارا خۆ دەرکەڤی؟")) { auth.signOut().then(() => { if (confirm("ئەرێ تۆ دخوازی پێشکەفتنا تە یا ناڤخۆیی (local) بهێتە ژێبرن؟\nئەڤە دێ مالپەری وەک نوو لێ کەت.")) { localStorage.clear(); location.reload(); } }).catch(error => console.error('Logout error:', error)); } }
-function handlePasswordReset() { const email = prompt("هیڤی یە ئیمێلێ خۆ بنڤیسە دا لینکا ڤەگەڕاندنا پاسوردێ بۆ تە بهێتە هنارتن:"); if (email) { auth.sendPasswordResetEmail(email).then(() => { alert("لینک هاتە هنارتن بۆ ئیمێلێ تە. هیڤی یە (Inbox) و (Spam)ێ خۆ بگەڕێی."); }).catch((error) => { alert("چەوتیەک روویدا: " + error.message); }); } }
+function handleLogin() { const email = document.getElementById('login-email').value; const password = document.getElementById('login-password').value; const errorP = document.getElementById('login-error'); auth.signInWithEmailAndPassword(email, password).catch(error => { console.error('Login error:', error); errorP.textContent = "ئیمێل یان پاسورد خەلەتە."; errorP.style.display = 'block'; }); }
+function handleSignup() { const email = document.getElementById('signup-email').value; const password = document.getElementById('signup-password').value; const errorP = document.getElementById('signup-error'); if (password.length < 6) { errorP.textContent = "پێتڤیە پاسورد ل کێمی ٦ پیت بن."; errorP.style.display = 'block'; return; } auth.createUserWithEmailAndPassword(email, password).catch(error => { console.error('Signup error:', error); if(error.code == 'auth/email-already-in-use') { errorP.textContent = "ئەڤ ئیمێلە ژڤری هاتیە بکارئینان."; } else { errorP.textContent = "چەوتیەک روویدا."; } errorP.style.display = 'block'; }); }
+function handleLogout() { if (confirm("تۆ پشتراستی کو دڤێی ژ هەژمارا خۆ دەرکەڤی؟")) { auth.signOut().then(() => { if (confirm("ئەرێ تۆ دخوازی پێشکەفتنا تە یا ناڤخۆیی (local) بهێتە ژێبرن؟")) { localStorage.clear(); location.reload(); } }).catch(error => console.error('Logout error:', error)); } }
+function handleForgotPassword() { const email = document.getElementById('login-email').value; if (!email) { alert("هیڤی یە ئیمێلێ خۆ بنڤیسە، پاشان دوگمەیا 'Te şîfreya xwe ji bîr kiriye?' bitikîne."); return; } auth.sendPasswordResetEmail(email).then(() => { alert('ئیمێلەک بۆ ڤەگەڕاندنا şîfreyê بۆ te hate şandin. هیڤی یە kontrol bike.'); }).catch((error) => { alert('Çewtî: ' + error.message); }); }
 
 // === [ 9. PWA ] ===
 let deferredPrompt;
-function setupInstallPrompt() { const installBanner = document.getElementById('install-app-banner'); const installBtn = document.getElementById('install-app-btn'); const dismissBtn = document.getElementById('dismiss-install-btn'); window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; installBanner.classList.add('visible'); }); installBtn.addEventListener('click', async () => { if (deferredPrompt) { deferredPrompt.prompt(); const { outcome } = await deferredPrompt.userChoice; console.log(`User response to the install prompt: ${outcome}`); deferredPrompt = null; installBanner.classList.remove('visible'); } }); dismissBtn.addEventListener('click', () => { installBanner.classList.remove('visible'); }); window.addEventListener('appinstalled', () => { deferredPrompt = null; installBanner.classList.remove('visible'); console.log('PWA was installed'); }); }
+function setupInstallPrompt() { const installBanner = document.getElementById('install-app-banner'); const installBtn = document.getElementById('install-app-btn'); const dismissBtn = document.getElementById('dismiss-install-btn'); window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; installBanner.classList.add('visible'); }); installBtn.addEventListener('click', async () => { if (deferredPrompt) { deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt = null; installBanner.classList.remove('visible'); } }); dismissBtn.addEventListener('click', () => { installBanner.classList.remove('visible'); }); window.addEventListener('appinstalled', () => { deferredPrompt = null; installBanner.classList.remove('visible'); }); }
 
 // هنارتنا هەمی فەنکشنان بۆ Window
 window.openModal = openModal; window.closeModal = closeModal; window.showLessonList = showLessonList; window.showLevelCourseLessons = showLevelCourseLessons; window.showTeacherProfile = showTeacherProfile; window.renderLocationList = renderLocationList; window.focusOnMapLocation = focusOnMapLocation; window.playMediaInModal = playMediaInModal; window.showPdfInModal = showPdfInModal; window.goToMapLocation = goToMapLocation; window.toggleCourseCompletion = toggleCourseCompletion; window.toggleLectureWatched = toggleLectureWatched; window.toggleLibraryBookRead = toggleLibraryBookRead; window.filterFatwas = filterFatwas; window.toggleFatwa = toggleFatwa; window.selectFatwaTeacher = selectFatwaTeacher; window.filterHadiths = filterHadiths; window.selectHadithFilter = selectHadithFilter; window.changeHadithPage = changeHadithPage; window.copyHadithText = copyHadithText; window.toggleHadithReadUI = toggleHadithReadUI; window.toggleFavoriteUI = toggleFavoriteUI; window.removeFavorite = removeFavorite; window.navigateToFavorite = navigateToFavorite; window.shareContent = shareContent; window.displaySurahTafsir = displaySurahTafsir; window.filterSurahButtons = filterSurahButtons; window.showSurahSelection = showSurahSelection; window.checkLevelUnlockCode = checkLevelUnlockCode; window.resetAllProgress = resetAllProgress; window.navigateToView = navigateToView; window.showHomeView = showHomeView; window.togglePdfMemorization = togglePdfMemorization; window.handleGlobalSearch = handleGlobalSearch; window.navigateToSearchResult = navigateToSearchResult;
 window.dailyTaskManager = dailyTaskManager;
-window.handleAuthClick = handleAuthClick; window.toggleAuthForm = toggleAuthForm; window.handleLogin = handleLogin; window.handleSignup = handleSignup; window.handlePasswordReset = handlePasswordReset;
+window.handleAuthClick = handleAuthClick; window.toggleAuthForm = toggleAuthForm; window.handleLogin = handleLogin; window.handleSignup = handleSignup; window.handleForgotPassword = handleForgotPassword;
 
 // PWA Service Worker Registration
-if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./service-worker.js').then(registration => { console.log('ServiceWorker registration successful with scope: ', registration.scope); }).catch(error => { console.log('ServiceWorker registration failed: ', error); }); }); }
+if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./service-worker.js').then(reg => console.log('SW registered.')).catch(err => console.log('SW registration failed: ', err)); }); }
 })();
 </script>
 </body>
