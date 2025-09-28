@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ئەدمین پانێل - پڕۆژێ ئیسلام (ڤێرژنا دوماهیێ)</title>
+<title>ئەدمین پانێل - پڕۆژێ ئیسلام</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 <style>
-/* --- CSS گشتی و گۆڕاوەکان (هەمان ستایلێ مالپەرێ سەرەکی) --- */
+/* --- CSS گشتی و گۆڕاوەکان --- */
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;700&display=swap');
 
 :root {
@@ -24,17 +24,16 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { font-family: var(--font-kurdish); background-color: var(--dark-bg); color: var(--primary-text); line-height: 1.7; }
-.container { width: 95%; max-width: 1400px; margin: auto; }
+body { font-family: var(--font-kurdish); background-color: var(--dark-bg); color: var(--primary-text); line-height: 1.7; overflow-x: hidden; }
 
-/* === ستایلێ سەرەکی یێ پانێلی === */
-.admin-layout { display: flex; min-height: 100vh; }
-.sidebar { width: 250px; background-color: var(--card-bg); border-left: 1px solid var(--border-color); padding: 20px; flex-shrink: 0; }
+‎/* === ستایلێ سەرەکی یێ پانێلی === */
+.admin-layout { display: flex; min-height: 100vh; position: relative; }
+.sidebar { width: 250px; background-color: var(--card-bg); border-left: 1px solid var(--border-color); padding: 20px; flex-shrink: 0; transition: transform 0.3s ease-in-out; z-index: 1000; }
 .sidebar-header { text-align: center; margin-bottom: 30px; }
 .sidebar-header h2 { font-size: 1.5rem; }
 .sidebar-header span { color: var(--accent-color); }
 .sidebar-nav a { display: flex; align-items: center; gap: 12px; padding: 12px 15px; color: var(--secondary-text); text-decoration: none; border-radius: 8px; margin-bottom: 8px; transition: all 0.3s ease; }
-.sidebar-nav a:hover, .sidebar-nav a.active { background-color: var(--border-color); color: var(--primary-text); }
+.sidebar-nav a:hover, .sidebar-nav a.active { background-color: rgba(88, 166, 255, 0.1); color: var(--primary-text); }
 .sidebar-nav a i { width: 20px; text-align: center; }
 
 .main-content { flex-grow: 1; padding: 30px; }
@@ -45,7 +44,20 @@ body { font-family: var(--font-kurdish); background-color: var(--dark-bg); color
 .view-header { margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; }
 .view-header h1 { font-size: 2.2rem; }
 
-/* === ستایلێ فۆرمان و دوگمەیان === */
+.mobile-menu-toggle {
+    display: none; position: fixed; top: 15px; right: 15px; z-index: 1001;
+    background: var(--card-bg); border: 1px solid var(--border-color); color: var(--primary-text);
+    width: 45px; height: 45px; font-size: 1.5rem; border-radius: 8px; cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-toggle { display: block; }
+    .sidebar { position: fixed; top: 0; right: 0; height: 100%; transform: translateX(100%); box-shadow: -5px 0 15px rgba(0,0,0,0.2); }
+    .sidebar.is-open { transform: translateX(0); }
+    .main-content { padding: 20px; margin-top: 60px; }
+    .view-header h1 { font-size: 1.8rem; }
+}
+
 .btn { padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-family: var(--font-kurdish); font-weight: bold; transition: opacity 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
 .btn-sm { padding: 5px 12px; font-size: 0.9rem; }
 .btn-primary { background-color: var(--accent-color); color: white; }
@@ -60,15 +72,39 @@ body { font-family: var(--font-kurdish); background-color: var(--dark-bg); color
 .form-group input, .form-group textarea, .form-group select { width: 100%; background: var(--dark-bg); border: 1px solid var(--border-color); color: var(--primary-text); padding: 12px; border-radius: 6px; font-family: var(--font-kurdish); }
 .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--accent-color); outline: none; }
 .form-group textarea { min-height: 100px; }
-.form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
-/* === ستایلێ مۆدال === */
+/* === [NEW] ستایلی نوێی پرۆفیشناڵی بلندکرنا فایلان === */
+.pro-upload-container { border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; }
+.upload-options { display: flex; background-color: #1c222c; }
+.upload-options .btn { flex: 1; border-radius: 0; background: transparent; border-bottom: 3px solid transparent; opacity: 0.6; font-size: 0.9rem; }
+.upload-options .btn.active { opacity: 1; border-bottom-color: var(--accent-color); color: white; }
+.upload-body { padding: 15px; }
+
+.drop-zone {
+    border: 2px dashed var(--border-color); border-radius: 8px; padding: 20px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; cursor: pointer; transition: all 0.3s ease; min-height: 120px;
+}
+.drop-zone:hover, .drop-zone.is-active { border-color: var(--accent-color); background-color: rgba(88, 166, 255, 0.05); }
+.drop-zone.is-success { border-color: var(--success-color); border-style: solid; background-color: rgba(46, 160, 67, 0.1); }
+.drop-zone .drop-zone-prompt i { font-size: 2.5rem; color: var(--secondary-text); margin-bottom: 10px; }
+.drop-zone .drop-zone-prompt p { font-weight: 500; }
+.drop-zone .file-name-display { color: var(--accent-color); font-size: 0.9rem; margin-top: 10px; word-break: break-all; }
+.drop-zone .file-input-hidden { display: none; }
+.drop-zone .progress-bar { width: 80%; height: 5px; background-color: var(--border-color); border-radius: 5px; margin-top: 15px; display: none; overflow: hidden; }
+.drop-zone .progress-bar-fill { width: 0%; height: 100%; background-color: var(--success-color); border-radius: 5px; transition: width 0.3s; }
+
+.url-input-view input { width: 100%; }
+.url-input-view input.is-success { border-color: var(--success-color); }
+.upload-body [data-upload-view] { display: none; }
+.upload-body [data-upload-view].is-active { display: block; }
+‎/* --- کۆتایی ستایلی نوێ --- */
+
 .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); display: none; justify-content: center; align-items: center; z-index: 2000; }
 .modal-overlay.is-visible { display: flex; animation: fadeIn 0.3s; }
 .modal-content { position: relative; width: 90%; max-width: 700px; background:var(--card-bg); border-radius:10px; padding: 30px; max-height: 90vh; overflow-y: auto; }
 .close-modal-btn { position: absolute; top: 15px; right: 20px; color: var(--secondary-text); font-size: 2rem; cursor: pointer; z-index: 10; }
 
-/* === ستایلێ کارتان و لیستان === */
 .content-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
 .item-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; transition: all 0.3s ease; }
 .item-card:hover { border-color: var(--accent-color); transform: translateY(-3px); }
@@ -87,14 +123,14 @@ tr:hover { background-color: #1c222c; }
 .status-visible { background-color: var(--success-color); }
 .status-hidden { background-color: var(--secondary-text); }
 
-/* === ستایلێ تایبەت ب هەر بەشەکی === */
 .level-card { border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 15px; overflow: hidden; }
-.level-header { background-color: #1c222c; padding: 15px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+.level-header { background-color: #1c222c; padding: 15px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; flex-wrap: wrap; gap: 10px; }
 .level-content { padding: 20px; background-color: var(--dark-bg); display: none; }
-.course-item { background-color: var(--card-bg); padding: 15px; border-radius: 6px; margin-bottom: 10px; border-right: 3px solid var(--accent-color); display: flex; justify-content: space-between; align-items: center; }
+.course-item { background-color: var(--card-bg); padding: 15px; border-radius: 6px; margin-bottom: 10px; border-right: 3px solid var(--accent-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
 
-.dynamic-list-container .list-item { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
-.dynamic-list-container .list-item input { flex-grow: 1; }
+.dynamic-list-container .list-item { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; padding: 15px; border: 1px solid var(--border-color); border-radius: 8px; }
+.dynamic-list-container .list-item .input-row { display: flex; gap: 10px; align-items: center; }
+.dynamic-list-container .list-item .input-row input { flex-grow: 1; }
 
 .security-warning { background-color: rgba(248, 81, 73, 0.1); border: 1px solid var(--danger-color); border-radius: 10px; padding: 20px; margin-bottom: 30px; text-align: center; }
 .security-warning h3 { color: var(--danger-color); margin-bottom: 10px; }
@@ -105,12 +141,30 @@ tr:hover { background-color: #1c222c; }
 .stat-card .stat-title { color: var(--secondary-text); }
 
 .loader-container { text-align: center; padding: 50px; font-size: 1.2rem; color: var(--secondary-text); }
-.error-message { text-align: center; padding: 50px; background-color: rgba(248, 81, 73, 0.1); border: 1px solid var(--danger-color); color: var(--danger-color); border-radius: 8px; }
+.error-message { text-align: center; padding: 50px; background-color: rgba(248, 81, 73, 0.1); border: 1px solid var(--danger-color); color: var(--danger-color); border-radius: 8px; margin: 20px; }
+
+#password-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--dark-bg); z-index: 9999; display: flex; justify-content: center; align-items: center; flex-direction: column; padding: 20px; }
+#password-box { background: var(--card-bg); padding: 30px; border-radius: 10px; border: 1px solid var(--border-color); width: 100%; max-width: 350px; text-align: center; }
 </style>
 </head>
 <body>
 
-<div class="admin-layout">
+<div id="password-overlay">
+    <div id="password-box">
+        <h2>پڕۆژێ ئیسلام</h2>
+        <p style="color:var(--secondary-text); margin: 10px 0 20px 0;">پانێلا کونترۆلێ</p>
+        <form id="password-form">
+            <div class="form-group">
+                <label for="password-input">ژمارا نهێنی</label>
+                <input type="password" id="password-input" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">چوونەژوور</button>
+        </form>
+    </div>
+</div>
+
+<div class="admin-layout" style="visibility: hidden;">
+    <button class="mobile-menu-toggle"><i class="fas fa-bars"></i></button>
     <aside class="sidebar">
         <div class="sidebar-header">
             <h2>پڕۆژێ <span>ئیسلام</span></h2>
@@ -121,704 +175,764 @@ tr:hover { background-color: #1c222c; }
             <a href="#" class="nav-link" data-view="levels-view"><i class="fas fa-stairs"></i> رێرەوا فێربوونێ</a>
             <a href="#" class="nav-link" data-view="teachers-view"><i class="fas fa-chalkboard-teacher"></i> مامۆستایان</a>
             <a href="#" class="nav-link" data-view="lectures-view"><i class="fas fa-video"></i> وانەیێن گشتی</a>
-            <a href="#" class="nav-link" data-view="map-view"><i class="fas fa-map-marked-alt"></i> خەریتە</a>
         </nav>
     </aside>
 
     <main class="main-content">
         <div class="security-warning">
-            <h3><i class="fas fa-exclamation-triangle"></i> ئاگەهداریەکا گەلەک گرنگا ئەمنی</h3>
-            <p>ئەڤ پانێلە بێ چ پاراستنەکا چوونەژوورێ یە. هەر کەسەکێ لێنکا ڤی پانێلی هەبیت، دشێت دەستکاریێ د داتایێن تە دا بکەت.</p>
+            <h3><i class="fas fa-exclamation-triangle"></i> ئاگەهداریەکا گرنگ</h3>
+            <p>ئەڤ پانێلە ب ژمارەکا نهێنی یا سادە هاتیە پاراستن. هیڤی دکەین لینکێ ڤی پانێلی ب کەسێ نەدەی.</p>
         </div>
+        <!-- Views will be loaded here -->
+        <section id="dashboard-view" class="admin-view"></section>
+        <section id="levels-view" class="admin-view"></section>
+        <section id="teachers-view" class="admin-view"></section>
+        <section id="lectures-view" class="admin-view"></section>
+    </main>
+</div>
 
-        <section id="dashboard-view" class="admin-view is-visible">
-            <div class="view-header"><h1>داشبۆرد</h1></div>
+‎<!-- === مۆدالەکان === -->
+<div class="modal-overlay" id="teacher-modal">
+    <div class="modal-content">
+        <span class="close-modal-btn" data-action="close-modal">&times;</span>
+        <h3 id="teacher-modal-title"></h3>
+        <form id="teacher-form">
+            <input type="hidden" id="teacher-id">
+            <div class="form-group"><label for="teacher-name">ناڤێ تەمام</label><input type="text" id="teacher-name" required></div>
+            
+            <div class="form-group">
+                <label>وێنێ پرۆفایلی</label>
+                <div class="pro-upload-container">
+                    <input type="hidden" class="final-url-input" id="teacher-image-url">
+                    <div class="upload-options">
+                        <button type="button" class="btn btn-sm" data-upload-option="upload"><i class="fas fa-upload"></i> بلندکرنا فایلێ</button>
+                        <button type="button" class="btn btn-sm" data-upload-option="link"><i class="fas fa-link"></i> دانانا لینکێ</button>
+                    </div>
+                    <div class="upload-body">
+                        <div data-upload-view="upload" class="drop-zone">
+                            <input type="file" class="file-input-hidden" accept="image/*">
+                            <div class="drop-zone-prompt"><i class="fas fa-cloud-upload-alt"></i><p>فایلێ لێرە بهاوێژە یان کلیک بکە</p><span class="file-name-display"></span></div>
+                            <div class="progress-bar"><div class="progress-bar-fill"></div></div>
+                        </div>
+                        <div data-upload-view="link" class="url-input-view"><input type="url" class="url-input" placeholder="لێرە لینکێ وێنەی دانە..."></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group"><label for="teacher-phone">ژمارا موبایلێ (ئارەزوومەندانە)</label><input type="tel" id="teacher-phone"></div>
+            <div class="form-group"><label for="teacher-bio">کورتەیەک لسەر مامۆستای</label><textarea id="teacher-bio"></textarea></div>
+            <div class="form-group"><label for="teacher-location">جهێ نیشتەجیبوونێ (ئارەزوومەندانە)</label><input type="text" id="teacher-location"></div>
+            <div class="form-group"><label for="teacher-order">ژمارا رێزبەندیێ</label><input type="number" id="teacher-order" value="0"></div>
+            <div class="form-group"><label for="teacher-status">بارودۆخ</label><select id="teacher-status"><option value="visible">دیار</option><option value="hidden">ڤەشارتی</option></select></div>
+            <h4>تۆرێن جڤاکی (ئارەزوومەندانە)</h4>
+            <div class="form-group"><label for="teacher-social-telegram">تێلەگرام</label><input type="url" id="teacher-social-telegram"></div>
+            <div class="form-group"><label for="teacher-social-youtube">یوتیوب</label><input type="url" id="teacher-social-youtube"></div>
+            <div class="form-group"><label for="teacher-social-instagram">ئینستگرام</label><input type="url" id="teacher-social-instagram"></div>
+            <button type="submit" class="btn btn-success" id="save-teacher-btn">تۆمارکرن</button>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="lecture-modal">
+    <div class="modal-content">
+        <span class="close-modal-btn" data-action="close-modal">&times;</span>
+        <h3 id="lecture-modal-title"></h3>
+        <form id="lecture-form">
+            <input type="hidden" id="lecture-id">
+            <div class="form-group"><label for="lecture-title">ناڤونیشانێ وانەیێ</label><input type="text" id="lecture-title" required></div>
+            <div class="form-group"><label for="lecture-teacher">مامۆستا</label><select id="lecture-teacher" required></select></div>
+            <div class="form-group"><label for="lecture-category">بابەت (ئارەزوومەندانە)</label><input type="text" id="lecture-category"></div>
+
+            <div class="form-group">
+                <label>وێنەیێ وانەیێ (ئارەزوومەندانە)</label>
+                 <div class="pro-upload-container">
+                    <input type="hidden" class="final-url-input" id="lecture-image-url">
+                    <div class="upload-options"><button type="button" class="btn btn-sm" data-upload-option="upload"><i class="fas fa-upload"></i> بلندکرنا فایلێ</button><button type="button" class="btn btn-sm" data-upload-option="link"><i class="fas fa-link"></i> دانانا لینکێ</button></div>
+                    <div class="upload-body">
+                        <div data-upload-view="upload" class="drop-zone"><input type="file" class="file-input-hidden" accept="image/*"><div class="drop-zone-prompt"><i class="fas fa-cloud-upload-alt"></i><p>فایلێ لێرە بهاوێژە یان کلیک بکە</p><span class="file-name-display"></span></div><div class="progress-bar"><div class="progress-bar-fill"></div></div></div>
+                        <div data-upload-view="link" class="url-input-view"><input type="url" class="url-input" placeholder="لێرە لینکێ وێنەی دانە..."></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>فایلا PDF (ئارەزوومەندانە)</label>
+                <div class="pro-upload-container">
+                    <input type="hidden" class="final-url-input" id="lecture-pdf-url">
+                    <div class="upload-options"><button type="button" class="btn btn-sm" data-upload-option="upload"><i class="fas fa-upload"></i> بلندکرنا فایلێ</button><button type="button" class="btn btn-sm" data-upload-option="link"><i class="fas fa-link"></i> دانانا لینکێ</button></div>
+                    <div class="upload-body">
+                        <div data-upload-view="upload" class="drop-zone"><input type="file" class="file-input-hidden" accept=".pdf"><div class="drop-zone-prompt"><i class="fas fa-cloud-upload-alt"></i><p>فایلێ لێرە بهاوێژە یان کلیک بکە</p><span class="file-name-display"></span></div><div class="progress-bar"><div class="progress-bar-fill"></div></div></div>
+                        <div data-upload-view="link" class="url-input-view"><input type="url" class="url-input" placeholder="لێرە لینکێ PDF دانە..."></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group"><label for="lecture-status">بارودۆخ</label><select id="lecture-status"><option value="visible">دیار</option><option value="hidden">ڤەشارتی</option></select></div>
+            <h4>لیستا ڤیدیویان/دەنگان</h4>
+            <div id="lecture-videos-container" class="dynamic-list-container"></div>
+            <button type="button" class="btn btn-secondary" data-action="add-video-field" data-container="lecture-videos-container"><i class="fas fa-plus"></i> ڤیدیو/دەنگ</button>
+            <hr style="border-color: var(--border-color); margin: 20px 0;">
+            <button type="submit" class="btn btn-success" id="save-lecture-btn">تۆمارکرن</button>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="course-modal">
+    <div class="modal-content">
+        <span class="close-modal-btn" data-action="close-modal">&times;</span>
+        <h3 id="course-modal-title"></h3>
+        <form id="course-form">
+            <input type="hidden" id="course-level-id">
+            <input type="hidden" id="course-id">
+            <div class="form-group"><label for="course-title">ناڤونیشانێ وانەیێ</label><input type="text" id="course-title" required></div>
+            <div class="form-group"><label for="course-teacher">مامۆستا</label><select id="course-teacher" required></select></div>
+            
+            <div class="form-group">
+                <label>فایلا PDF یا وانەیێ (ئارەزوومەندانە)</label>
+                <div class="pro-upload-container">
+                    <input type="hidden" class="final-url-input" id="course-pdf-url">
+                    <div class="upload-options"><button type="button" class="btn btn-sm" data-upload-option="upload"><i class="fas fa-upload"></i> بلندکرنا فایلێ</button><button type="button" class="btn btn-sm" data-upload-option="link"><i class="fas fa-link"></i> دانانا لینکێ</button></div>
+                    <div class="upload-body">
+                        <div data-upload-view="upload" class="drop-zone"><input type="file" class="file-input-hidden" accept=".pdf"><div class="drop-zone-prompt"><i class="fas fa-cloud-upload-alt"></i><p>فایلێ لێرە بهاوێژە یان کلیک بکە</p><span class="file-name-display"></span></div><div class="progress-bar"><div class="progress-bar-fill"></div></div></div>
+                        <div data-upload-view="link" class="url-input-view"><input type="url" class="url-input" placeholder="لێرە لینکێ PDF دانە..."></div>
+                    </div>
+                </div>
+            </div>
+
+            <hr style="border-color: var(--border-color); margin: 20px 0;"><h4>بەشێ ژبەرکرنێ (ئارەزوومەندانە)</h4>
+            <div class="form-group"><label for="course-mem-title">ناڤونیشانێ پەرتوکا ژبەرکرنێ</label><input type="text" id="course-mem-title"></div>
+            
+             <div class="form-group">
+                <label>فایلا PDF یا ژبەرکرنێ</label>
+                 <div class="pro-upload-container">
+                    <input type="hidden" class="final-url-input" id="course-mem-pdf-url">
+                    <div class="upload-options"><button type="button" class="btn btn-sm" data-upload-option="upload"><i class="fas fa-upload"></i> بلندکرنا فایلێ</button><button type="button" class="btn btn-sm" data-upload-option="link"><i class="fas fa-link"></i> دانانا لینکێ</button></div>
+                    <div class="upload-body">
+                        <div data-upload-view="upload" class="drop-zone"><input type="file" class="file-input-hidden" accept=".pdf"><div class="drop-zone-prompt"><i class="fas fa-cloud-upload-alt"></i><p>فایلێ لێرە بهاوێژە یان کلیک بکە</p><span class="file-name-display"></span></div><div class="progress-bar"><div class="progress-bar-fill"></div></div></div>
+                        <div data-upload-view="link" class="url-input-view"><input type="url" class="url-input" placeholder="لێرە لینکێ PDF دانە..."></div>
+                    </div>
+                </div>
+            </div>
+
+            <hr style="border-color: var(--border-color); margin: 20px 0;"><h4>لیستا ڤیدیویان/دەنگان</h4>
+            <div id="course-videos-container" class="dynamic-list-container"></div>
+            <button type="button" class="btn btn-secondary" data-action="add-video-field" data-container="course-videos-container"><i class="fas fa-plus"></i> ڤیدیو/دەنگ</button>
+            <hr style="border-color: var(--border-color); margin: 20px 0;"><button type="submit" class="btn btn-success" id="save-course-btn">تۆمارکرن</button>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="level-modal">
+    <div class="modal-content"><span class="close-modal-btn" data-action="close-modal">&times;</span><h3 id="level-modal-title"></h3><form id="level-form"><input type="hidden" id="level-id"><div class="form-group"><label for="level-name">ناڤێ ئاستی</label><input type="text" id="level-name" required></div><div class="form-group"><label for="level-number">هژمارا ئاستی</label><input type="number" id="level-number" required></div><div class="form-group"><label for="level-points">خالێن پێدڤی (ئارەزوومەندانە)</label><input type="number" id="level-points" value="0"></div><div class="form-group"><label for="level-code">کۆدێ ڤەکرنێ (ئارەزوومەندانە)</label><input type="text" id="level-code"></div><div class="form-group"><label for="level-status">بارودۆخ</label><select id="level-status"><option value="visible">دیار</option><option value="hidden">ڤەشارتی</option></select></div><button type="submit" class="btn btn-success" id="save-level-btn">تۆمارکرن</button></form></div>
+</div>
+
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+
+<script>
+(function() {
+'use strict';
+
+document.addEventListener('DOMContentLoaded', main);
+
+function main() {
+    const firebaseConfig = {
+        apiKey: "AIzaSyDDi3HtFigGy3qFpFVhSATal3yzm7Z_dZA",
+        authDomain: "projeislam.firebaseapp.com",
+        projectId: "projeislam",
+        storageBucket: "projeislam.appspot.com",
+        messagingSenderId: "686343038831",
+        appId: "1:686343038831:web:8b5e19daa95176000b6a9a"
+    };
+
+    if (typeof firebase === 'undefined' || !firebase.initializeApp) {
+        document.body.innerHTML = '<div class="error-message">کێشە لە بارکردنی کتێبخانەی فایەربەیس هەیە.</div>';
+        return;
+    }
+
+    try {
+        firebase.initializeApp(firebaseConfig);
+    } catch (e) {
+        document.body.innerHTML = '<div class="error-message">پەیوەندی ب فایەربەیسێ سەرنەکەفت.</div>';
+        return;
+    }
+
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+    const collections = { teachers: 'teachers', generalLectures: 'generalLectures', levels: 'levels' };
+    let allTeachers = [];
+
+    // --- Global Helpers ---
+    const showLoader = (container) => container.innerHTML = '<div class="loader-container"><i class="fas fa-spinner fa-spin"></i> داتایان دهێنە بارکرن...</div>';
+    const showError = (container, message) => container.innerHTML = `<div class="error-message"><strong>چەوتی:</strong> ${message}</div>`;
+    const showEmpty = (container, message) => container.innerHTML = `<div class="loader-container">${message}</div>`;
+    const disableButton = (btn, text = 'تۆمارکرن...') => { btn.disabled = true; btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${text}`; };
+    const enableButton = (btn, text) => { btn.disabled = false; btn.innerHTML = text; };
+
+    // --- [NEW] Professional File Upload Logic ---
+    function setupProUpload(container) {
+        const optionBtns = container.querySelectorAll('[data-upload-option]');
+        const uploadViews = container.querySelectorAll('[data-upload-view]');
+        const finalUrlInput = container.querySelector('.final-url-input');
+        const dropZone = container.querySelector('.drop-zone');
+        const fileInput = container.querySelector('.file-input-hidden');
+        const fileNameDisplay = container.querySelector('.file-name-display');
+        const progressBar = container.querySelector('.progress-bar');
+        const progressBarFill = container.querySelector('.progress-bar-fill');
+        const urlInput = container.querySelector('.url-input');
+
+        const switchView = (option) => {
+            optionBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.uploadOption === option));
+            uploadViews.forEach(view => view.classList.toggle('is-active', view.dataset.uploadView === option));
+            finalUrlInput.value = '';
+            if(option === 'upload') {
+                if (urlInput) { urlInput.value = ''; urlInput.classList.remove('is-success'); }
+            } else {
+                if (fileInput) fileInput.value = '';
+                if (dropZone) dropZone.classList.remove('is-success');
+                if (fileNameDisplay) fileNameDisplay.textContent = '';
+            }
+        };
+
+        optionBtns.forEach(btn => btn.addEventListener('click', () => switchView(btn.dataset.uploadOption)));
+        switchView('upload');
+
+        if (dropZone) {
+            dropZone.addEventListener('click', () => fileInput.click());
+            dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('is-active'); });
+            dropZone.addEventListener('dragleave', () => dropZone.classList.remove('is-active'));
+            dropZone.addEventListener('drop', e => {
+                e.preventDefault();
+                dropZone.classList.remove('is-active');
+                if (e.dataTransfer.files.length) {
+                    fileInput.files = e.dataTransfer.files;
+                    handleFileUpload(fileInput.files[0]);
+                }
+            });
+            fileInput.addEventListener('change', () => fileInput.files.length && handleFileUpload(fileInput.files[0]));
+        }
+        
+        if (urlInput) {
+            urlInput.addEventListener('input', () => {
+                const isValid = urlInput.value.trim().match(/^https?:\/\/.+/);
+                urlInput.classList.toggle('is-success', isValid);
+                finalUrlInput.value = isValid ? urlInput.value.trim() : '';
+            });
+        }
+
+        const handleFileUpload = (file) => {
+            if (!file) return;
+            fileNameDisplay.textContent = file.name;
+            progressBar.style.display = 'block';
+            progressBarFill.style.width = '0%';
+            
+            const storageRef = storage.ref(`uploads/${Date.now()}_${file.name}`);
+            const uploadTask = storageRef.put(file);
+
+            uploadTask.on('state_changed', 
+                (snapshot) => {
+                    const progress = (snapshot.bytesTransferre / snapshot.totalBytes) * 100;
+                    progressBarFill.style.width = progress + '%';
+                }, 
+                (error) => {
+                    fileNameDisplay.textContent = "بلندکرن سەرنەکەفت!";
+                    dropZone.classList.remove('is-success');
+                }, 
+                () => {
+                    uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                        fileNameDisplay.textContent = `${file.name} (بلند بوو)`;
+                        finalUrlInput.value = downloadURL;
+                        dropZone.classList.add('is-success');
+                        progressBar.style.display = 'none';
+                    });
+                }
+            );
+        };
+    }
+
+    function resetProUpload(container) {
+        container.querySelector('.final-url-input').value = '';
+        const urlInput = container.querySelector('.url-input');
+        if(urlInput) { urlInput.value = ''; urlInput.classList.remove('is-success'); }
+        const dropZone = container.querySelector('.drop-zone');
+        if(dropZone) dropZone.classList.remove('is-success');
+        container.querySelector('.file-name-display').textContent = '';
+        container.querySelector('.file-input-hidden').value = '';
+        container.querySelectorAll('[data-upload-option]').forEach(btn => btn.classList.remove('active'));
+        container.querySelector('[data-upload-option="upload"]').classList.add('active');
+        container.querySelectorAll('[data-upload-view]').forEach(view => view.classList.remove('is-active'));
+        container.querySelector('[data-upload-view="upload"]').classList.add('is-active');
+    }
+
+    function populateProUpload(container, url) {
+        resetProUpload(container);
+        if (!url) return;
+        
+        container.querySelector('.final-url-input').value = url;
+        const urlInput = container.querySelector('.url-input');
+        const dropZone = container.querySelector('.drop-zone');
+        const fileNameDisplay = container.querySelector('.file-name-display');
+
+        // Check if it's a firebase storage URL to determine if it was an upload or a link
+        if (url.includes('firebasestorage.googleapis.com')) {
+            // It's likely an uploaded file
+            container.querySelectorAll('[data-upload-option]').forEach(btn => btn.classList.toggle('active', btn.dataset.uploadOption === 'upload'));
+            container.querySelectorAll('[data-upload-view]').forEach(view => view.classList.toggle('is-active', view.dataset.uploadView === 'upload'));
+            dropZone.classList.add('is-success');
+            // Extract file name
+            try {
+                const decodedUrl = decodeURIComponent(url.split('?')[0]);
+                const fileName = decodedUrl.substring(decodedUrl.lastIndexOf('/') + 1).split('_').slice(1).join('_');
+                fileNameDisplay.textContent = `${fileName} (پێشتر بلندکریە)`;
+            } catch (e) {
+                fileNameDisplay.textContent = 'فایلێ پێشتر بلندکریە';
+            }
+        } else {
+            // It's a normal link
+            container.querySelectorAll('[data-upload-option]').forEach(btn => btn.classList.toggle('active', btn.dataset.uploadOption === 'link'));
+            container.querySelectorAll('[data-upload-view]').forEach(view => view.classList.toggle('is-active', view.dataset.uploadView === 'link'));
+            urlInput.value = url;
+            urlInput.classList.add('is-success');
+        }
+    }
+
+    // --- Panel Initialization and Navigation ---
+    function initializePanel() {
+        setupMobileMenu();
+        document.querySelectorAll('.pro-upload-container').forEach(setupProUpload);
+        setupEventListeners();
+        navigateToView('dashboard-view');
+    }
+
+    function setupMobileMenu() {
+        const toggleButton = document.querySelector('.mobile-menu-toggle');
+        const sidebar = document.querySelector('.sidebar');
+        const mainContent = document.querySelector('.main-content');
+        const navLinks = document.querySelectorAll('.sidebar-nav .nav-link');
+        toggleButton.addEventListener('click', (e) => { e.stopPropagation(); sidebar.classList.toggle('is-open'); });
+        mainContent.addEventListener('click', () => sidebar.classList.remove('is-open'));
+        navLinks.forEach(link => link.addEventListener('click', () => sidebar.classList.remove('is-open')));
+    }
+
+    const viewLoaders = {
+        'dashboard-view': loadDashboard, 'teachers-view': loadTeachers,
+        'lectures-view': loadLectures, 'levels-view': loadLevels,
+    };
+
+    function navigateToView(viewId) {
+        document.querySelectorAll('.admin-view').forEach(v => v.classList.remove('is-visible'));
+        const targetView = document.getElementById(viewId);
+        if (targetView) {
+            targetView.classList.add('is-visible');
+            if (viewLoaders[viewId]) viewLoaders[viewId](targetView);
+        }
+    }
+
+    // --- Data Loading ---
+    async function populateTeachersCache() {
+        if (allTeachers.length === 0) {
+           const snapshot = await db.collection(collections.teachers).orderBy('order').get();
+           allTeachers = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        }
+    }
+    
+    async function populateTeachersDropdown(selectId) {
+        await populateTeachersCache();
+        const select = document.getElementById(selectId);
+        select.innerHTML = '<option value="">مامۆستایەکێ هەلبژێرە...</option>';
+        allTeachers.forEach(t => select.innerHTML += `<option value="${t.id}">${t.name}</option>`);
+    }
+
+    async function loadDashboard(container) {
+        container.innerHTML = `<div class="view-header"><h1>داشبۆرد</h1></div>
             <div id="dashboard-stats-container" class="dashboard-stats"></div>
             <h3>کردارێن خێرا</h3>
             <div class="content-grid">
                 <div class="item-card"><div class="item-card-content"><h3><i class="fas fa-user-plus"></i> زێدەکرنا مامۆستایەکێ نوو</h3><p>مامۆستایەکێ نوو بۆ سیستەمی زێدە بکە.</p></div><div class="item-card-actions"><button class="btn btn-primary" data-action="open-teacher-modal">زێدەکرن</button></div></div>
                 <div class="item-card"><div class="item-card-content"><h3><i class="fas fa-layer-group"></i> زێدەکرنا ئاستەکێ نوو</h3><p>ئاستەکێ نوو بۆ رێرەوا فێربوونێ زێدە بکە.</p></div><div class="item-card-actions"><button class="btn btn-primary" data-action="open-level-modal">زێدەکرن</button></div></div>
-                <div class="item-card"><div class="item-card-content"><h3><i class="fas fa-map-pin"></i> زێدەکرنا وانەیەکا خەریتەی</h3><p>وانەیەکا نوو بۆ بەشێ خەریتێ زێدە بکە.</p></div><div class="item-card-actions"><button class="btn btn-primary" data-action="open-map-modal">زێدەکرن</button></div></div>
-            </div>
-        </section>
+                <div class="item-card"><div class="item-card-content"><h3><i class="fas fa-video"></i> زێدەکرنا وانەیەکا گشتی</h3><p>وانەیەکا نوو بۆ بەشێ وانەیێن گشتی زێدە بکە.</p></div><div class="item-card-actions"><button class="btn btn-primary" data-action="open-lecture-modal">زێدەکرن</button></div></div>
+            </div>`;
+        const statsContainer = container.querySelector('#dashboard-stats-container');
+        showLoader(statsContainer);
+        const [teachersSnap, levelsSnap, lecturesSnap] = await Promise.all([
+            db.collection(collections.teachers).count().get(), 
+            db.collection(collections.levels).count().get(), 
+            db.collection(collections.generalLectures).count().get()
+        ]);
+        statsContainer.innerHTML = `
+            <div class="stat-card"><div class="stat-number">${teachersSnap.data().count}</div><div class="stat-title">مامۆستا</div></div>
+            <div class="stat-card"><div class="stat-number">${levelsSnap.data().count}</div><div class="stat-title">ئاست</div></div>
+            <div class="stat-card"><div class="stat-number">${lecturesSnap.data().count}</div><div class="stat-title">وانەیێن گشتی</div></div>`;
+    }
 
-        <section id="levels-view" class="admin-view">
-            <div class="view-header"><h1>رێرەوا فێربوونێ</h1><button class="btn btn-primary" data-action="open-level-modal"><i class="fas fa-plus"></i> ئاستەکێ نوو</button></div>
-            <div id="levels-list-container"></div>
-        </section>
-
-        <section id="teachers-view" class="admin-view">
-            <div class="view-header"><h1>مامۆستایان</h1><button class="btn btn-primary" data-action="open-teacher-modal"><i class="fas fa-user-plus"></i> مامۆستایەکێ نوو</button></div>
-            <div id="teachers-table-container" class="table-responsive"></div>
-        </section>
-
-        <section id="lectures-view" class="admin-view">
-            <div class="view-header"><h1>وانەیێن گشتی</h1><button class="btn btn-primary" data-action="open-lecture-modal"><i class="fas fa-plus"></i> وانەیەکا نوو</button></div>
-            <div id="lectures-grid-container" class="content-grid"></div>
-        </section>
+    async function loadTeachers(container) {
+        container.innerHTML = `<div class="view-header"><h1>مامۆستایان</h1><button class="btn btn-primary" data-action="open-teacher-modal"><i class="fas fa-user-plus"></i> مامۆستایەکێ نوو</button></div><div id="teachers-table-container" class="table-responsive"></div>`;
+        const tableContainer = container.querySelector('#teachers-table-container');
+        showLoader(tableContainer);
+        await populateTeachersCache();
+        if (allTeachers.length === 0) return showEmpty(tableContainer, 'هیچ مامۆستایەک نەهاتیە تۆمارکرن.');
+        tableContainer.innerHTML = `<table><thead><tr><th>رێزبەندی</th><th>وێنە</th><th>ناڤ</th><th>بارودۆخ</th><th>کردار</th></tr></thead><tbody>
+            ${allTeachers.map(t => `
+                <tr>
+                    <td>${t.order || 0}</td>
+                    <td><img src="${t.profileImage || 'https://via.placeholder.com/50'}" alt="${t.name}" width="50" height="50" style="border-radius:50%; object-fit:cover;"></td>
+                    <td>${t.name || ''}</td>
+                    <td><span class="status-badge ${t.status === 'hidden' ? 'status-hidden' : 'status-visible'}">${t.status === 'hidden' ? 'ڤەشارتی' : 'دیار'}</span></td>
+                    <td class="actions-cell"><button class="btn btn-secondary btn-sm" data-action="open-teacher-modal" data-id="${t.id}"><i class="fas fa-edit"></i></button><button class="btn btn-danger btn-sm" data-action="delete-item" data-id="${t.id}" data-collection="${collections.teachers}" data-callback-view="teachers-view"><i class="fas fa-trash"></i></button></td>
+                </tr>`).join('')}
+            </tbody></table>`;
+    }
+    
+    async function loadLectures(container) {
+        container.innerHTML = `<div class="view-header"><h1>وانەیێن گشتی</h1><button class="btn btn-primary" data-action="open-lecture-modal"><i class="fas fa-plus"></i> وانەیەکا نوو</button></div><div id="lectures-grid-container" class="content-grid"></div>`;
+        const gridContainer = container.querySelector('#lectures-grid-container');
+        showLoader(gridContainer);
+        await populateTeachersCache();
+        const snapshot = await db.collection(collections.generalLectures).get();
+        if (snapshot.empty) return showEmpty(gridContainer, 'هیچ وانەیەکا گشتی نەهاتیە تۆمارکرن.');
         
-        <section id="map-view" class="admin-view">
-            <div class="view-header"><h1>وانەیێن خەریتەی</h1><button class="btn btn-primary" data-action="open-map-modal"><i class="fas fa-plus"></i> وانەیەکا نوو</button></div>
-            <div id="map-table-container" class="table-responsive"></div>
-        </section>
-
-    </main>
-</div>
-
-<!-- === مۆدالەکان === -->
-
-<div class="modal-overlay" id="teacher-modal">
-    <div class="modal-content"><span class="close-modal-btn" data-action="close-modal">&times;</span><h3 id="teacher-modal-title"></h3><form id="teacher-form"><input type="hidden" id="teacher-id"><div class="form-group"><label for="teacher-name">ناڤێ تەمام</label><input type="text" id="teacher-name" required></div><div class="form-group"><label for="teacher-phone">ژمارا موبایلێ (ئارەزوومەندانە)</label><input type="tel" id="teacher-phone"></div><div class="form-group"><label for="teacher-bio">کورتەیەک لسەر مامۆستای</label><textarea id="teacher-bio"></textarea></div><div class="form-group"><label for="teacher-image">لێنکا وێنێ پرۆفایلی</label><input type="url" id="teacher-image" placeholder="https://example.com/image.jpg"></div><div class="form-group"><label for="teacher-location">جهێ نیشتەجیبوونێ (ئارەزوومەندانە)</label><input type="text" id="teacher-location"></div><div class="form-group"><label for="teacher-order">ژمارا رێزبەندیێ (بۆ نموونە: 1, 2, 3..)</label><input type="number" id="teacher-order" placeholder="0"></div><div class="form-group"><label for="teacher-status">بارودۆخ</label><select id="teacher-status"><option value="visible">دیار</option><option value="hidden">ڤەشارتی</option></select></div><h4>تۆرێن جڤاکی (ئارەزوومەندانە)</h4><div class="form-group"><label for="teacher-social-telegram">تێلەگرام</label><input type="url" id="teacher-social-telegram"></div><div class="form-group"><label for="teacher-social-youtube">یوتیوب</label><input type="url" id="teacher-social-youtube"></div><div class="form-group"><label for="teacher-social-instagram">ئینستگرام</label><input type="url" id="teacher-social-instagram"></div><button type="submit" class="btn btn-success" id="save-teacher-btn">تۆمارکرن</button></form></div>
-</div>
-
-<div class="modal-overlay" id="lecture-modal">
-    <div class="modal-content"><span class="close-modal-btn" data-action="close-modal">&times;</span><h3 id="lecture-modal-title"></h3><form id="lecture-form"><input type="hidden" id="lecture-id"><div class="form-group"><label for="lecture-title">ناڤونیشانێ وانەیێ</label><input type="text" id="lecture-title" required></div><div class="form-group"><label for="lecture-teacher">مامۆستا</label><select id="lecture-teacher" required></select></div><div class="form-group"><label for="lecture-category">بابەت (ئارەزوومەندانە)</label><input type="text" id="lecture-category"></div><div class="form-group"><label for="lecture-image">لێنکا وێنەیێ (ئارەزوومەندانە)</label><input type="url" id="lecture-image"></div><div class="form-group"><label for="lecture-pdf">لێنکا PDF (ئارەزوومەندانە)</label><input type="url" id="lecture-pdf"></div><div class="form-group"><label for="lecture-status">بارودۆخ</label><select id="lecture-status"><option value="visible">دیار</option><option value="hidden">ڤەشارتی</option></select></div><h4>لیستا ڤیدیویان (ئارەزوومەندانە)</h4><div id="lecture-videos-container" class="dynamic-list-container"></div><button type="button" class="btn btn-secondary" data-action="add-video-field" data-container="lecture-videos-container"><i class="fas fa-plus"></i> ڤیدیویەک</button><hr style="border-color: var(--border-color); margin: 20px 0;"><button type="submit" class="btn btn-success" id="save-lecture-btn">تۆمارکرن</button></form></div>
-</div>
-
-<div class="modal-overlay" id="level-modal">
-    <div class="modal-content"><span class="close-modal-btn" data-action="close-modal">&times;</span><h3 id="level-modal-title"></h3><form id="level-form"><input type="hidden" id="level-id"><div class="form-group"><label for="level-name">ناڤێ ئاستی</label><input type="text" id="level-name" required></div><div class="form-group"><label for="level-number">هژمارا ئاستی</label><input type="number" id="level-number" required></div><div class="form-group"><label for="level-points">خالێن پێدڤی (ئارەزوومەندانە)</label><input type="number" id="level-points" placeholder="0"></div><div class="form-group"><label for="level-code">کۆدێ ڤەکرنێ (ئارەزوومەندانە)</label><input type="text" id="level-code"></div><div class="form-group"><label for="level-status">بارودۆخ</label><select id="level-status"><option value="visible">دیار</option><option value="hidden">ڤەشارتی</option></select></div><button type="submit" class="btn btn-success" id="save-level-btn">تۆمارکرن</button></form></div>
-</div>
-
-<div class="modal-overlay" id="course-modal">
-    <div class="modal-content"><span class="close-modal-btn" data-action="close-modal">&times;</span><h3 id="course-modal-title"></h3><form id="course-form"><input type="hidden" id="course-level-id"><input type="hidden" id="course-id"><div class="form-group"><label for="course-title">ناڤونیشانێ وانەیێ</label><input type="text" id="course-title" required></div><div class="form-group"><label for="course-teacher">مامۆستا</label><select id="course-teacher" required></select></div><div class="form-group"><label for="course-pdf">لێنکا PDF (ئارەزوومەندانە)</label><input type="url" id="course-pdf"></div><hr style="border-color: var(--border-color); margin: 20px 0;"><h4>بەشێ ژبەرکرنێ (ئارەزوومەندانە)</h4><div class="form-group"><label for="course-mem-title">ناڤونیشانێ پەرتوکا ژبەرکرنێ</label><input type="text" id="course-mem-title"></div><div class="form-group"><label for="course-mem-pdf">لێنکا PDF یا ژبەرکرنێ</label><input type="url" id="course-mem-pdf"></div><hr style="border-color: var(--border-color); margin: 20px 0;"><h4>لیستا ڤیدیویان (ئارەزوومەندانە)</h4><div id="course-videos-container" class="dynamic-list-container"></div><button type="button" class="btn btn-secondary" data-action="add-video-field" data-container="course-videos-container"><i class="fas fa-plus"></i> ڤیدیویەک</button><hr style="border-color: var(--border-color); margin: 20px 0;"><button type="submit" class="btn btn-success" id="save-course-btn">تۆمارکرن</button></form></div>
-</div>
-
-<div class="modal-overlay" id="map-modal">
-    <div class="modal-content"><span class="close-modal-btn" data-action="close-modal">&times;</span><h3 id="map-modal-title"></h3><form id="map-form"><input type="hidden" id="map-id"><div class="form-group"><label for="map-title">ناڤونیشانێ وانەیێ</label><input type="text" id="map-title" required></div><div class="form-group"><label for="map-teacher">مامۆستا</label><select id="map-teacher" required></select></div><div class="form-group"><label for="map-mosque">ناڤێ مزگەفتێ</label><input type="text" id="map-mosque" required></div><div class="form-grid-2"><div class="form-group"><label for="map-day">رۆژ</label><input type="text" id="map-day" placeholder="بۆ نموونە: هەموو رۆژێن پێنج شەمبی"></div><div class="form-group"><label for="map-time">دەم</label><input type="text" id="map-time" placeholder="بۆ نموونە: پشتی نڤێژا عیشایێ"></div></div><div class="form-grid-2"><div class="form-group"><label for="map-lat">Latitude</label><input type="text" id="map-lat" placeholder="36.862483"></div><div class="form-group"><label for="map-lng">Longitude</label><input type="text" id="map-lng" placeholder="42.990479"></div></div><div class="form-group"><label for="map-status">بارودۆخ</label><select id="map-status"><option value="visible">دیار</option><option value="hidden">ڤەشارتی</option></select></div><button type="submit" class="btn btn-success" id="save-map-btn">تۆمارکرن</button></form></div>
-</div>
-
-
-<script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-firestore-compat.js"></script>
-
-<script>
-// ====================================================================================
-// ============================= پرۆژێ ئیسلام - ADMIN PANEL JAVASCRIPT (V11 - STABLE) ====
-// ====================================================================================
-(function() {
-'use strict';
-
-const firebaseConfig = {
-    apiKey: "AIzaSyDDi3HtFigGy3qFpFVhSATal3yzm7Z_dZA",
-    authDomain: "projeislam.firebaseapp.com",
-    projectId: "projeislam",
-    storageBucket: "projeislam.appspot.com",
-    messagingSenderId: "686343038831",
-    appId: "1:686343038831:web:8b5e19daa95176000b6a9a"
-};
-
-try {
-    firebase.initializeApp(firebaseConfig);
-} catch(e) {
-    console.error("Firebase initialization failed:", e);
-    document.body.innerHTML = '<div class="error-message">پەیوەندی ب فایەربەیسێ سەرنەکەفت. هیڤییه پەیوەندییا خۆ یا ئینتەرنێتێ بجەربینی.</div>';
-    return;
-}
-
-const db = firebase.firestore();
-
-const collections = { 
-    teachers: 'teachers', 
-    generalLectures: 'generalLectures', 
-    levels: 'levels',
-    mapLectures: 'mapLectures' 
-};
-let allTeachers = [];
-
-// Helper Functions
-const showLoader = (container) => container.innerHTML = '<div class="loader-container"><i class="fas fa-spinner fa-spin"></i> داتایان دهێنە بارکرن...</div>';
-const showError = (container, message) => container.innerHTML = `<div class="error-message"><strong>چەوتی:</strong> ${message}</div>`;
-const showEmpty = (container, message) => container.innerHTML = `<div class="loader-container">${message}</div>`;
-const disableButton = (btn, text = 'تۆمارکرن...') => { btn.disabled = true; btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${text}`; };
-const enableButton = (btn, text) => { btn.disabled = false; btn.innerHTML = text; };
-
-// =================================================================
-// === چارەسەریا سەرەکی: ئەگەر بەشەک خراب بوو، یێن دی کار بکەن ===
-// =================================================================
-const safeLoad = async (loaderFn, container) => {
-    showLoader(container);
-    try {
-        await loaderFn(container);
-    } catch (e) {
-        console.error(`Failed to load section: ${container.id}`, e);
-        showError(container, `چەوتیەک د بارکرنا ڤی بەشی دا روویدا. هیڤییە بەشێن دی بجەربینی. [${e.message}]`);
-    }
-};
-
-// View Management
-const viewLoaders = {
-    'dashboard-view': (container) => safeLoad(loadDashboardStats, container),
-    'teachers-view': (container) => safeLoad(loadTeachers, container),
-    'lectures-view': (container) => safeLoad(loadLectures, container),
-    'levels-view': (container) => safeLoad(loadLevels, container),
-    'map-view': (container) => safeLoad(loadMapLectures, container)
-};
-
-function navigateToView(viewId) {
-    document.querySelectorAll('.admin-view').forEach(view => view.classList.remove('is-visible'));
-    const targetView = document.getElementById(viewId);
-    if (targetView) {
-        targetView.classList.add('is-visible');
-        const container = targetView.querySelector('[id$="-container"]');
-        if (viewLoaders[viewId] && container) {
-            viewLoaders[viewId](container);
-        }
-    }
-}
-
-// Modal Management
-function openModal(modalId) { document.getElementById(modalId).classList.add('is-visible'); }
-function closeModal(modalId) { 
-    const modal = document.getElementById(modalId);
-    if(modal) {
-        modal.classList.remove('is-visible');
-    }
-}
-
-// Data Loading Functions
-async function loadDashboardStats(container) {
-    const [teachersSnap, levelsSnap, lecturesSnap, mapSnap] = await Promise.all([
-        db.collection(collections.teachers).get(), 
-        db.collection(collections.levels).get(), 
-        db.collection(collections.generalLectures).get(),
-        db.collection(collections.mapLectures).get()
-    ]);
-    container.innerHTML = `<div class="stat-card"><div class="stat-number">${teachersSnap.size}</div><div class="stat-title">مامۆستا</div></div><div class="stat-card"><div class="stat-number">${levelsSnap.size}</div><div class="stat-title">ئاست</div></div><div class="stat-card"><div class="stat-number">${lecturesSnap.size}</div><div class="stat-title">وانەیێن گشتی</div></div><div class="stat-card"><div class="stat-number">${mapSnap.size}</div><div class="stat-title">وانەیێن خەریتەی</div></div>`;
-}
-
-async function loadTeachers(container) {
-    await populateTeachersCache();
-    if (allTeachers.length === 0) return showEmpty(container, 'هیچ مامۆستایەک نەهاتیە تۆمارکرن.');
-    
-    container.innerHTML = `<table><thead><tr><th>رێزبەندی</th><th>وێنە</th><th>ناڤ</th><th>جهێ نیشتەجیبوونێ</th><th>بارودۆخ</th><th>کردار</th></tr></thead><tbody>
-        ${allTeachers.map(teacher => `
-            <tr>
-                <td>${teacher.order || 0}</td>
-                <td><img src="${teacher.profileImage || 'https://via.placeholder.com/50'}" alt="${teacher.name}" width="50" height="50" style="border-radius:50%; object-fit:cover;"></td>
-                <td>${teacher.name || ''}</td>
-                <td>${teacher.location || '...'}</td>
-                <td><span class="status-badge ${teacher.status === 'hidden' ? 'status-hidden' : 'status-visible'}">${teacher.status === 'hidden' ? 'ڤەشارتی' : 'دیار'}</span></td>
-                <td class="actions-cell">
-                    <button class="btn btn-secondary btn-sm" data-action="open-teacher-modal" data-id="${teacher.id}"><i class="fas fa-edit"></i></button>
-                    <button class="btn btn-danger btn-sm" data-action="delete-item" data-id="${teacher.id}" data-collection="${collections.teachers}" data-callback-view="teachers-view"><i class="fas fa-trash"></i></button>
-                </td>
-            </tr>`).join('')}
-        </tbody></table>`;
-}
-
-async function loadLectures(container) {
-    await populateTeachersCache();
-    const snapshot = await db.collection(collections.generalLectures).get();
-    if (snapshot.empty) return showEmpty(container, 'هیچ وانەیەکا گشتی نەهاتیە تۆمارکرن.');
-    
-    container.innerHTML = snapshot.docs.map(doc => {
-        const lecture = { id: doc.id, ...doc.data() };
-        const teacher = allTeachers.find(t => t.id === lecture.teacherId);
-        const statusBadge = `<span class="status-badge ${lecture.status === 'hidden' ? 'status-hidden' : 'status-visible'}">${lecture.status === 'hidden' ? 'ڤەشارتی' : 'دیار'}</span>`;
-        return `<div class="item-card">
-            <div class="item-card-content"><h3>${lecture.title || ''} ${statusBadge}</h3><p><strong>مامۆستا:</strong> ${teacher?.name || 'نەناسراو'}<br><strong>بابەت:</strong> ${lecture.category || 'بێ بابەت'}</p></div>
-            <div class="item-card-actions">
-                <button class="btn btn-secondary" data-action="open-lecture-modal" data-id="${lecture.id}">دەستکاری</button>
-                <button class="btn btn-danger" data-action="delete-item" data-id="${lecture.id}" data-collection="${collections.generalLectures}" data-callback-view="lectures-view">ژێبرن</button>
-            </div></div>`;
-    }).join('');
-}
-
-async function loadLevels(container) {
-    const snapshot = await db.collection(collections.levels).orderBy('level').get();
-    if (snapshot.empty) return showEmpty(container, 'هیچ ئاستەک نەهاتیە تۆمارکرن.');
-    
-    container.innerHTML = snapshot.docs.map(doc => {
-        const level = { id: doc.id, ...doc.data() };
-        const statusBadge = `<span class="status-badge ${level.status === 'hidden' ? 'status-hidden' : 'status-visible'}">${level.status === 'hidden' ? 'ڤەشارتی' : 'دیار'}</span>`;
-        return `<div class="level-card">
-            <div class="level-header" data-action="toggle-level-content">
-                <h4>ئاستا ${level.level || '?'}: ${level.levelName} ${statusBadge}</h4>
-                <div>
-                    <button class="btn btn-secondary btn-sm" data-action="open-level-modal" data-id="${level.id}"><i class="fas fa-edit"></i></button>
-                    <button class="btn btn-danger btn-sm" data-action="delete-item" data-id="${level.id}" data-collection="${collections.levels}" data-callback-view="levels-view"><i class="fas fa-trash"></i></button>
-                </div>
-            </div>
-            <div class="level-content">
-                <h5>وانەیێن ئاستی:</h5>
-                ${(level.courses || []).map(course => `
-                    <div class="course-item">
-                        <span>${course.title}</span>
-                        <div>
-                            <button class="btn btn-secondary btn-sm" data-action="open-course-modal" data-level-id="${level.id}" data-id="${course.id}">دەستکاری</button>
-                            <button class="btn btn-danger btn-sm" data-action="delete-course" data-level-id="${level.id}" data-id="${course.id}">ژێبرن</button>
-                        </div>
-                    </div>`).join('') || '<p style="color:var(--secondary-text)">هیچ وانەیەک بۆ ڤی ئاستی نینە.</p>'}
-                <button class="btn btn-primary" style="margin-top: 15px;" data-action="open-course-modal" data-level-id="${level.id}"><i class="fas fa-plus"></i> وانەیەکا نوو</button>
-            </div></div>`;
-    }).join('');
-}
-
-async function loadMapLectures(container) {
-    await populateTeachersCache();
-    const snapshot = await db.collection(collections.mapLectures).get();
-    if (snapshot.empty) return showEmpty(container, 'هیچ وانەیەکا خەریتەی نەهاتیە تۆمارکرن.');
-    
-    container.innerHTML = `<table><thead><tr><th>ناڤونیشان</th><th>مامۆستا</th><th>مزگەفت</th><th>دەم</th><th>بارودۆخ</th><th>کردار</th></tr></thead><tbody>
-        ${snapshot.docs.map(doc => {
+        gridContainer.innerHTML = snapshot.docs.map(doc => {
             const lecture = { id: doc.id, ...doc.data() };
             const teacher = allTeachers.find(t => t.id === lecture.teacherId);
-            return `<tr>
-                <td>${lecture.title || ''}</td>
-                <td>${teacher?.name || '...'}</td>
-                <td>${lecture.mosqueName || ''}</td>
-                <td>${lecture.day || ''} - ${lecture.time || ''}</td>
-                <td><span class="status-badge ${lecture.status === 'hidden' ? 'status-hidden' : 'status-visible'}">${lecture.status === 'hidden' ? 'ڤەشارتی' : 'دیار'}</span></td>
-                <td class="actions-cell">
-                    <button class="btn btn-secondary btn-sm" data-action="open-map-modal" data-id="${lecture.id}"><i class="fas fa-edit"></i></button>
-                    <button class="btn btn-danger btn-sm" data-action="delete-item" data-id="${lecture.id}" data-collection="${collections.mapLectures}" data-callback-view="map-view"><i class="fas fa-trash"></i></button>
-                </td>
-            </tr>`;
-        }).join('')}
-    </tbody></table>`;
-}
-
-// Form Handlers & Modal Openers
-async function openTeacherModal(id = null) {
-    const form = document.getElementById('teacher-form');
-    form.reset();
-    form.querySelector('#teacher-id').value = '';
-    document.getElementById('teacher-modal-title').textContent = 'مامۆستایەکێ نوو';
-    
-    if (id) {
-        document.getElementById('teacher-modal-title').textContent = 'دەستکاریکرنا مامۆستای';
-        await populateTeachersCache();
-        const teacher = allTeachers.find(t => t.id === id);
-        if (teacher) {
-            form.querySelector('#teacher-id').value = teacher.id;
-            form.querySelector('#teacher-name').value = teacher.name || '';
-            form.querySelector('#teacher-bio').value = teacher.bio || '';
-            form.querySelector('#teacher-image').value = teacher.profileImage || '';
-            form.querySelector('#teacher-phone').value = teacher.phone || '';
-            form.querySelector('#teacher-location').value = teacher.location || '';
-            form.querySelector('#teacher-order').value = teacher.order || 0;
-            form.querySelector('#teacher-status').value = teacher.status || 'visible';
-            
-            const social = teacher.social || {};
-            form.querySelector('#teacher-social-telegram').value = social.telegram || '';
-            form.querySelector('#teacher-social-youtube').value = social.youtube || '';
-            form.querySelector('#teacher-social-instagram').value = social.instagram || social.facebook || '';
-        }
+            return `<div class="item-card">
+                <div class="item-card-content"><h3>${lecture.title || ''} <span class="status-badge ${lecture.status === 'hidden' ? 'status-hidden' : 'status-visible'}">${lecture.status === 'hidden' ? 'ڤەشارتی' : 'دیار'}</span></h3><p><strong>مامۆستا:</strong> ${teacher?.name || 'نەناسراو'}</p></div>
+                <div class="item-card-actions"><button class="btn btn-secondary" data-action="open-lecture-modal" data-id="${lecture.id}">دەستکاری</button><button class="btn btn-danger" data-action="delete-item" data-id="${lecture.id}" data-collection="${collections.generalLectures}" data-callback-view="lectures-view">ژێبرن</button></div>
+                </div>`;
+        }).join('');
     }
-    openModal('teacher-modal');
-}
 
-async function handleSaveTeacher(e) {
-    e.preventDefault();
-    const btn = document.getElementById('save-teacher-btn');
-    disableButton(btn);
-    
-    const id = document.getElementById('teacher-id').value;
-    const data = {
-        name: document.getElementById('teacher-name').value, 
-        bio: document.getElementById('teacher-bio').value,
-        profileImage: document.getElementById('teacher-image').value,
-        phone: document.getElementById('teacher-phone').value,
-        location: document.getElementById('teacher-location').value,
-        order: parseInt(document.getElementById('teacher-order').value) || 0,
-        status: document.getElementById('teacher-status').value,
-        social: {
-            telegram: document.getElementById('teacher-social-telegram').value, 
-            youtube: document.getElementById('teacher-social-youtube').value,
-            instagram: document.getElementById('teacher-social-instagram').value,
-        }
-    };
+    async function loadLevels(container) {
+        container.innerHTML = `<div class="view-header"><h1>رێرەوا فێربوونێ</h1><button class="btn btn-primary" data-action="open-level-modal"><i class="fas fa-plus"></i> ئاستەکێ نوو</button></div><div id="levels-list-container"></div>`;
+        const listContainer = container.querySelector('#levels-list-container');
+        showLoader(listContainer);
+        const snapshot = await db.collection(collections.levels).orderBy('level').get();
+        if (snapshot.empty) return showEmpty(listContainer, 'هیچ ئاستەک نەهاتیە تۆمارکرن.');
+        
+        listContainer.innerHTML = snapshot.docs.map(doc => {
+            const level = { id: doc.id, ...doc.data() };
+            return `<div class="level-card">
+                <div class="level-header" data-action="toggle-level-content">
+                    <h4>ئاستا ${level.level || '?'}: ${level.levelName} <span class="status-badge ${level.status === 'hidden' ? 'status-hidden' : 'status-visible'}">${level.status === 'hidden' ? 'ڤەشارتی' : 'دیار'}</span></h4>
+                    <div><button class="btn btn-secondary btn-sm" data-action="open-level-modal" data-id="${level.id}"><i class="fas fa-edit"></i></button><button class="btn btn-danger btn-sm" data-action="delete-item" data-id="${level.id}" data-collection="${collections.levels}" data-callback-view="levels-view"><i class="fas fa-trash"></i></button></div>
+                </div>
+                <div class="level-content"><h5>وانەیێن ئاستی:</h5>
+                    ${(level.courses || []).map(c => `<div class="course-item"><span>${c.title}</span><div><button class="btn btn-secondary btn-sm" data-action="open-course-modal" data-level-id="${level.id}" data-id="${c.id}">دەستکاری</button><button class="btn btn-danger btn-sm" data-action="delete-course" data-level-id="${level.id}" data-id="${c.id}">ژێبرن</button></div></div>`).join('') || '<p style="color:var(--secondary-text)">هیچ وانەیەک نینە.</p>'}
+                    <button class="btn btn-primary" style="margin-top: 15px;" data-action="open-course-modal" data-level-id="${level.id}"><i class="fas fa-plus"></i> وانەیەکا نوو</button>
+                </div></div>`;
+        }).join('');
+    }
 
-    try {
-        if (id) await db.collection(collections.teachers).doc(id).update(data);
-        else await db.collection(collections.teachers).add(data);
-        alert('پڕۆسە ب سەرکەفتی بوو!');
-        closeModal('teacher-modal');
-        document.getElementById('teacher-form').reset();
-        allTeachers = []; 
-        navigateToView('teachers-view');
-    } catch (err) { 
-        alert('چەوتیەک د تۆمارکرنێ دا روویدا: ' + err.message); 
-    } 
-    finally { enableButton(btn, 'تۆمارکرن'); }
-}
+    // --- Modal Handling ---
+    const openModal = (modalId) => document.getElementById(modalId).classList.add('is-visible');
+    const closeModal = (modalId) => document.getElementById(modalId)?.classList.remove('is-visible');
 
-async function openLectureModal(id = null) { /* ... Same as before ... */ }
-async function handleSaveLecture(e) { /* ... Same as before ... */ }
-async function openLevelModal(id = null) { /* ... Same as before ... */ }
-async function handleSaveLevel(e) { /* ... Same as before ... */ }
-async function openCourseModal(levelId, id = null) { /* ... Same as before ... */ }
-async function handleSaveCourse(e) { /* ... Same as before ... */ }
-async function openMapModal(id = null) { /* ... Same as before ... */ }
-async function handleSaveMapLecture(e) { /* ... Same as before ... */ }
+    function resetForm(form) {
+        form.reset();
+        form.querySelectorAll('.pro-upload-container').forEach(resetProUpload);
+        form.querySelectorAll('.dynamic-list-container').forEach(el => el.innerHTML = '');
+    }
 
-
-// Delete Operations
-async function deleteItem(collection, id, viewToReload) {
-    if (confirm('تۆ پشتراستی کو دڤێی ڤی بابەتی ژێببەی؟')) {
-        try {
-            await db.collection(collection).doc(id).delete();
-            alert('بابەت ب سەرکەفتی هاتە ژێبرن.');
-            if (viewToReload) {
-                allTeachers = []; // Cache reset bike heke mamosta hatiba jêbirin
-                navigateToView(viewToReload);
+    async function openTeacherModal(id = null) {
+        const form = document.getElementById('teacher-form');
+        resetForm(form);
+        document.getElementById('teacher-modal-title').textContent = id ? 'دەستکاریکرنا مامۆستای' : 'مامۆستایەکێ نوو';
+        if (id) {
+            const teacher = allTeachers.find(t => t.id === id);
+            if (teacher) {
+                form.querySelector('#teacher-id').value = teacher.id;
+                form.querySelector('#teacher-name').value = teacher.name || '';
+                populateProUpload(form.querySelector('.pro-upload-container'), teacher.profileImage);
+                form.querySelector('#teacher-phone').value = teacher.phone || '';
+                form.querySelector('#teacher-bio').value = teacher.bio || '';
+                form.querySelector('#teacher-location').value = teacher.location || '';
+                form.querySelector('#teacher-order').value = teacher.order || 0;
+                form.querySelector('#teacher-status').value = teacher.status || 'visible';
+                const social = teacher.social || {};
+                form.querySelector('#teacher-social-telegram').value = social.telegram || '';
+                form.querySelector('#teacher-social-youtube').value = social.youtube || '';
+                form.querySelector('#teacher-social-instagram').value = social.instagram || '';
             }
-        } catch (e) { 
-            alert('چەوتیەک د ژێبرنێ دا روویدا.'); 
         }
+        openModal('teacher-modal');
     }
-}
 
-async function deleteCourse(levelId, id) {
-     if (confirm('تۆ پشتراستی کو دڤێی ڤێ وانەیێ ژ ڤی ئاستی ژێببەی؟')) {
+    async function openLectureModal(id = null) {
+        const form = document.getElementById('lecture-form');
+        resetForm(form);
+        await populateTeachersDropdown('lecture-teacher');
+        document.getElementById('lecture-modal-title').textContent = id ? 'دەستکاریکرنا وانەیێ' : 'وانەیەکا گشتی یا نوو';
+        if (id) {
+            const doc = await db.collection(collections.generalLectures).doc(id).get();
+            if (doc.exists) {
+                const data = doc.data();
+                form.querySelector('#lecture-id').value = id;
+                form.querySelector('#lecture-title').value = data.title || '';
+                form.querySelector('#lecture-teacher').value = data.teacherId || '';
+                form.querySelector('#lecture-category').value = data.category || '';
+                form.querySelector('#lecture-status').value = data.status || 'visible';
+                populateProUpload(form.querySelectorAll('.pro-upload-container')[0], data.image);
+                populateProUpload(form.querySelectorAll('.pro-upload-container')[1], data.pdfUrl);
+                if (data.videos) data.videos.forEach(v => addVideoField('lecture-videos-container', v.title, v.url));
+            }
+        }
+        openModal('lecture-modal');
+    }
+
+    async function openCourseModal(levelId, id = null) {
+        const form = document.getElementById('course-form');
+        resetForm(form);
+        form.querySelector('#course-level-id').value = levelId;
+        await populateTeachersDropdown('course-teacher');
+        document.getElementById('course-modal-title').textContent = id ? 'دەستکاریکرنا وانەیێ' : 'وانەیەکا نوو بۆ ڤی ئاستی';
+        if (id) {
+            const doc = await db.collection(collections.levels).doc(levelId).get();
+            if (doc.exists) {
+                const course = (doc.data().courses || []).find(c => c.id === id);
+                if (course) {
+                    form.querySelector('#course-id').value = id;
+                    form.querySelector('#course-title').value = course.title || '';
+                    form.querySelector('#course-teacher').value = course.teacherId || '';
+                    populateProUpload(form.querySelectorAll('.pro-upload-container')[0], course.pdfUrl);
+                    form.querySelector('#course-mem-title').value = course.memorizationPdfTitle || '';
+                    populateProUpload(form.querySelectorAll('.pro-upload-container')[1], course.memorizationPdfUrl);
+                    if (course.videos) course.videos.forEach(v => addVideoField('course-videos-container', v.title, v.url));
+                }
+            }
+        }
+        openModal('course-modal');
+    }
+
+    async function openLevelModal(id = null) {
+        const form = document.getElementById('level-form');
+        resetForm(form);
+        document.getElementById('level-modal-title').textContent = id ? 'دەستکاریکرنا ئاستی' : 'ئاستەکێ نوو';
+        if (id) {
+            const doc = await db.collection(collections.levels).doc(id).get();
+            if (doc.exists) {
+                const data = doc.data();
+                form.querySelector('#level-id').value = id;
+                form.querySelector('#level-name').value = data.levelName || '';
+                form.querySelector('#level-number').value = data.level || '';
+                form.querySelector('#level-points').value = data.pointsNeeded || 0;
+                form.querySelector('#level-code').value = data.unlockCode || '';
+                form.querySelector('#level-status').value = data.status || 'visible';
+            }
+        }
+        openModal('level-modal');
+    }
+
+    // --- Data Saving ---
+    async function handleSaveTeacher(e) {
+        e.preventDefault();
+        const btn = document.getElementById('save-teacher-btn');
+        disableButton(btn);
+        const id = document.getElementById('teacher-id').value;
+        const data = {
+            name: document.getElementById('teacher-name').value, 
+            profileImage: document.getElementById('teacher-image-url').value,
+            phone: document.getElementById('teacher-phone').value,
+            bio: document.getElementById('teacher-bio').value,
+            location: document.getElementById('teacher-location').value,
+            order: parseInt(document.getElementById('teacher-order').value) || 0,
+            status: document.getElementById('teacher-status').value,
+            social: {
+                telegram: document.getElementById('teacher-social-telegram').value, 
+                youtube: document.getElementById('teacher-social-youtube').value,
+                instagram: document.getElementById('teacher-social-instagram').value,
+            }
+        };
+        try {
+            if (id) await db.collection(collections.teachers).doc(id).update(data);
+            else await db.collection(collections.teachers).add(data);
+            alert('پڕۆسە ب سەرکەفتی بوو!');
+            closeModal('teacher-modal');
+            allTeachers = []; 
+            navigateToView('teachers-view');
+        } catch (err) { alert('چەوتی: ' + err.message); } 
+        finally { enableButton(btn, 'تۆمارکرن'); }
+    }
+
+    async function handleSaveLecture(e) {
+        e.preventDefault();
+        const btn = document.getElementById('save-lecture-btn');
+        disableButton(btn);
+        const id = document.getElementById('lecture-id').value;
+        const data = {
+            title: document.getElementById('lecture-title').value, 
+            teacherId: document.getElementById('lecture-teacher').value, 
+            category: document.getElementById('lecture-category').value,
+            status: document.getElementById('lecture-status').value,
+            image: document.getElementById('lecture-image-url').value,
+            pdfUrl: document.getElementById('lecture-pdf-url').value, 
+            videos: getVideosFromFields('lecture-videos-container')
+        };
+        try {
+            if (id) await db.collection(collections.generalLectures).doc(id).update(data);
+            else await db.collection(collections.generalLectures).add(data);
+            alert('پڕۆسە ب سەرکەفتی بوو!');
+            closeModal('lecture-modal');
+            navigateToView('lectures-view');
+        } catch (err) { alert('چەوتی: ' + err.message); }
+        finally { enableButton(btn, 'تۆمارکرن'); }
+    }
+
+    async function handleSaveCourse(e) {
+        e.preventDefault();
+        const btn = document.getElementById('save-course-btn');
+        disableButton(btn);
+        const levelId = document.getElementById('course-level-id').value;
+        const courseId = document.getElementById('course-id').value;
+        const newCourseData = {
+            id: courseId || Date.now().toString(),
+            title: document.getElementById('course-title').value, 
+            teacherId: document.getElementById('course-teacher').value,
+            pdfUrl: document.getElementById('course-pdf-url').value,
+            memorizationPdfTitle: document.getElementById('course-mem-title').value,
+            memorizationPdfUrl: document.getElementById('course-mem-pdf-url').value,
+            videos: getVideosFromFields('course-videos-container')
+        };
         try {
             const levelRef = db.collection(collections.levels).doc(levelId);
             const doc = await levelRef.get();
-            if (doc.exists) {
-                let courses = (doc.data().courses || []).filter(c => c.id !== id);
-                await levelRef.update({ courses });
-                alert('وانە ب سەرکەفتی هاتە ژێبرن.');
-                navigateToView('levels-view');
-            }
-        } catch(e) { 
-            alert("چەوتیەک د ژێبرنا وانەیێ دا روویدا."); 
-        }
-     }
-}
-
-// Form Helpers
-async function populateTeachersCache() {
-    if (allTeachers.length === 0) {
-       const snapshot = await db.collection(collections.teachers).get();
-       let teachersData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-       teachersData.sort((a, b) => (a.order || 0) - (b.order || 0));
-       allTeachers = teachersData;
-    }
-}
-
-async function populateTeachersDropdown(selectId) {
-    await populateTeachersCache();
-    const select = document.getElementById(selectId);
-    select.innerHTML = '<option value="">مامۆستایەکێ هەلبژێرە...</option>';
-    allTeachers.forEach(teacher => {
-        const option = document.createElement('option');
-        option.value = teacher.id;
-        option.textContent = teacher.name;
-        select.appendChild(option);
-    });
-}
-
-function addVideoField(containerId, title = '', url = '') { /* ... Same as before ... */ }
-function getVideosFromFields(containerId) { /* ... Same as before ... */ }
-
-
-// To save space, the functions that were unchanged are commented out here,
-// but they are included in the final code block below.
-// I will now re-add the unchanged functions to the script for the final output.
-
-async function openLectureModal(id = null) {
-    const form = document.getElementById('lecture-form');
-    form.reset();
-    form.querySelector('#lecture-id').value = '';
-    document.getElementById('lecture-videos-container').innerHTML = '';
-    await populateTeachersDropdown('lecture-teacher');
-    document.getElementById('lecture-modal-title').textContent = 'وانەیەکا گشتی یا نوو';
-
-    if (id) {
-        document.getElementById('lecture-modal-title').textContent = 'دەستکاریکرنا وانەیێ';
-        const doc = await db.collection(collections.generalLectures).doc(id).get();
-        if (doc.exists) {
-            const data = doc.data();
-            form.querySelector('#lecture-id').value = id;
-            form.querySelector('#lecture-title').value = data.title || '';
-            form.querySelector('#lecture-category').value = data.category || '';
-            form.querySelector('#lecture-teacher').value = data.teacherId || '';
-            form.querySelector('#lecture-image').value = data.image || '';
-            form.querySelector('#lecture-pdf').value = data.pdfUrl || '';
-            form.querySelector('#lecture-status').value = data.status || 'visible';
-            if (data.videos) data.videos.forEach(v => addVideoField('lecture-videos-container', v.title, v.url));
-        }
-    }
-    openModal('lecture-modal');
-}
-
-async function handleSaveLecture(e) {
-    e.preventDefault();
-    const btn = document.getElementById('save-lecture-btn');
-    disableButton(btn);
-
-    const id = document.getElementById('lecture-id').value;
-    const data = {
-        title: document.getElementById('lecture-title').value, 
-        category: document.getElementById('lecture-category').value,
-        teacherId: document.getElementById('lecture-teacher').value, 
-        image: document.getElementById('lecture-image').value,
-        pdfUrl: document.getElementById('lecture-pdf').value, 
-        status: document.getElementById('lecture-status').value,
-        videos: getVideosFromFields('lecture-videos-container')
-    };
-
-    try {
-        if (id) await db.collection(collections.generalLectures).doc(id).set(data);
-        else await db.collection(collections.generalLectures).add(data);
-        alert('پڕۆسە ب سەرکەفتی بوو!');
-        closeModal('lecture-modal');
-        document.getElementById('lecture-form').reset();
-        navigateToView('lectures-view');
-    } catch (err) { 
-        alert('چەوتیەک د تۆمارکرنێ دا روویدا.'); 
-    }
-    finally { enableButton(btn, 'تۆمارکرن'); }
-}
-
-async function openLevelModal(id = null) {
-    const form = document.getElementById('level-form');
-    form.reset();
-    form.querySelector('#level-id').value = '';
-    document.getElementById('level-modal-title').textContent = 'ئاستەکێ نوو';
-
-    if (id) {
-        document.getElementById('level-modal-title').textContent = 'دەستکاریکرنا ئاستی';
-        const doc = await db.collection(collections.levels).doc(id).get();
-        if (doc.exists) {
-            const data = doc.data();
-            form.querySelector('#level-id').value = id;
-            form.querySelector('#level-name').value = data.levelName || '';
-            form.querySelector('#level-number').value = data.level || '';
-            form.querySelector('#level-points').value = data.requiredPoints || '';
-            form.querySelector('#level-code').value = data.unlockCode || '';
-            form.querySelector('#level-status').value = data.status || 'visible';
-        }
-    }
-    openModal('level-modal');
-}
-
-async function handleSaveLevel(e) {
-    e.preventDefault();
-    const btn = document.getElementById('save-level-btn');
-    disableButton(btn);
-
-    const id = document.getElementById('level-id').value;
-    const data = {
-        levelName: document.getElementById('level-name').value,
-        level: parseInt(document.getElementById('level-number').value) || 0,
-        requiredPoints: parseInt(document.getElementById('level-points').value) || 0,
-        unlockCode: document.getElementById('level-code').value,
-        status: document.getElementById('level-status').value,
-    };
-
-    try {
-        if (id) {
-            await db.collection(collections.levels).doc(id).update(data);
-        } else {
-            data.courses = [];
-            await db.collection(collections.levels).add(data);
-        }
-        alert('پڕۆسە ب سەرکەفتی بوو!');
-        closeModal('level-modal');
-        document.getElementById('level-form').reset();
-        navigateToView('levels-view');
-    } catch (err) { 
-        alert('چەوتیەک د تۆمارکرنێ دا روویدا.'); 
-    } 
-    finally { enableButton(btn, 'تۆمارکرن'); }
-}
-
-async function openCourseModal(levelId, id = null) {
-    const form = document.getElementById('course-form');
-    form.reset();
-    form.querySelector('#course-level-id').value = levelId;
-    form.querySelector('#course-id').value = '';
-    document.getElementById('course-videos-container').innerHTML = '';
-    await populateTeachersDropdown('course-teacher');
-    document.getElementById('course-modal-title').textContent = 'وانەیەکا نوو بۆ ڤی ئاستی';
-    
-    if (id) {
-        document.getElementById('course-modal-title').textContent = 'دەستکاریکرنا وانەیێ';
-        const doc = await db.collection(collections.levels).doc(levelId).get();
-        if (doc.exists) {
-            const course = (doc.data().courses || []).find(c => c.id === id);
-            if (course) {
-                form.querySelector('#course-id').value = id;
-                form.querySelector('#course-level-id').value = levelId;
-                form.querySelector('#course-title').value = course.title || '';
-                form.querySelector('#course-teacher').value = course.teacherId || '';
-                form.querySelector('#course-pdf').value = course.pdfUrl || '';
-                form.querySelector('#course-mem-title').value = course.memorizationPdfTitle || '';
-                form.querySelector('#course-mem-pdf').value = course.memorizationPdfUrl || '';
-                if (course.videos) course.videos.forEach(v => addVideoField('course-videos-container', v.title, v.url));
-            }
-        }
-    }
-    openModal('course-modal');
-}
-
-async function handleSaveCourse(e) {
-    e.preventDefault();
-    const btn = document.getElementById('save-course-btn');
-    disableButton(btn);
-
-    const levelId = document.getElementById('course-level-id').value;
-    const id = document.getElementById('course-id').value;
-    const data = {
-        id: id || new Date().getTime().toString(),
-        title: document.getElementById('course-title').value, 
-        teacherId: document.getElementById('course-teacher').value,
-        pdfUrl: document.getElementById('course-pdf').value,
-        memorizationPdfTitle: document.getElementById('course-mem-title').value,
-        memorizationPdfUrl: document.getElementById('course-mem-pdf').value,
-        videos: getVideosFromFields('course-videos-container')
-    };
-
-    try {
-        const levelRef = db.collection(collections.levels).doc(levelId);
-        const doc = await levelRef.get();
-        if (doc.exists) {
+            if (!doc.exists) throw new Error("ئاست نەهاتە دیتن!");
             let courses = doc.data().courses || [];
-            if (id) courses = courses.map(c => c.id === id ? data : c);
-            else courses.push(data);
+            const courseIndex = courses.findIndex(c => c.id === courseId);
+            if (courseIndex > -1) courses[courseIndex] = newCourseData;
+            else courses.push(newCourseData);
             await levelRef.update({ courses });
             alert('پڕۆسە ب سەرکەفتی بوو!');
             closeModal('course-modal');
-            document.getElementById('course-form').reset();
             navigateToView('levels-view');
-        }
-    } catch(err) { 
-        alert('چەوتیەک د تۆمارکرنێ دا روویدا.'); 
+        } catch(err) { alert('چەوتی: ' + err.message); }
+        finally { enableButton(btn, 'تۆمارکرن'); }
     }
-    finally { enableButton(btn, 'تۆمارکرن'); }
-}
 
-async function openMapModal(id = null) {
-    const form = document.getElementById('map-form');
-    form.reset();
-    form.querySelector('#map-id').value = '';
-    await populateTeachersDropdown('map-teacher');
-    document.getElementById('map-modal-title').textContent = 'وانەیەکا نوو بۆ خەریتەی';
-
-    if (id) {
-        document.getElementById('map-modal-title').textContent = 'دەستکاریکرنا وانەیا خەریتەی';
-        const doc = await db.collection(collections.mapLectures).doc(id).get();
-        if (doc.exists) {
-            const data = doc.data();
-            form.querySelector('#map-id').value = id;
-            form.querySelector('#map-title').value = data.title || '';
-            form.querySelector('#map-teacher').value = data.teacherId || '';
-            form.querySelector('#map-mosque').value = data.mosqueName || '';
-            form.querySelector('#map-day').value = data.day || '';
-            form.querySelector('#map-time').value = data.time || '';
-            form.querySelector('#map-lat').value = data.latitude || '';
-            form.querySelector('#map-lng').value = data.longitude || '';
-            form.querySelector('#map-status').value = data.status || 'visible';
-        }
-    }
-    openModal('map-modal');
-}
-
-async function handleSaveMapLecture(e) {
-    e.preventDefault();
-    const btn = document.getElementById('save-map-btn');
-    disableButton(btn);
-
-    const id = document.getElementById('map-id').value;
-    const data = {
-        title: document.getElementById('map-title').value,
-        teacherId: document.getElementById('map-teacher').value,
-        mosqueName: document.getElementById('map-mosque').value,
-        day: document.getElementById('map-day').value,
-        time: document.getElementById('map-time').value,
-        latitude: document.getElementById('map-lat').value,
-        longitude: document.getElementById('map-lng').value,
-        status: document.getElementById('map-status').value
-    };
-
-    try {
-        if (id) await db.collection(collections.mapLectures).doc(id).update(data);
-        else await db.collection(collections.mapLectures).add(data);
-        alert('پڕۆسە ب سەرکەفتی بوو!');
-        closeModal('map-modal');
-        document.getElementById('map-form').reset();
-        navigateToView('map-view');
-    } catch (err) {
-        alert('چەوتیەک د تۆمارکرنێ دا روویدا.');
-    } finally {
-        enableButton(btn, 'تۆمارکرن');
-    }
-}
-
-function addVideoField(containerId, title = '', url = '') {
-    const container = document.getElementById(containerId);
-    const div = document.createElement('div');
-    div.className = 'list-item';
-    div.innerHTML = `<input type="text" class="video-title" placeholder="ناڤونیشانێ ڤیدیویێ" value="${title}"><input type="url" class="video-url" placeholder="لێنکا ڤیدیویێ" value="${url}"><button type="button" class="btn btn-danger btn-sm" data-action="remove-parent"><i class="fas fa-times"></i></button>`;
-    container.appendChild(div);
-}
-
-function getVideosFromFields(containerId) {
-    return Array.from(document.querySelectorAll(`#${containerId} .list-item`)).map(item => ({
-        title: item.querySelector('.video-title').value,
-        url: item.querySelector('.video-url').value,
-    })).filter(video => video.title && video.url);
-}
-
-// Central Event Listener (Event Delegation)
-document.addEventListener('DOMContentLoaded', () => {
-    // Nav links
-    document.querySelector('.sidebar-nav').addEventListener('click', (e) => {
-        const link = e.target.closest('.nav-link');
-        if (!link) return;
+    async function handleSaveLevel(e) {
         e.preventDefault();
-        
-        const activeLink = document.querySelector('.nav-link.active');
-        if (activeLink) {
-            activeLink.classList.remove('active');
+        const btn = document.getElementById('save-level-btn');
+        disableButton(btn);
+        const id = document.getElementById('level-id').value;
+        const data = {
+            levelName: document.getElementById('level-name').value,
+            level: parseInt(document.getElementById('level-number').value),
+            pointsNeeded: parseInt(document.getElementById('level-points').value) || 0,
+            unlockCode: document.getElementById('level-code').value,
+            status: document.getElementById('level-status').value
+        };
+        try {
+            if (id) await db.collection(collections.levels).doc(id).update(data);
+            else await db.collection(collections.levels).add({ ...data, courses: [] });
+            alert('پڕۆسە ب سەرکەفتی بوو!');
+            closeModal('level-modal');
+            navigateToView('levels-view');
+        } catch (err) { alert('چەوتی: ' + err.message); } 
+        finally { enableButton(btn, 'تۆمارکرن'); }
+    }
+    
+    // --- Delete Operations ---
+    async function deleteItem(collection, id, viewToReload) {
+        if (confirm('تۆ پشتراستی کو دڤێی ڤی بابەتی ژێببەی؟')) {
+            try {
+                await db.collection(collection).doc(id).delete();
+                alert('بابەت ب سەرکەفتی هاتە ژێبرن.');
+                if (viewToReload === 'teachers-view') allTeachers = [];
+                navigateToView(viewToReload);
+            } catch (e) { alert('چەوتیەک د ژێبرنێ دا روویدا: ' + e.message); }
         }
-        
-        link.classList.add('active');
-        const viewId = link.dataset.view;
-        navigateToView(viewId);
-    });
+    }
+    async function deleteCourse(levelId, id) {
+         if (confirm('تۆ پشتراستی کو دڤێی ڤێ وانەیێ ژ ڤی ئاستی ژێببەی؟')) {
+            try {
+                const levelRef = db.collection(collections.levels).doc(levelId);
+                const doc = await levelRef.get();
+                if (doc.exists) {
+                    let courses = (doc.data().courses || []).filter(c => c.id !== id);
+                    await levelRef.update({ courses });
+                    alert('وانە ب سەرکەفتی هاتە ژێبرن.');
+                    navigateToView('levels-view');
+                }
+            } catch(e) { alert("چەوتیەک د ژێبرنا وانەیێ دا روویدا: " + e.message); }
+         }
+    }
+    
+    // --- Dynamic Fields ---
+    function addVideoField(containerId, title = '', url = '') {
+        const container = document.getElementById(containerId);
+        const div = document.createElement('div');
+        div.className = 'list-item';
+        div.innerHTML = `
+            <div class="input-row">
+                <input type="text" class="video-title" placeholder="ناڤونیشان" value="${title}">
+                <button type="button" class="btn btn-danger btn-sm" data-action="remove-parent"><i class="fas fa-times"></i></button>
+            </div>
+            <input type="url" class="video-url" placeholder="لێرە لینکێ ڤیدیویێ/دەنگی دانە" value="${url}">`;
+        container.appendChild(div);
+    }
+    function getVideosFromFields(containerId) {
+        return Array.from(document.querySelectorAll(`#${containerId} .list-item`)).map(item => ({
+            title: item.querySelector('.video-title').value,
+            url: item.querySelector('.video-url').value,
+        })).filter(video => video.title && video.url);
+    }
 
-    // Main content and modals
-    document.body.addEventListener('click', async (e) => {
-        const target = e.target.closest('[data-action]');
-        if (!target) return;
+    // --- Main Event Listener ---
+    function setupEventListeners() {
+        document.querySelector('.sidebar-nav').addEventListener('click', (e) => {
+            const link = e.target.closest('.nav-link');
+            if (!link) return;
+            e.preventDefault();
+            document.querySelector('.nav-link.active')?.classList.remove('active');
+            link.classList.add('active');
+            navigateToView(link.dataset.view);
+        });
 
-        const { action, id, collection, callbackView, levelId, container } = target.dataset;
+        document.body.addEventListener('click', (e) => {
+            const target = e.target.closest('[data-action]');
+            if (!target) return;
+            const { action, id, collection, callbackView, levelId, container } = target.dataset;
+            switch (action) {
+                case 'open-teacher-modal': openTeacherModal(id); break;
+                case 'open-lecture-modal': openLectureModal(id); break;
+                case 'open-level-modal': openLevelModal(id); break;
+                case 'open-course-modal': openCourseModal(levelId, id); break;
+                case 'delete-item': deleteItem(collection, id, callbackView); break;
+                case 'delete-course': deleteCourse(levelId, id); break;
+                case 'add-video-field': addVideoField(container); break;
+                case 'remove-parent': target.closest('.list-item').remove(); break;
+                case 'toggle-level-content': 
+                    const content = target.closest('.level-card').querySelector('.level-content');
+                    if(content) content.style.display = (content.style.display === 'block' ? 'none' : 'block');
+                    break;
+                case 'close-modal': closeModal(target.closest('.modal-overlay').id); break;
+            }
+        });
 
-        switch (action) {
-            case 'open-teacher-modal': openTeacherModal(id); break;
-            case 'open-lecture-modal': openLectureModal(id); break;
-            case 'open-level-modal': openLevelModal(id); break;
-            case 'open-course-modal': openCourseModal(levelId, id); break;
-            case 'open-map-modal': openMapModal(id); break;
-            case 'delete-item': deleteItem(collection, id, callbackView); break;
-            case 'delete-course': deleteCourse(levelId, id); break;
-            case 'add-video-field': addVideoField(container); break;
-            case 'remove-parent': target.parentElement.remove(); break;
-            case 'toggle-level-content': 
-                const content = target.closest('.level-card').querySelector('.level-content');
-                if(content) content.style.display = (content.style.display === 'block' ? 'none' : 'block');
-                break;
-            case 'close-modal':
-                const modal = target.closest('.modal-overlay');
-                if (modal) closeModal(modal.id);
-                break;
-        }
-    });
+        document.getElementById('teacher-form').addEventListener('submit', handleSaveTeacher);
+        document.getElementById('lecture-form').addEventListener('submit', handleSaveLecture);
+        document.getElementById('course-form').addEventListener('submit', handleSaveCourse);
+        document.getElementById('level-form').addEventListener('submit', handleSaveLevel);
+    }
 
-    // Forms
-    document.getElementById('teacher-form').addEventListener('submit', handleSaveTeacher);
-    document.getElementById('lecture-form').addEventListener('submit', handleSaveLecture);
-    document.getElementById('level-form').addEventListener('submit', handleSaveLevel);
-    document.getElementById('course-form').addEventListener('submit', handleSaveCourse);
-    document.getElementById('map-form').addEventListener('submit', handleSaveMapLecture);
+    // --- Authentication ---
+    function checkPassword() {
+        const passwordForm = document.getElementById('password-form');
+        passwordForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (document.getElementById('password-input').value === '123123') { // Your password here
+                document.getElementById('password-overlay').style.display = 'none';
+                document.querySelector('.admin-layout').style.visibility = 'visible';
+                initializePanel();
+            } else {
+                alert('ژمارا نهێنی خەلەتە!');
+            }
+        });
+    }
 
-    navigateToView('dashboard-view');
-});
-
+    checkPassword(); // Start the app
+}
 })();
 </script>
-
 </body>
 </html>
