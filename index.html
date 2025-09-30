@@ -711,7 +711,6 @@ audio::-webkit-media-controls-fullscreen-button { color: var(--primary-text); }
     <section id="home-view" class="view-section"></section> <!-- This is now the secondary view with other sections -->
     <section id="waneyan-view" class="view-section"></section>
     <section id="hadith-view" class="view-section"></section>
-    <section id="tafsir-view" class="view-section"></section>
     <section id="pirtukxane-view" class="view-section"></section>
     <section id="book-sales-view" class="view-section"></section>
     <section id="teachers-view" class="view-section"></section>
@@ -722,11 +721,9 @@ audio::-webkit-media-controls-fullscreen-button { color: var(--primary-text); }
     <section id="favorites-view" class="view-section"></section> 
     
     <!-- بەشێن نوو -->
-    <section id="seerah-view" class="view-section"></section>
     <section id="adhkar-view" class="view-section"></section>
-    <section id="fiqh-view" class="view-section"></section>
-    <section id="prayer-times-view" class="view-section"></section>
-    <section id="kids-view" class="view-section"></section>
+    <section id="feedback-view" class="view-section"></section>
+
 </main>
 
 <!-- === هەمی مۆدالەکان === -->
@@ -851,6 +848,30 @@ const db = firebase.firestore();
 const auth = firebase.auth();
 
 // === [ 1. حالەتێ گشتی و گۆڕاوەکان ] ===
+// LI VIR BIGUHERÎNE: Ji bo قفل کرنا بەشان ب شێوەیەکێ دەستی
+// Hejmaran bikar bîne: '1' (د کارکرنێ دایە), '8' (قفلە), '7' (ڤەشارتî)
+// Ji bo çalakkirinê, rêzê jêbibe an jî vala bihêle.
+const manualViewStatus = {
+    'levels-view':      '0', // Rêrewa Fêrbûnê (Rûpela Serekî)
+    'home-view':        '0', // Beşên Serekî (Navîgasyon)
+    
+    // Beşên Naverokê
+    'waneyan-view':     '0', // Waneyên Giştî
+    'hadith-view':      '6', // Kitêbxaneya Hedîsê
+    'fatwas-view':      '5', // Pirsiyar û Bersiv
+    'adhkar-view':      '6', // Dua û Zikiran
+    'pirtukxane-view':  '4', // Pertûkxane
+    'book-sales-view':  '3', // Firotina Pertûkan
+    'map-view':         '0', // Nexşe
+    'live-view':        '0', // Xulên Rastewxo
+    
+    // Beşên Bikarhêner
+    'teachers-view':    '0', // Mamostayan
+    'dashboard-view':   '0', // Daşbord
+    'favorites-view':   '0', // Dilxwazan
+    'feedback-view':    '0'  // Pêşniyar û Rexne
+};
+
 let currentUser = null;
 
 const collections = {
@@ -863,10 +884,7 @@ const collections = {
     levels: 'levels', 
     fatwas: 'fatwas', 
     hadiths: 'hadiths', 
-    tafsir: 'tafsir',
-    seerah: 'seerah',
     adhkar: 'adhkar',
-    fiqh: 'fiqh',
     viewStatus: 'viewStatus',
     userProgress: 'userProgress'
 };
@@ -881,11 +899,8 @@ let allData = {
     fatwas: [], 
     viewStatuses: {}, 
     hadiths: [], 
-    tafsir: {}, 
     bookSales: [],
-    seerah: [],
-    adhkar: [],
-    fiqh: []
+    adhkar: []
 };
 let map = null, mapInitialized = false, mapMarkers = {};
 let hadithCurrentPage = 1;
@@ -1128,8 +1143,7 @@ async function loadDataFromFirestore() {
         const [
             teachersDocs, generalLecturesDocs, booksDocs, bookSalesDocs,
             locationsDocs, liveCourseDocs, levelsDocs, fatwasDocs,
-            hadithsDocs, tafsirDocs, viewStatusDocs,
-            seerahDocs, adhkarDocs, fiqhDocs
+            hadithsDocs, viewStatusDocs, adhkarDocs
         ] = await Promise.all([
             fetchCollection(collections.teachers),
             fetchCollection(collections.generalLectures),
@@ -1140,11 +1154,8 @@ async function loadDataFromFirestore() {
             fetchCollection(collections.levels),
             fetchCollection(collections.fatwas),
             fetchCollection(collections.hadiths),
-            fetchCollection(collections.tafsir),
             fetchCollection(collections.viewStatus),
-            fetchCollection(collections.seerah),
-            fetchCollection(collections.adhkar),
-            fetchCollection(collections.fiqh)
+            fetchCollection(collections.adhkar)
         ]);
 
         allData.teachers = teachersDocs.reduce((acc, teacher) => { acc[teacher.id] = teacher; return acc; }, {});
@@ -1156,11 +1167,8 @@ async function loadDataFromFirestore() {
         allData.levels = levelsDocs.sort((a, b) => a.level - b.level);
         allData.fatwas = fatwasDocs;
         allData.hadiths = hadithsDocs;
-        allData.tafsir = tafsirDocs.reduce((acc, surah) => { acc[surah.id] = surah; return acc; }, {});
         allData.viewStatuses = viewStatusDocs.reduce((acc, status) => { acc[status.viewId] = status.statusCode; return acc; }, {});
-        allData.seerah = seerahDocs;
         allData.adhkar = adhkarDocs;
-        allData.fiqh = fiqhDocs;
         console.log("Data fetched from Firestore successfully.", allData);
     } catch (error) { 
         console.error('شکەستن د بارکرنا داتایان ژ Firebase:', error);
@@ -1177,15 +1185,14 @@ function buildAllViews() {
     const viewBuilders = { 
         'home-view': buildHomeView, 'levels-view': buildLevelsView, 'waneyan-view': buildWaneyanView, 
         'pirtukxane-view': buildPirtukxaneView, 'teachers-view': buildTeachersView, 'fatwas-view': buildFatwasView, 
-        'map-view': buildMapView, 'live-view': buildLiveView, 'hadith-view': buildHadithView, 'tafsir-view': buildTafsirView, 
+        'map-view': buildMapView, 'live-view': buildLiveView, 'hadith-view': buildHadithView, 
         'book-sales-view': buildBookSalesView, 'dashboard-view': buildDashboardView, 'favorites-view': buildFavoritesView,
-        'seerah-view': buildSeerahView, 'adhkar-view': buildAdhkarView, 'fiqh-view': buildFiqhView,
-        'prayer-times-view': buildPrayerTimesView, 'kids-view': buildKidsView
+        'adhkar-view': buildAdhkarView, 'feedback-view': buildFeedbackView
     };
     Object.keys(viewBuilders).forEach(viewId => {
         const viewContainer = document.getElementById(viewId);
         if (viewContainer) {
-            const status = allData.viewStatuses[viewId];
+            const status = manualViewStatus[viewId] || allData.viewStatuses[viewId];
             if (status && status !== '0' && status !== '7') {
                 displayStatusMessage(viewId, status);
             } else if (status !== '7') { 
@@ -1198,33 +1205,47 @@ const createEmptyStateMessage = (message) => `<div class="empty-state-message">$
 
 function buildHomeView() {
     const container = document.getElementById('home-view');
+
+    let liveCourseFeatureHTML = '';
+    const course = allData.liveCourse;
+    if (course && course.teacherId && allData.teachers[course.teacherId]) {
+        const teacher = allData.teachers[course.teacherId];
+        liveCourseFeatureHTML = `
+        <div class="hero-section" style="margin-bottom: 50px; text-align: right; padding: 30px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+                <div>
+                    <span class="live-badge" style="animation: none; margin-bottom: 15px;">خولێن ڕاستەوخۆ</span>
+                    <h2 class="hero-title" style="font-size: 2.2rem; text-align: right; margin-bottom: 10px;">${course.title}</h2>
+                    <p class="hero-subtitle" style="text-align: right; margin: 0 0 20px 0;">دگەل مامۆستا: ${teacher.name}</p>
+                </div>
+                <a href="#" onclick="navigateToView('live-view')" class="hero-cta-btn">
+                    <i class="fas fa-info-circle"></i> زانیاریێن زێدەتر
+                </a>
+            </div>
+        </div>`;
+    }
+
     const allNavItems = [
-        // 'levels-view' is removed from here as it's the main page now.
         { viewId: 'waneyan-view', icon: 'fas fa-video', title: 'وانەیێن گشتی', desc: 'ل زنجیرە وانەیان بگەڕە' }, 
-        { viewId: 'tafsir-view', icon: 'fas fa-quran', title: 'تەفسیرا قورئانێ', desc: 'تەفسیرا سورەتان بخوینە' }, 
         { viewId: 'hadith-view', icon: 'fas fa-book-quran', title: 'کتێبخانەیا حەدیسێ', desc: 'ل حەدیسان بگەڕە' }, 
         { viewId: 'fatwas-view', icon: 'fas fa-question-circle', title: 'پرسیار و بەرسڤ', desc: 'بەرسڤا پرسیارێن شەرعی' }, 
         { viewId: 'teachers-view', icon: 'fas fa-chalkboard-teacher', title: 'مامۆستایان', desc: 'پرۆفایلا مامۆستایان ببینە' }, 
-        { viewId: 'seerah-view', icon: 'fas fa-moon', title: 'ژیانناما پێغەمبەری ﷺ', desc: 'قوناغێن ژیانا خوشتڤی' },
         { viewId: 'adhkar-view', icon: 'fas fa-mosque', title: 'دوعا و زکران', desc: 'زکرێن رۆژانە و دوعایێن گرنگ' },
-        { viewId: 'fiqh-view', icon: 'fas fa-balance-scale', title: 'فقهـ و حوکم', desc: 'حوکمێن بابەتیێن ژیانێ' },
         { viewId: 'pirtukxane-view', icon: 'fas fa-swatchbook', title: 'پەرتوکخانە', desc: 'پەرتوکێن هەلبژارتی بخوینە' }, 
         { viewId: 'book-sales-view', icon: 'fas fa-shopping-cart', title: 'فرۆتنا پەرتووکان', desc: 'پەرتوکێن بەردەست بۆ کرینێ' },
         { viewId: 'map-view', icon: 'fas fa-map-marked-alt', title: 'خەریتە', desc: 'جهێ وانەگوتنێ ببینە' }, 
         { viewId: 'live-view', icon: 'fas fa-satellite-dish', title: 'خولێن ڕاستەوخۆ', desc: 'پشکداریێ د خولان دا بکە' },
-        { viewId: 'prayer-times-view', icon: 'fas fa-clock', title: 'کاتی نڤێژان', desc: 'دەمێن نڤێژان و ئاراستا قبلێ' },
-        { viewId: 'kids-view', icon: 'fas fa-child', title: 'بەشێ زارۆیان', desc: 'ناڤەرۆکەکا تایبەت بۆ زارۆیان' }
+        { viewId: 'feedback-view', icon: 'fas fa-comment-dots', title: 'پێشنیار و ڕەخنە', desc: 'نێرینا خۆ بۆ مە بنێرە' }
     ];
 
     const unlockedItems = [], lockedItems = [];
     allNavItems.forEach(item => {
-        const status = allData.viewStatuses[item.viewId];
+        const status = manualViewStatus[item.viewId] || allData.viewStatuses[item.viewId];
         if (!status || status === '0') unlockedItems.push(item);
         else if (status !== '7') lockedItems.push({...item, status: status});
     });
 
     const renderCard = (item, isLocked) => {
-        // GUHERTIN LI VIR: Zêdekirina classa taybet bo karta mamostayan
         const specialClass = item.viewId === 'teachers-view' ? 'teacher-card-highlight' : '';
         if (isLocked) {
             const lockIconClass = item.status === '1' ? 'fa-hourglass-half' : 'fa-lock';
@@ -1245,7 +1266,7 @@ function buildHomeView() {
     const unlockedHTML = unlockedItems.map(item => renderCard(item, false)).join('');
     const lockedHTML = lockedItems.map(item => renderCard(item, true)).join('');
     
-    container.innerHTML = `<div class="home-navigation-container"><h2>بەشێن سەرەکی</h2><div class="main-navigation-grid">${unlockedHTML + lockedHTML}</div></div>`;
+    container.innerHTML = liveCourseFeatureHTML + `<div class="home-navigation-container"><h2>بەشێن سەرەکی</h2><div class="main-navigation-grid">${unlockedHTML + lockedHTML}</div></div>`;
 }
 
 function buildDashboardView() {
@@ -1325,11 +1346,32 @@ function buildDashboardView() {
 }
 
 function buildFavoritesView() { const container = document.getElementById('favorites-view'); const favorites = favoritesManager.getFavorites(); let content = `<header class="page-header"><h1>دڵخوازێن من</h1><p>هەمی ئەو بابەتێن تە نیشانکرین</p></header>`; if (favorites.length === 0) { content += createEmptyStateMessage('تە هیچ بابەتەک نیشان نەکریە وەک دڵخواز.'); } else { content += `<div class="favorites-grid">${favorites.reverse().map(fav => { let itemTypeLabel = ''; switch(fav.type) { case 'hadith': itemTypeLabel = 'حەدیس'; break; case 'fatwa': itemTypeLabel = 'پرسیار'; break; case 'lecture': itemTypeLabel = 'وانە'; break; default: itemTypeLabel = 'بابەت'; } return `<div class="favorite-item-card" id="fav-card-${fav.id}"><div class="favorite-item-content"><h4>${fav.title}</h4><p>${itemTypeLabel}</p></div><div class="favorite-item-actions"><button class="go-to-btn" onclick="navigateToFavorite('${fav.type}', '${fav.id}')" title="چوون بۆ بابەتی"><i class="fas fa-external-link-alt"></i></button><button class="remove-btn" onclick="removeFavorite('${fav.id}')" title="ژێبرن ژ دڵخوازان"><i class="fas fa-trash-alt"></i></button></div></div>`; }).join('')}</div>`; } container.innerHTML = content; }
-function buildSeerahView() { const container = document.getElementById('seerah-view'); container.innerHTML = `<header class="page-header"><h1>ژیانناما پێغەمبەری ﷺ</h1><p>قوناغ و روودانێن ژیانا خوشتڤی</p></header>` + (allData.seerah && allData.seerah.length > 0 ? `<div><!-- TODO: Render Seerah Content Here --></div>` : createEmptyStateMessage('هیچ زانیاریەک لسەر ژیاننامێ نەهاتیە تۆمارکرن.')); }
 function buildAdhkarView() { const container = document.getElementById('adhkar-view'); container.innerHTML = `<header class="page-header"><h1>دوعا و زکران</h1><p>زکرێن رۆژانە و دوعایێن گرنگ</p></header>` + (allData.adhkar && allData.adhkar.length > 0 ? `<div><!-- TODO: Render Adhkar Content Here --></div>` : createEmptyStateMessage('هیچ دوعا و زکرەک نەهاتیە تۆمارکرن.')); }
-function buildFiqhView() { const container = document.getElementById('fiqh-view'); container.innerHTML = `<header class="page-header"><h1>فقهـ و حوکم</h1><p>حوکمێن بابەتیێن ژیانێ</p></header>` + (allData.fiqh && allData.fiqh.length > 0 ? `<div><!-- TODO: Render Fiqh Content Here --></div>` : createEmptyStateMessage('هیچ بابەتەکێ فقهی نەهاتیە تۆمارکرن.')); }
-function buildPrayerTimesView() { /* Handled by displayStatusMessage */ }
-function buildKidsView() { /* Handled by displayStatusMessage */ }
+
+function buildFeedbackView() {
+    const container = document.getElementById('feedback-view');
+    container.innerHTML = `
+        <header class="page-header"><h1>پێشنیار و ڕەخنە</h1><p>نێرین و تێبینیێن هەوە جهێ رێزێ نە و هاریکارن بۆ باشترکرنا پرۆژەی.</p></header>
+        <div class="live-registration-form">
+            <form action="https://formspree.io/f/mvgqdwav" method="POST">
+                <input type="hidden" name="_subject" value="پەیامەکا نوو ژ پرۆژێ ئیسلام!">
+                <div class="form-group">
+                    <label for="feedback-name">ناڤ (ئارەزوومەندانە)</label>
+                    <input type="text" id="feedback-name" name="ناڤ">
+                </div>
+                <div class="form-group">
+                    <label for="feedback-email">ئیمێل (ئارەزوومەندانە)</label>
+                    <input type="email" id="feedback-email" name="ئیمێل">
+                </div>
+                <div class="form-group">
+                    <label for="feedback-message">پەیاما تە</label>
+                    <textarea id="feedback-message" name="پەیام" required></textarea>
+                </div>
+                <button type="submit" class="form-submit-btn">هنارتن</button>
+            </form>
+        </div>`;
+}
+
 
 // GUHERTIN LI VIR: Dîzayna beşa Asta (Rêrewa Fêrbûnê) جوانتر لێهات
 function buildLevelsView() { 
@@ -1392,7 +1434,6 @@ function buildFatwasView() { const container = document.getElementById('fatwas-v
 function buildMapView() { const container = document.getElementById('map-view'); container.innerHTML = `<header class="page-header"><h1>خەریتە</h1><p>جهێ وانەگوتنێ لسەر خەریتەی ببینە و لێ بگەڕە</p></header><div id="map-view-layout"><div class="map-controls"><input type="text" id="map-search-input" class="map-search-input" placeholder="ل ناڤێ جهی، مامۆستای، یان وانەیێ بگەڕە..." onkeyup="renderLocationList()"></div><div id="main-map-container"></div><div id="location-list-container"></div></div>`; if (!allData.locations || allData.locations.length === 0) { document.getElementById('location-list-container').innerHTML = createEmptyStateMessage('هیچ جهەک لسەر خەریتەی نەهاتیە تۆمارکرن.'); } else { renderLocationList(); } }
 function buildLiveView() { const container = document.getElementById('live-view'); const course = allData.liveCourse; if (!course || !course.teacherId) { container.innerHTML = `<header class="page-header"><h1>خولێن ڕاستەوخۆ</h1></header>${createEmptyStateMessage('نوکە چ خولێن ڕاستەوخۆ بەردەست نینن.')}`; return; } const teacher = allData.teachers[course.teacherId]; if (!teacher) { container.innerHTML = createEmptyStateMessage('چەوتی: مامۆستایێ ڤێ خولێ نەهاتە دیتن.'); return; } container.innerHTML = `<div class="live-view-content"><span class="live-badge">ڕاستەوخۆ</span><h1>${course.title}</h1><p class="live-teacher-info">دگەل: <a href="#" onclick="event.preventDefault(); showTeacherProfile('${course.teacherId}')">${teacher.name}</a></p><p style="max-width: 700px; margin: 0 auto 30px;">${course.description}</p><h3 style="margin-bottom: 10px;">جڤینا بهێت دێ دەستپێکەت پشتی:</h3><div id="live-countdown"></div><div class="live-details-section"><h3 class="profile-section-title-new" style="text-align: right; border:none; padding-bottom: 0;">زانیاریێن زێدەتر</h3><h4><i class="fas fa-bullseye" style="color:var(--accent-color); margin-left: 8px;"></i>بابەتێن سەرەکی:</h4><ul style="margin-bottom: 20px;">${(course.topics || []).map(t => `<li>${t}</li>`).join('')}</ul><h4><i class="fas fa-tasks" style="color:var(--accent-color); margin-left: 8px;"></i>پێدڤیێن خولێ:</h4><p style="margin-bottom: 20px;">${course.prerequisites}</p><h4><i class="fas fa-calendar-alt" style="color:var(--accent-color); margin-left: 8px;"></i>خشتێ جڤینان:</h4><ul>${(course.schedule || []).map(s => `<li>${s}</li>`).join('')}</ul></div><div id="live-registration-section"><h2 class="profile-section-title-new" style="text-align:center; border-bottom-width:2px; max-width:400px; margin: 40px auto 20px auto;">فورما پشکداریێ</h2><p style="color: var(--secondary-text); max-width: 600px; margin: 0 auto 20px;">ئەگەر تۆ حەزدکەی پشکداریێ بکەی، ڤێ فورمێ پر بکە.</p><form action="https://formspree.io/f/mvgqdwav" method="POST" class="live-registration-form"><input type="hidden" name="_subject" value="داواکاریەکا نووی بۆ خولا راستەوخۆ!"><div class="form-group"><label for="fullname">ناڤێ سیانی:</label><input type="text" id="fullname" name="ناڤ" required></div><div class="form-group"><label for="email">ئیمێل:</label><input type="email" id="email" name="ئیمێل" required></div><div class="form-group"><label for="whatsapp">ژمارا موبایلێ (واتسئاپ):</label><input type="tel" id="whatsapp" name="ژمارا_واتسئاپ" required></div><div class="form-group form-group-checkbox"><input type="checkbox" id="prereq" name="مەرج_قەبیلکرن" value="بەڵێ" required><label for="prereq">ئەز پشتراستم کو من مەرجێن پێدڤی هەنە</label></div><button type="submit" class="form-submit-btn">هنارتن</button></form></div></div>`; startCountdown(course.nextSessionDate); }
 function buildHadithView() { const container = document.getElementById('hadith-view'); let content = `<header class="page-header"><h1>کتێبخانەیا حەدیسێ</h1><p>ل حەدیسێن پێغەمبەری ﷺ بگەڕە و زانیاریێن وان ببینە</p></header>`; if (!allData.hadiths || allData.hadiths.length === 0) { content += createEmptyStateMessage('هیچ حەدیسەک نەهاتیە تۆمارکرن.'); } else { const categories = ['all', ...new Set(allData.hadiths.map(h => h.category))]; content += `<div class="hadith-controls-new"><div class="filter-group"><h4>بابەت:</h4>${categories.map(cat => `<button class="filter-btn ${cat === 'all' ? 'active' : ''}" data-filter-type="category" onclick="selectHadithFilter(this, 'category')">${cat === 'all' ? 'هەمووی' : cat}</button>`).join('')}</div><input type="text" id="hadith-search-input" class="search-input-new" placeholder="ل دەقێ حەدیسێ بگەڕە..." onkeyup="filterHadiths(true)"></div><div id="hadith-list-container"></div><div id="hadith-pagination-container" class="pagination-controls"></div>`; } container.innerHTML = content; if (allData.hadiths.length > 0) { filterHadiths(); } }
-function buildTafsirView() { const container = document.getElementById('tafsir-view'); let content = `<header class="page-header"><h1>تەفسیرا قورئانا پیرۆز</h1><p>سورەتەکێ هەلبژێرە یان ل ناڤێ وێ بگەڕە</p></header>`; if (Object.keys(allData.tafsir).length === 0) { content += createEmptyStateMessage('هیچ تەفسیرەک نەهاتیە تۆمارکرن.'); } else { content += `<div id="surah-selection-area"><div class="tafsir-controls"><input type="text" id="surah-search-input" class="search-input-new" placeholder="ل ناڤێ سورەتێ بگەڕە..." onkeyup="filterSurahButtons()"></div><div id="surah-selection-grid">${Object.entries(allData.tafsir).sort((a, b) => parseInt(a[0]) - parseInt(b[0])).map(([num, data]) => `<button class="surah-btn" data-surah-name="${data.surahName}" onclick="displaySurahTafsir('${num}')"><span class="surah-btn-number">سورەتا ${num}</span><span class="surah-btn-name">${data.surahName}</span></button>`).join('')}</div></div><div id="tafsir-display-area" style="display:none;"></div>`; } container.innerHTML = content; }
 function buildBookSalesView() { const container = document.getElementById('book-sales-view'); let content = `<header class="page-header"><h1>فرۆتنا پەرتووکان</h1><p>پەرتوکێن هەلبژارتی بۆ فرۆتنێ</p></header>`; if (!allData.bookSales || allData.bookSales.length === 0) { content += createEmptyStateMessage('نوکە هیچ پەرتوکەک بۆ فرۆتنێ بەردەست نینە.'); } else { content += `<div class="book-sales-grid">${allData.bookSales.map(book => { const purchaseButton = book.isAvailable ? `<a href="${book.purchaseLink}" target="_blank" rel="noopener noreferrer" class="purchase-btn">کرین</a>` : `<button class="purchase-btn" disabled>بۆ فرۆتنێ نییە</button>`; return `<div class="book-sale-card"><div class="book-sale-card-img-wrapper"><img src="${book.coverImage}" class="book-sale-card-img" alt="بەرگێ پەرتووکێ" loading="lazy"></div><div class="book-sale-card-content"><h3>${book.title}</h3><p class="book-sale-card-author">نووسەر: ${book.author}</p><p class="book-sale-card-desc">${book.description}</p><div class="book-sale-footer"><span class="book-price">${book.price}</span>${purchaseButton}</div></div></div>`; }).join('')}</div>`; } container.innerHTML = content; }
 function displayStatusMessage(viewId, stpCode) { const container = document.getElementById(viewId); if (!container) return; let icon = 'fa-info-circle', iconClass = 'status-info', title = 'تێبینی', text = 'ئەڤ بەشە نوکە نە بەردەستە.'; switch (stpCode) { case '1': icon = 'fa-hourglass-half'; iconClass = 'status-info'; title = 'دەمەکێ نێزیک'; text = 'ئەڤ بەشە د کارکرنێ دایە و دێ ل پاشەرۆژەکا نێزیک بەردەست بیت.'; break; case '2': icon = 'fa-exclamation-triangle'; iconClass = 'status-danger'; title = 'ئاریشەیەکا تەکنیکی'; text = 'ئاریشەیەک د ڤی بەشی دا روویدایە.'; break; case '3': icon = 'fa-cogs'; iconClass = 'status-warning'; title = 'ژێر چاککرنێ دایە'; text = 'ئەم نوکە کار لسەر باشترکرنا ڤی بەشی دکەین.'; break; case '4': icon = 'fa-sync-alt'; iconClass = 'status-info'; title = 'ناڤەرۆک دهێتە نووژەنکرن'; text = 'ناڤەرۆکا ڤی بەشی دهێتە نووژەنکرن.'; break; case '5': icon = 'fa-pause-circle'; iconClass = 'status-warning'; title = 'بۆ دەمەکێ کورت هاتیە راوەستاندن'; text = 'ئەڤ بەشە بۆ دەمەکێ کورت هاتیە راوەستاندن.'; break; case '6': icon = 'fa-hands-helping'; iconClass = 'status-success'; title = 'پێدڤی ب پشکداریا تەیە'; text = 'ئەم دخوازین ڤی بەشی ب پشکداریێن هەوە دەولەمەند بکەین.'; break; case '8': icon = 'fa-lock'; iconClass = 'status-warning'; title = 'قفلە'; text = 'ئەڤ بەشە نوکە قفلە و بەردەست نینە.'; break; } container.innerHTML = `<div class="status-message-container"><i class="fas ${icon} status-icon ${iconClass}"></i><h2 class="status-title">${title}</h2><p class="status-text">${text}</p></div>`; }
 
@@ -1413,9 +1454,6 @@ function selectHadithFilter(button, type) { document.querySelectorAll(`#hadith-v
 function filterHadiths(resetPage = false) { if (resetPage) hadithCurrentPage = 1; const searchInput = document.getElementById('hadith-search-input'); const searchTerm = searchInput ? searchInput.value.toLowerCase() : ''; const activeCategoryBtn = document.querySelector('#hadith-view .filter-btn[data-filter-type="category"].active'); const activeCategory = activeCategoryBtn ? activeCategoryBtn.textContent : 'هەمووی'; const filtered = allData.hadiths.filter(h => (activeCategory === 'هەمووی' || h.category === activeCategory) && (h.text.toLowerCase().includes(searchTerm))); renderHadithPage(filtered); }
 function renderHadithPage(filteredData) { const container = document.getElementById('hadith-list-container'); const paginationContainer = document.getElementById('hadith-pagination-container'); if (!container || !paginationContainer) return; const totalPages = Math.ceil(filteredData.length / hadithsPerPage); const start = (hadithCurrentPage - 1) * hadithsPerPage; const end = start + hadithsPerPage; const pageData = filteredData.slice(start, end); if (pageData.length === 0) { container.innerHTML = createEmptyStateMessage('هیچ حەدیسەک لدویڤ لێگەریانا تە نەهاتە دیتن.'); paginationContainer.innerHTML = ''; return; } container.innerHTML = pageData.map(h => { let gradeClass = ''; if ((h.grade || "").toLowerCase() === 'صحيح' || (h.grade || "").toLowerCase() === 'sahih') gradeClass = 'sahih'; else if ((h.grade || "").toLowerCase() === 'حسن' || (h.grade || "").toLowerCase() === 'hasan') gradeClass = 'hasan'; else if ((h.grade || "").toLowerCase() === 'ضعيف' || (h.grade || "").toLowerCase() === 'daif') gradeClass = 'daif'; const audioPlayer = h.audioUrl ? `<button class="hadith-action-btn" onclick="playMediaInModal('${h.audioUrl}', 'گوهداری ل حەدیسێ بکە')"><i class="fas fa-volume-up"></i> گوهداری</button>` : ''; const isRead = hadithTracker.isHadithRead(h.id); const isFavorite = favoritesManager.isFavorite(h.id); const escapedText = h.text.substring(0, 100).replace(/'/g, "\\'").replace(/"/g, '&quot;') + '...'; return `<div class="hadith-card-new ${isRead ? 'is-read' : ''}" id="hadith-card-${h.id}"><div class="hadith-header"><div class="header-controls"><span class="hadith-number">حەدیسا #${h.hadith_number || 'بێ هژمار'}</span><button class="header-btn ${isRead ? 'read' : ''}" onclick="toggleHadithReadUI(this, '${h.id}')" title="${isRead ? 'نیشانکرن وەک نەخواندی' : 'نیشانکرن وەک خواندی'}"><i class="fas ${isRead ? 'fa-check-circle' : 'fa-eye'}"></i></button><button class="header-btn ${isFavorite ? 'favorite' : ''}" onclick="toggleFavoriteUI(this, '${h.id}', 'hadith', '${escapedText}')" title="دانان وەک دڵخواز"><i class="fas fa-bookmark"></i></button></div>${gradeClass ? `<span class="hadith-grade ${gradeClass}">${h.grade}</span>` : ''}</div><div class="hadith-content"><p class="hadith-text-new" id="text-${h.id}">"${h.text}"</p><div class="hadith-actions"><button class="hadith-action-btn" onclick="copyHadithText('text-${h.id}', this)"><i class="fas fa-copy"></i> کۆپی کرن</button><button class="hadith-action-btn" onclick="shareContent('حەدیسەک ژ پرۆژێ ئیسلام', '${escapedText}', window.location.href + '#hadith-card-${h.id}')"><i class="fas fa-share-alt"></i> پارڤەکرن</button>${audioPlayer}</div></div><div class="hadith-footer"><span><strong>ژێدەر:</strong> ${h.source}</span><span><strong>راوی:</strong> ${h.narrator || 'نەدیار'}</span><span><strong>بابەت:</strong> ${h.category}</span></div></div>`; }).join(''); paginationContainer.innerHTML = `<button class="pagination-btn" onclick="changeHadithPage(-1)" ${hadithCurrentPage === 1 ? 'disabled' : ''}>&lt; پێشتر</button><span>پەرێ ${hadithCurrentPage} ژ ${totalPages}</span><button class="pagination-btn" onclick="changeHadithPage(1)" ${hadithCurrentPage === totalPages ? 'disabled' : ''}>پاشتر &gt;</button>`; }
 function changeHadithPage(direction) { hadithCurrentPage += direction; filterHadiths(false); document.getElementById('hadith-view').scrollIntoView({ behavior: 'smooth' }); }
-function filterSurahButtons() { const searchTerm = document.getElementById('surah-search-input').value.toLowerCase(); const buttons = document.querySelectorAll('#surah-selection-grid .surah-btn'); buttons.forEach(btn => { const surahName = btn.dataset.surahName.toLowerCase(); if (surahName.includes(searchTerm)) { btn.style.display = 'block'; } else { btn.style.display = 'none'; } }); }
-function displaySurahTafsir(surahNumber) { const surahData = allData.tafsir[surahNumber]; if (!surahData) { console.error(`No tafsir data found for surah number: ${surahNumber}`); alert('چ زانیاریەک بۆ ڤێ سورەتێ نەهاتە دیتن.'); return; } document.getElementById('surah-selection-area').style.display = 'none'; const displayArea = document.getElementById('tafsir-display-area'); displayArea.style.display = 'block'; const audioPlayerHTML = surahData.audioUrl ? `<div class="audio-player-wrapper" style="margin: 0 0 20px 0; padding: 20px 0 0 0; border-top: 1px solid var(--border-color);"><p><i class="fas fa-volume-up"></i>گوهداریێ ل تەفسیرێ بکە:</p><audio controls src="${surahData.surah_audio_url}" style="width:100%;"></audio></div>` : ''; displayArea.innerHTML = `<button class="back-to-surah-btn" onclick="showSurahSelection()"><i class="fas fa-arrow-right"></i> ڤەگەڕیان بۆ لیستا سورەتان</button><h2 style="text-align:center; margin-bottom:15px;">تەفسیرا ${surahData.surahName}</h2><div class="tafsir-meta-info"><div class="tafsir-meta-item"><i class="fas fa-list-ol" style="color: var(--accent-color); margin-left: 5px;"></i> هژمارا ئایەتان: <span>${surahData.ayah_count}</span></div><div class="tafsir-meta-item"><i class="fas fa-moon" style="color: var(--accent-color); margin-left: 5px;"></i> جۆر: <span>${surahData.revelation_type}</span></div></div><div class="tafsir-content-full"><p>${surahData.full_tafsir_text}</p></div>${audioPlayerHTML}`; displayArea.scrollIntoView({ behavior: 'smooth' }); }
-function showSurahSelection() { document.getElementById('tafsir-display-area').style.display = 'none'; document.getElementById('surah-selection-area').style.display = 'block'; }
 
 // === [ 7. فەنکشنێن هاریکار و نوو ] ===
 function navigateToView(viewId) { 
@@ -1528,7 +1566,7 @@ let deferredPrompt;
 function setupInstallPrompt() { const installBanner = document.getElementById('install-app-banner'); const installBtn = document.getElementById('install-app-btn'); const dismissBtn = document.getElementById('dismiss-install-btn'); window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; installBanner.classList.add('visible'); }); installBtn.addEventListener('click', async () => { if (deferredPrompt) { deferredPrompt.prompt(); const { outcome } = await deferredPrompt.userChoice; console.log(`User response to the install prompt: ${outcome}`); deferredPrompt = null; installBanner.classList.remove('visible'); } }); dismissBtn.addEventListener('click', () => { installBanner.classList.remove('visible'); }); window.addEventListener('appinstalled', () => { deferredPrompt = null; installBanner.classList.remove('visible'); console.log('PWA was installed'); }); }
 
 // هنارتنا هەمی فەنکشنان بۆ Window
-window.openModal = openModal; window.closeModal = closeModal; window.showLessonList = showLessonList; window.showLevelCourseLessons = showLevelCourseLessons; window.showTeacherProfile = showTeacherProfile; window.renderLocationList = renderLocationList; window.focusOnMapLocation = focusOnMapLocation; window.playMediaInModal = playMediaInModal; window.showPdfInModal = showPdfInModal; window.goToMapLocation = goToMapLocation; window.toggleCourseCompletion = toggleCourseCompletion; window.toggleLectureWatched = toggleLectureWatched; window.toggleLibraryBookRead = toggleLibraryBookRead; window.filterFatwas = filterFatwas; window.toggleFatwa = toggleFatwa; window.selectFatwaTeacher = selectFatwaTeacher; window.filterHadiths = filterHadiths; window.selectHadithFilter = selectHadithFilter; window.changeHadithPage = changeHadithPage; window.copyHadithText = copyHadithText; window.toggleHadithReadUI = toggleHadithReadUI; window.toggleFavoriteUI = toggleFavoriteUI; window.removeFavorite = removeFavorite; window.navigateToFavorite = navigateToFavorite; window.shareContent = shareContent; window.displaySurahTafsir = displaySurahTafsir; window.filterSurahButtons = filterSurahButtons; window.showSurahSelection = showSurahSelection; window.checkLevelUnlockCode = checkLevelUnlockCode; window.resetAllProgress = resetAllProgress; window.navigateToView = navigateToView; window.showHomeView = showHomeView; window.togglePdfMemorization = togglePdfMemorization; window.handleGlobalSearch = handleGlobalSearch; window.navigateToSearchResult = navigateToSearchResult;
+window.openModal = openModal; window.closeModal = closeModal; window.showLessonList = showLessonList; window.showLevelCourseLessons = showLevelCourseLessons; window.showTeacherProfile = showTeacherProfile; window.renderLocationList = renderLocationList; window.focusOnMapLocation = focusOnMapLocation; window.playMediaInModal = playMediaInModal; window.showPdfInModal = showPdfInModal; window.goToMapLocation = goToMapLocation; window.toggleCourseCompletion = toggleCourseCompletion; window.toggleLectureWatched = toggleLectureWatched; window.toggleLibraryBookRead = toggleLibraryBookRead; window.filterFatwas = filterFatwas; window.toggleFatwa = toggleFatwa; window.selectFatwaTeacher = selectFatwaTeacher; window.filterHadiths = filterHadiths; window.selectHadithFilter = selectHadithFilter; window.changeHadithPage = changeHadithPage; window.copyHadithText = copyHadithText; window.toggleHadithReadUI = toggleHadithReadUI; window.toggleFavoriteUI = toggleFavoriteUI; window.removeFavorite = removeFavorite; window.navigateToFavorite = navigateToFavorite; window.shareContent = shareContent; window.checkLevelUnlockCode = checkLevelUnlockCode; window.resetAllProgress = resetAllProgress; window.navigateToView = navigateToView; window.showHomeView = showHomeView; window.togglePdfMemorization = togglePdfMemorization; window.handleGlobalSearch = handleGlobalSearch; window.navigateToSearchResult = navigateToSearchResult;
 window.dailyTaskManager = dailyTaskManager;
 window.handleAuthClick = handleAuthClick; window.toggleAuthForm = toggleAuthForm; window.handleLogin = handleLogin; window.handleSignup = handleSignup;
 
