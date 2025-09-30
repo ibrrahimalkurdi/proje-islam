@@ -3,13 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>داگرتنی وێنەی یوتیوب - وەشانی پێشکەوتوو</title>
+    <title>ئامرازی وێنە - یوتیوب و بارکردنی فایل</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;700&display=swap');
         
+        :root {
+            --primary-color: #ff0000;
+            --secondary-color: #28a745;
+            --background-color: #f0f2f5;
+            --container-bg: #ffffff;
+            --text-color: #333;
+            --light-text-color: #65676b;
+            --border-color: #ddd;
+        }
+
         body {
             font-family: 'Noto Kufi Arabic', sans-serif;
-            background-color: #f0f2f5;
+            background-color: var(--background-color);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -19,46 +29,74 @@
             box-sizing: border-box;
         }
         .container {
-            background-color: white;
+            background-color: var(--container-bg);
             padding: 30px 40px;
-            border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
             text-align: center;
             width: 100%;
-            max-width: 600px;
+            max-width: 650px;
             transition: all 0.3s ease;
         }
         h1 {
-            color: #d92323;
-            margin-bottom: 10px;
+            color: var(--primary-color);
+            margin-bottom: 25px;
             font-weight: 700;
         }
-        p {
-            color: #65676b;
+        
+        /* Tab System Styles */
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #eee;
             margin-bottom: 25px;
         }
-        .input-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+        .tab-btn {
+            padding: 12px 20px;
+            cursor: pointer;
+            border: none;
+            background-color: transparent;
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--light-text-color);
+            position: relative;
+            transition: color 0.3s;
         }
-        #youtubeLink {
+        .tab-btn.active {
+            color: var(--primary-color);
+        }
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background-color: var(--primary-color);
+            border-radius: 3px;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        /* General Styles for inputs and buttons */
+        input[type="text"] {
             width: 100%;
             padding: 12px 15px;
-            border: 1px solid #ddd;
+            border: 1px solid var(--border-color);
             border-radius: 8px;
             font-size: 16px;
-            text-align: left;
-            direction: ltr;
             transition: border-color 0.3s, box-shadow 0.3s;
+            box-sizing: border-box;
         }
-        #youtubeLink:focus {
+        input[type="text"]:focus {
             outline: none;
-            border-color: #d92323;
-            box-shadow: 0 0 0 3px rgba(217, 35, 35, 0.1);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.1);
         }
-        #getBtn {
-            background-color: #ff0000;
+        .btn {
             color: white;
             border: none;
             padding: 12px 25px;
@@ -69,201 +107,234 @@
             transition: background-color 0.3s;
             white-space: nowrap;
         }
-        #getBtn:hover {
-            background-color: #c00;
-        }
-        .quality-selector {
-            margin-bottom: 25px;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        .quality-selector label {
-            background-color: #f0f0f0;
-            padding: 8px 15px;
-            border-radius: 20px;
+        .btn-primary { background-color: var(--primary-color); }
+        .btn-primary:hover { background-color: #c00; }
+        .btn-secondary { background-color: var(--secondary-color); }
+        .btn-secondary:hover { background-color: #218838; }
+
+        /* YouTube Tab Styles */
+        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
+        .quality-selector { margin-bottom: 25px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        .quality-selector label { background-color: #f0f0f0; padding: 8px 15px; border-radius: 20px; cursor: pointer; transition: background-color 0.3s, color 0.3s; font-size: 14px; }
+        .quality-selector input[type="radio"] { display: none; }
+        .quality-selector input[type="radio"]:checked + label { background-color: var(--primary-color); color: white; font-weight: bold; }
+
+        /* Upload Tab Styles */
+        .upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 40px 20px;
             cursor: pointer;
-            transition: background-color 0.3s, color 0.3s;
-            font-size: 14px;
+            transition: border-color 0.3s, background-color 0.3s;
         }
-        .quality-selector input[type="radio"] {
-            display: none;
+        .upload-area:hover {
+            border-color: var(--primary-color);
+            background-color: #fff8f8;
         }
-        .quality-selector input[type="radio"]:checked + label {
-            background-color: #ff0000;
-            color: white;
-            font-weight: bold;
-        }
-        #result {
+        #imageUploader { display: none; }
+        .upload-area p { margin: 0; font-size: 16px; color: var(--light-text-color); }
+        #fileInfo { font-size: 14px; color: var(--light-text-color); margin-top: 15px; }
+
+        /* Result/Preview Area */
+        .result-area {
             margin-top: 25px;
             min-height: 200px;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             background-color: #f9f9f9;
             border-radius: 8px;
             padding: 15px;
         }
-        #thumbnailImage {
-            max-width: 100%;
-            border-radius: 8px;
-            display: none; /* Hidden by default */
-        }
-        #downloadLink {
-            display: none; /* Hidden by default */
-            margin-top: 20px;
-            background-color: #28a745;
-            color: white;
-            padding: 12px 25px;
-            text-decoration: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            transition: background-color 0.3s;
-        }
-        #downloadLink:hover {
-            background-color: #218838;
-        }
-        .loader {
-            border: 6px solid #f3f3f3;
-            border-top: 6px solid #ff0000;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            display: none; /* Hidden by default */
-        }
-        #message {
-            color: #d92323;
-            font-weight: bold;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        .result-area img { max-width: 100%; border-radius: 8px; display: none; }
+        #downloadLink, #localDownloadLink { display: none; margin-top: 20px; text-decoration: none; }
+
+        /* Loader */
+        .loader { border: 5px solid #f3f3f3; border-top: 5px solid var(--primary-color); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; display: none; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>داگرتنی وێنەی یوتیوب</h1>
-        <p>لینکی ڤیدیۆکە دابنێ بۆ وەرگرتنی وێنەی ڤیدیۆکە بە کوالێتی بەرز</p>
-        
-        <div class="input-group">
-            <input type="text" id="youtubeLink" placeholder="https://www.youtube.com/watch?v=...">
-            <button id="getBtn">وێنەکەم پێبدە</button>
+        <h1>ئامرازی وێنە</h1>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="openTab('youtubeContent')">وێنەی یوتیوب</button>
+            <button class="tab-btn" onclick="openTab('uploadContent')">بارکردنی وێنەی خۆت</button>
         </div>
 
-        <div class="quality-selector">
-            <input type="radio" id="hd" name="quality" value="maxresdefault" checked>
-            <label for="hd">HD (1280x720)</label>
-
-            <input type="radio" id="sd" name="quality" value="sddefault">
-            <label for="sd">SD (640x480)</label>
-
-            <input type="radio" id="normal" name="quality" value="hqdefault">
-            <label for="normal">Normal (480x360)</label>
+        <!-- YouTube Thumbnail Downloader Tab -->
+        <div id="youtubeContent" class="tab-content active">
+            <p>لینکی ڤیدیۆی یوتیوب دابنێ بۆ وەرگرتنی وێنەکەی.</p>
+            <div class="input-group">
+                <input type="text" id="youtubeLink" placeholder="https://www.youtube.com/watch?v=..." style="direction: ltr; text-align: left;">
+                <button id="getBtn" class="btn btn-primary">وێنە وەربگرە</button>
+            </div>
+            <div class="quality-selector">
+                <input type="radio" id="hd" name="quality" value="maxresdefault" checked><label for="hd">HD (1280p)</label>
+                <input type="radio" id="sd" name="quality" value="sddefault"><label for="sd">SD (640p)</label>
+                <input type="radio" id="normal" name="quality" value="hqdefault"><label for="normal">Normal (480p)</label>
+            </div>
+            <div id="youtubeResult" class="result-area">
+                <div class="loader" id="youtubeLoader"></div>
+                <p id="youtubeMessage">وێنەی ڤیدیۆکە لێرە پیشان دەدرێت...</p>
+                <img id="thumbnailImage" alt="YouTube Thumbnail">
+            </div>
+            <a id="downloadLink" class="btn btn-secondary" href="" download>داگرتنی وێنەکە</a>
         </div>
 
-        <div id="result">
-            <div class="loader" id="loader"></div>
-            <p id="message">وێنەی ڤیدیۆکە لێرە پیشان دەدرێت...</p>
-            <img id="thumbnailImage" src="" alt="Thumbnail">
+        <!-- Local Image Uploader Tab -->
+        <div id="uploadContent" class="tab-content">
+            <p>وێنەیەک لە مۆبایل یان کۆمپیوتەرەکەت هەڵبژێرە بۆ بینین و داگرتن.</p>
+            <input type="file" id="imageUploader" accept="image/*">
+            <label for="imageUploader" class="upload-area">
+                <p><strong>کلیک لێرە بکە</strong> یان وێنەکە ڕابکێشە بۆ ئێرە</p>
+            </label>
+            <div id="fileInfo"></div>
+            <div id="uploadResult" class="result-area">
+                <p id="uploadMessage">پێشبینی وێنەکەت لێرە دەردەکەوێت...</p>
+                <img id="uploadedImage" alt="Uploaded Image Preview">
+            </div>
+            <a id="localDownloadLink" class="btn btn-secondary" href="" download>داگرتنی وێنەکە</a>
         </div>
-
-        <a id="downloadLink" href="" download>داگرتنی وێنەکە</a>
     </div>
 
-    <script>
-        const getBtn = document.getElementById('getBtn');
-        const youtubeLinkInput = document.getElementById('youtubeLink');
-        const thumbnailImage = document.getElementById('thumbnailImage');
-        const downloadLink = document.getElementById('downloadLink');
-        const loader = document.getElementById('loader');
-        const message = document.getElementById('message');
+<script>
+    // --- Tab Switching Logic ---
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
 
-        getBtn.addEventListener('click', () => {
-            const url = youtubeLinkInput.value;
-            if (!url) {
-                showMessage("تکایە لینکێک بنووسە.");
-                return;
-            }
+    function openTab(tabId) {
+        tabContents.forEach(content => content.classList.remove('active'));
+        tabButtons.forEach(btn => btn.classList.remove('active'));
+        
+        document.getElementById(tabId).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
 
-            const videoId = extractVideoID(url);
-            if (!videoId) {
-                showMessage("لینکەکە نادروستە. تکایە دڵنیابە کە لینکێکی یوتیوبە.");
-                return;
-            }
+    // --- YouTube Thumbnail Downloader Logic ---
+    const getBtn = document.getElementById('getBtn');
+    const youtubeLinkInput = document.getElementById('youtubeLink');
+    const thumbnailImage = document.getElementById('thumbnailImage');
+    const downloadLink = document.getElementById('downloadLink');
+    const youtubeLoader = document.getElementById('youtubeLoader');
+    const youtubeMessage = document.getElementById('youtubeMessage');
 
-            fetchThumbnail(videoId);
-        });
-
-        function extractVideoID(url) {
-            const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-            const matches = url.match(regex);
-            return matches ? matches[1] : null;
+    getBtn.addEventListener('click', () => {
+        const url = youtubeLinkInput.value;
+        if (!url) {
+            showYoutubeMessage("تکایە لینکێک بنووسە.");
+            return;
         }
+        const videoId = extractVideoID(url);
+        if (!videoId) {
+            showYoutubeMessage("لینکەکە نادروستە. تکایە دڵنیابە کە لینکێکی یوتیوبە.");
+            return;
+        }
+        fetchThumbnail(videoId);
+    });
 
-        function fetchThumbnail(videoId) {
-            resetUI();
-            loader.style.display = 'block';
+    function extractVideoID(url) {
+        const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/;
+        return (url.match(regex) || [])[1] || null;
+    }
 
-            const selectedQuality = document.querySelector('input[name="quality"]:checked').value;
-            
-            let imageUrl = `https://img.youtube.com/vi/${videoId}/${selectedQuality}.jpg`;
-            
-            thumbnailImage.src = imageUrl;
-            
-            // This function runs when the image is successfully loaded
+    function fetchThumbnail(videoId) {
+        resetYoutubeUI();
+        youtubeLoader.style.display = 'block';
+        const selectedQuality = document.querySelector('input[name="quality"]:checked').value;
+        let imageUrl = `https://img.youtube.com/vi/${videoId}/${selectedQuality}.jpg`;
+        
+        thumbnailImage.src = imageUrl;
+        thumbnailImage.onload = () => {
+            youtubeLoader.style.display = 'none';
+            youtubeMessage.style.display = 'none';
+            thumbnailImage.style.display = 'block';
+            downloadLink.href = imageUrl;
+            downloadLink.download = `youtube_${videoId}.jpg`;
+            downloadLink.style.display = 'inline-block';
+        };
+        thumbnailImage.onerror = () => {
+            let fallbackUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+            thumbnailImage.src = fallbackUrl;
             thumbnailImage.onload = () => {
-                loader.style.display = 'none';
+                youtubeLoader.style.display = 'none';
                 thumbnailImage.style.display = 'block';
-                downloadLink.href = imageUrl;
-                downloadLink.download = `youtube_${videoId}_thumbnail.jpg`;
+                downloadLink.href = fallbackUrl;
+                downloadLink.download = `youtube_${videoId}.jpg`;
                 downloadLink.style.display = 'inline-block';
+                showYoutubeMessage("کوالێتی داواکراو بەردەست نەبوو، یەکێکی تر پیشان درا.", "info");
             };
-
-            // This function runs if the image fails to load (e.g., maxresdefault doesn't exist)
             thumbnailImage.onerror = () => {
-                // Try a lower quality image as a fallback
-                let fallbackUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-                thumbnailImage.src = fallbackUrl;
-
-                thumbnailImage.onload = () => { // New onload for the fallback
-                    loader.style.display = 'none';
-                    thumbnailImage.style.display = 'block';
-                    downloadLink.href = fallbackUrl;
-                    downloadLink.download = `youtube_${videoId}_thumbnail.jpg`;
-                    downloadLink.style.display = 'inline-block';
-                    showMessage("کوالێتی داواکراو بەردەست نەبوو، یەکێکی تر پیشان درا.", "info");
-                };
-
-                thumbnailImage.onerror = () => { // If fallback also fails
-                    loader.style.display = 'none';
-                    showMessage("نەتوانرا وێنە بۆ ئەم ڤیدیۆیە بدۆزرێتەوە.");
-                };
+                showYoutubeMessage("نەتوانرا وێنە بۆ ئەم ڤیدیۆیە بدۆزرێتەوە.");
             };
+        };
+    }
+
+    function resetYoutubeUI() {
+        thumbnailImage.style.display = 'none';
+        downloadLink.style.display = 'none';
+        youtubeMessage.textContent = '';
+        youtubeMessage.style.display = 'block';
+        youtubeMessage.style.color = '#d92323';
+        youtubeLoader.style.display = 'none';
+    }
+
+    function showYoutubeMessage(text, type = "error") {
+        resetYoutubeUI();
+        youtubeMessage.textContent = text;
+        youtubeMessage.style.color = type === "info" ? "#333" : "#d92323";
+    }
+
+
+    // --- Local Image Uploader Logic ---
+    const imageUploader = document.getElementById('imageUploader');
+    const uploadedImage = document.getElementById('uploadedImage');
+    const localDownloadLink = document.getElementById('localDownloadLink');
+    const fileInfo = document.getElementById('fileInfo');
+    const uploadMessage = document.getElementById('uploadMessage');
+    
+    imageUploader.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (!file) {
+            return;
         }
 
-        function resetUI() {
-            thumbnailImage.style.display = 'none';
-            downloadLink.style.display = 'none';
-            message.textContent = '';
-            message.style.color = '#d92323';
-            loader.style.display = 'none';
+        // Check if the file is an image
+        if (!file.type.startsWith('image/')) {
+            fileInfo.textContent = "هەڵە: تکایە تەنها فایلی وێنە هەڵبژێرە.";
+            fileInfo.style.color = 'red';
+            return;
         }
 
-        function showMessage(text, type = "error") {
-            resetUI();
-            message.textContent = text;
-            if (type === "info") {
-                message.style.color = "#333";
-            } else {
-                message.style.color = "#d92323";
-            }
-        }
-    </script>
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+            // Display image preview
+            uploadedImage.src = e.target.result;
+            uploadedImage.style.display = 'block';
+            
+            // Hide initial message
+            uploadMessage.style.display = 'none';
+
+            // Display file information
+            const fileSize = (file.size / 1024).toFixed(2); // in KB
+            fileInfo.textContent = `ناوی فایل: ${file.name} | قەبارە: ${fileSize} KB`;
+            fileInfo.style.color = 'var(--light-text-color)';
+
+            // Prepare download link
+            localDownloadLink.href = e.target.result;
+            localDownloadLink.download = file.name; // Use original filename for download
+            localDownloadLink.style.display = 'inline-block';
+        };
+
+        reader.readAsDataURL(file);
+    });
+
+</script>
 
 </body>
 </html>
