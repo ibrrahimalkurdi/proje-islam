@@ -1,0 +1,127 @@
+‏<!DOCTYPE html>
+‏<html lang="ku" dir="rtl">
+‏<head>
+‏    <meta charset="UTF-8">
+‏    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+‏    <title>وەرگرتنی وێنەی ڤیدیۆی یوتیوب</title>
+‏    <style>
+‏        body {
+‏            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+‏            background-color: #f4f4f4;
+‏            display: flex;
+‏            justify-content: center;
+‏            align-items: center;
+‏            height: 100vh;
+‏            margin: 0;
+        }
+‏        .container {
+‏            background-color: white;
+‏            padding: 30px;
+‏            border-radius: 10px;
+‏            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+‏            text-align: center;
+‏            width: 90%;
+‏            max-width: 500px;
+        }
+‏        h1 {
+‏            color: #333;
+‏            margin-bottom: 20px;
+        }
+‏        input[type="text"] {
+‏            width: calc(100% - 22px);
+‏            padding: 10px;
+‏            border: 1px solid #ddd;
+‏            border-radius: 5px;
+‏            margin-bottom: 15px;
+‏            font-size: 16px;
+        }
+‏        button {
+‏            background-color: #ff0000;
+‏            color: white;
+‏            border: none;
+‏            padding: 12px 20px;
+‏            border-radius: 5px;
+‏            cursor: pointer;
+‏            font-size: 16px;
+‏            transition: background-color 0.3s;
+        }
+‏        button:hover {
+‏            background-color: #c00;
+        }
+‏        #thumbnailContainer {
+‏            margin-top: 25px;
+        }
+‏        #thumbnailImage {
+‏            max-width: 100%;
+‏            border-radius: 8px;
+‏            border: 2px solid #eee;
+        }
+‏        #downloadLink {
+‏            display: none;
+‏            margin-top: 15px;
+‏            background-color: #28a745;
+‏            color: white;
+‏            padding: 10px 18px;
+‏            text-decoration: none;
+‏            border-radius: 5px;
+‏            font-size: 16px;
+‏            transition: background-color 0.3s;
+        }
+‏        #downloadLink:hover {
+‏            background-color: #218838;
+        }
+‏    </style>
+‏</head>
+‏<body>
+
+‏    <div class="container">
+‏        <h1>وەرگرتنی وێنەی ڤیدیۆی یوتیوب</h1>
+‏        <p>لینکی ڤیدیۆی یوتیوب لێرە دابنێ:</p>
+‏        <input type="text" id="youtubeLink" placeholder="بۆ نموونە: https://www.youtube.com/watch?v=dQw4w9WgXcQ">
+‏        <button onclick="getThumbnail()">وێنەکەم پێبدە</button>
+
+‏        <div id="thumbnailContainer">
+‏            <img id="thumbnailImage" src="" alt="وێنەی ڤیدیۆکە لێرە دەردەکەوێت">
+‏            <br>
+‏            <a id="downloadLink" href="" download="youtube_thumbnail.jpg">داگرتنی وێنەکە</a>
+‏        </div>
+‏    </div>
+
+‏    <script>
+‏        function getThumbnail() {
+‏            const youtubeLinkInput = document.getElementById('youtubeLink');
+‏            const thumbnailImage = document.getElementById('thumbnailImage');
+‏            const downloadLink = document.getElementById('downloadLink');
+
+‏            const youtubeLink = youtubeLinkInput.value;
+‏            let videoId = '';
+
+‏            if (youtubeLink.includes('youtu.be/')) {
+‏                videoId = youtubeLink.split('youtu.be/')[1];
+‏                const ampersandPosition = videoId.indexOf('?');
+‏                if (ampersandPosition !== -1) {
+‏                    videoId = videoId.substring(0, ampersandPosition);
+                }
+‏            } else if (youtubeLink.includes('watch?v=')) {
+‏                videoId = youtubeLink.split('watch?v=')[1];
+‏                const ampersandPosition = videoId.indexOf('&');
+‏                if (ampersandPosition !== -1) {
+‏                    videoId = videoId.substring(0, ampersandPosition);
+                }
+‏            } else {
+‏                alert('تکایە لینکێکی دروستی یوتیوب بنووسە.');
+‏                return;
+            }
+
+‏            if (videoId) {
+                // بۆ وەرگرتنی وێنە بە کوالێتی بەرز
+‏                const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+‏                thumbnailImage.src = thumbnailUrl;
+‏                downloadLink.href = thumbnailUrl;
+‏                downloadLink.style.display = 'inline-block';
+            }
+        }
+‏    </script>
+
+‏</body>
+‏</html>
