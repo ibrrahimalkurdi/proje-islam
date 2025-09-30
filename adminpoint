@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ئەدمین پانێل - رێکخستنا ئاستان</title>
+    <!-- CSS Styles -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;700&display=swap');
+
+        :root {
+            --dark-bg: #0d1117;
+            --card-bg: #161b22;
+            --primary-text: #c9d1d9;
+            --secondary-text: #8b949e;
+            --accent-color: #58a6ff;
+            --border-color: #30363d;
+            --success-color: #2ea043;
+        }
+
+        body {
+            font-family: 'Noto Sans Arabic', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--primary-text);
+            line-height: 1.7;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: auto;
+        }
+
+        header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: var(--accent-color);
+        }
+
+        #loading-message {
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--secondary-text);
+        }
+
+        .level-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .level-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .level-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+            background: var(--accent-color);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .level-name {
+            font-size: 1.3rem;
+            font-weight: 500;
+        }
+
+        .level-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .level-controls label {
+            font-size: 0.9rem;
+            color: var(--secondary-text);
+        }
+
+        .points-input {
+            width: 100px;
+            background: var(--dark-bg);
+            border: 1px solid var(--border-color);
+            color: var(--primary-text);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: inherit;
+            text-align: center;
+            font-size: 1rem;
+        }
+        
+        .points-input:focus {
+            border-color: var(--accent-color);
+            outline: none;
+        }
+
+        .save-btn {
+            background: var(--accent-color);
+            color: #fff;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .save-btn:hover {
+            opacity: 0.9;
+        }
+        
+        .save-btn.saved {
+            background-color: var(--success-color);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>ئەدمین پانێل</h1>
+            <p>ل ڤێرێ دشێی خالێن پێدڤی بۆ ڤەکرنا هەر ئاستەکێ دیار بکەی</p>
+        </header>
+
+        <main id="levels-container">
+            <p id="loading-message">داتایێن ئاستان ژ Firebase دهێنە وەرگرتن...</p>
+            <!-- ئاست دێ ل ڤێرێ هێنە نیشاندان -->
+        </main>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-firestore-compat.js"></script>
+
+    <script>
+    // ==========================================================
+    // =========== JAVASCRIPT FOR ADMIN PANEL ===================
+    // ==========================================================
+    (function() {
+        'use strict';
+
+        // ١. کرارا Firebase (هەمان کرارا مالپەرێ سەرەکیە)
+        const firebaseConfig = {
+            apiKey: "AIzaSyDDi3HtFigGy3qFpFVhSATal3yzm7Z_dZA",
+            authDomain: "projeislam.firebaseapp.com",
+            projectId: "projeislam",
+            storageBucket: "projeislam.appspot.com",
+            messagingSenderId: "686343038831",
+            appId: "1:686343038831:web:8b5e19daa95176000b6a9a",
+            measurementId: "G-1M6PGZBM29"
+        };
+
+        // دەستپێکرنا Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // ٢. وەرگرتنا داتایان و نیشاندان
+        document.addEventListener('DOMContentLoaded', () => {
+            loadLevels();
+        });
+
+        async function loadLevels() {
+            const container = document.getElementById('levels-container');
+            const loadingMessage = document.getElementById('loading-message');
+
+            try {
+                // وەرگرتنا داتایان ژ کۆلێکشنا 'levels' و رێکخستنا وان لسەر بنەمایێ 'level'
+                const snapshot = await db.collection('levels').orderBy('level').get();
+
+                if (snapshot.empty) {
+                    loadingMessage.textContent = 'چ ئاستەک د داتابەیسێ دا نەهاتە دیتن.';
+                    return;
+                }
+
+                // ڤالاکرنا کونتەینەری
+                container.innerHTML = '';
+                
+                snapshot.docs.forEach(doc => {
+                    const levelData = doc.data();
+                    const levelId = doc.id; // ID یا دۆکیومێنتێ
+
+                    // دروستکرنا کاردێ بۆ هەر ئاستەکی
+                    const card = document.createElement('div');
+                    card.className = 'level-card';
+                    
+                    // خالێن نوکە، ئەگەر نەبن دێ 0 بیت
+                    const currentPoints = levelData.requiredPoints || 0;
+
+                    card.innerHTML = `
+                        <div class="level-info">
+                            <span class="level-number">${levelData.level}</span>
+                            <span class="level-name">${levelData.levelName}</span>
+                        </div>
+                        <div class="level-controls">
+                            <label for="points-${levelId}">خالێن پێدڤی:</label>
+                            <input type="number" min="0" id="points-${levelId}" class="points-input" value="${currentPoints}">
+                            <button class="save-btn" data-id="${levelId}">پاشکەفتن</button>
+                        </div>
+                    `;
+                    
+                    container.appendChild(card);
+                });
+
+                // زیادەکرنا Event Listener بۆ هەمی دوگمەیێن پاشکەفتنێ
+                document.querySelectorAll('.save-btn').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const levelDocId = button.getAttribute('data-id');
+                        updateLevelPoints(levelDocId, button);
+                    });
+                });
+
+            } catch (error) {
+                console.error("چەوتی د وەرگرتنا داتایان دا: ", error);
+                loadingMessage.textContent = 'چەوتیەک روویدا د وەرگرتنا داتایان دا. هیڤیدارین کنسۆلێ ببینە.';
+            }
+        }
+
+        // ٣. نووکرنا (Update) خالان د Firestore دا
+        async function updateLevelPoints(docId, button) {
+            const inputElement = document.getElementById(`points-${docId}`);
+            // وەرگرتنا بهایێ ژ ئینپوتی و گوهارتنا وێ بۆ ژمارە
+            const newPoints = parseInt(inputElement.value, 10);
+
+            if (isNaN(newPoints) || newPoints < 0) {
+                alert("هیڤیدارین ژمارەیەکا دروست و مەزنتر ژ سفرێ بنڤیسە.");
+                return;
+            }
+
+            // گوهارتنا نڤیسینا دوگمەیێ
+            button.textContent = '...چاوەڕوانبە';
+            button.disabled = true;
+
+            try {
+                // نووکرنا فیلدێ 'requiredPoints' بتنێ
+                await db.collection('levels').doc(docId).update({
+                    requiredPoints: newPoints
+                });
+                
+                // سەرکەفتی
+                button.textContent = 'پاشکەفت بوو!';
+                button.classList.add('saved');
+
+                // پشتی ٢ چرکەیان، دوگمە دزڤریتەڤە حالەتێ خۆ یێ ئاسایی
+                setTimeout(() => {
+                    button.textContent = 'پاشکەفتن';
+                    button.classList.remove('saved');
+                    button.disabled = false;
+                }, 2000);
+
+            } catch (error) {
+                console.error("چەوتی د نووکرنا خالان دا: ", error);
+                alert("چەوتیەک د پاشکەفتنێ دا روویدا!");
+                button.textContent = 'پاشکەفتن';
+                button.disabled = false;
+            }
+        }
+
+    })();
+    </script>
+
+</body>
+</html>
