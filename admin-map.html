@@ -3,519 +3,267 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>پەنا کونترۆلکرنێ - ڕێکخستنا نەخشەی</title>
+    <title>پەنا کونترۆلکرنێ - ئەدمین</title>
     
-    <!-- CSS Libraries -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
-        /* --- CSS گشتی --- */
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;700&display=swap');
         :root {
-            --dark-bg: #0d1117;
-            --card-bg: #161b22;
-            --primary-text: #c9d1d9;
-            --secondary-text: #8b949e;
-            --accent-color: #58a6ff;
-            --border-color: #30363d;
-            --success-color: #2ea043;
-            --danger-color: #f85149;
-            --font-kurdish: 'Noto Sans Arabic', sans-serif;
+            --dark-bg: #0d1117; --card-bg: #161b22; --primary-text: #c9d1d9; --secondary-text: #8b949e;
+            --accent-color: #58a6ff; --border-color: #30363d; --success-color: #2ea043; --danger-color: #f85149;
+            --warning-color: #f0b429; --font-kurdish: 'Noto Sans Arabic', sans-serif;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: var(--font-kurdish); background-color: var(--dark-bg); color: var(--primary-text); line-height: 1.6; }
-        .container { width: 95%; max-width: 1400px; margin: 20px auto; padding: 20px; }
+        body { font-family: var(--font-kurdish); background-color: #010409; color: var(--primary-text); }
+        .container { width: 95%; max-width: 1600px; margin: 20px auto; }
         h1, h2 { text-align: center; margin-bottom: 25px; color: var(--primary-text); }
+        .main-layout { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; align-items: flex-start; }
+        .form-section, .list-section, .pending-section { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 25px; }
+        .list-section, .pending-section { max-height: 85vh; overflow-y: auto; }
+        @media (max-width: 1200px) { .main-layout { grid-template-columns: 1fr 1fr; } .form-section { grid-column: 1 / -1; } }
+        @media (max-width: 768px) { .main-layout { grid-template-columns: 1fr; } }
 
-        /* --- ستایلێ بەشان --- */
-        .admin-layout {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 25px;
-            align-items: flex-start;
-        }
-
-        @media (max-width: 992px) {
-            .admin-layout {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* --- ستایلێ فورمێ و نەخشەی --- */
-        .form-map-section {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 25px;
-        }
-
-        .form-group {
-            margin-bottom: 18px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-
-        .form-group input, .form-group select {
-            width: 100%;
-            background: var(--dark-bg);
-            border: 1px solid var(--border-color);
-            color: var(--primary-text);
-            padding: 12px;
-            border-radius: 6px;
-            font-family: var(--font-kurdish);
-        }
-
-        .form-group input:focus, .form-group select:focus {
-            border-color: var(--accent-color);
-            outline: none;
-        }
-
-        #admin-map-container {
-            height: 300px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            margin-top: 20px;
-        }
-
-        .map-instructions {
-            text-align: center;
-            color: var(--secondary-text);
-            font-size: 0.9rem;
-            margin-top: 10px;
-        }
-
-        .form-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .submit-btn {
-            flex-grow: 1;
-            padding: 12px;
-            font-size: 1.1rem;
-            background-color: var(--accent-color);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-family: var(--font-kurdish);
-            transition: background-color .3s;
-        }
-        .submit-btn:hover { opacity: .9; }
-
-        .cancel-btn {
-             padding: 12px 20px;
-             background: var(--border-color);
-             color: var(--primary-text);
-             border: none;
-             border-radius: 8px;
-             cursor: pointer;
-        }
+        /* Form Styles */
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; }
+        .form-group input, .form-group select { width: 100%; background: var(--dark-bg); border: 1px solid var(--border-color); color: var(--primary-text); padding: 12px; border-radius: 6px; }
+        .form-group input:focus, .form-group select:focus { border-color: var(--accent-color); outline: none; }
+        #admin-map-container { height: 250px; border-radius: 8px; border: 1px solid var(--border-color); margin-top: 15px; }
+        .form-actions { display: flex; gap: 10px; margin-top: 20px; }
+        .submit-btn { flex-grow: 1; padding: 12px; background-color: var(--accent-color); color: white; border: none; border-radius: 8px; cursor: pointer; }
+        .cancel-btn { padding: 12px 20px; background: var(--border-color); color: var(--primary-text); border: none; border-radius: 8px; cursor: pointer; }
         
-        /* --- ستایلێ لیستا جهێن تۆمارکری --- */
-        .locations-list-section {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 25px;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
+        /* List Styles */
+        .location-item { background: var(--dark-bg); border: 1px solid var(--border-color); border-right: 4px solid var(--accent-color); border-radius: 8px; padding: 15px; margin-bottom: 15px; }
+        .location-item h4 { margin: 0 0 5px 0; }
+        .location-item p { margin: 0; font-size: 0.9rem; color: var(--secondary-text); }
+        .location-item-actions { margin-top: 10px; text-align: left; }
+        .location-item-actions button { background: none; border: 1px solid var(--border-color); color: var(--secondary-text); padding: 8px 12px; margin-right: 8px; border-radius: 6px; cursor: pointer; }
         
-        .location-item {
-            background: var(--dark-bg);
-            border: 1px solid var(--border-color);
-            border-right: 4px solid var(--accent-color);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .location-item-info h4 {
-            margin: 0 0 5px 0;
-            color: var(--primary-text);
-        }
-
-        .location-item-info p {
-            margin: 0;
-            font-size: 0.9rem;
-            color: var(--secondary-text);
-        }
-
-        .location-item-actions button {
-            background: none;
-            border: 1px solid var(--border-color);
-            color: var(--secondary-text);
-            padding: 8px 12px;
-            margin-right: 8px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .location-item-actions .edit-btn:hover {
-            color: var(--accent-color);
-            border-color: var(--accent-color);
-        }
-
-        .location-item-actions .delete-btn:hover {
-            color: var(--danger-color);
-            border-color: var(--danger-color);
-        }
+        /* Pending List Styles */
+        .pending-item { border-right-color: var(--warning-color); }
+        .pending-item-actions .approve-btn:hover { color: var(--success-color); border-color: var(--success-color); }
+        .pending-item-actions .delete-btn:hover { color: var(--danger-color); border-color: var(--danger-color); }
     </style>
 </head>
 <body>
-
 <div class="container">
-    <h1><i class="fas fa-map-marked-alt"></i> پەنا کونترۆلکرنێ - ڕێکخستنا نەخشەی</h1>
-    
-    <div class="admin-layout">
-        <!-- Beşa Formê û Nexşeyê -->
-        <div class="form-map-section">
+    <h1><i class="fas fa-user-shield"></i> پەنا کونترۆلکرنا ئەدمینی</h1>
+    <div class="main-layout">
+        <!-- 1. Beşa Formê -->
+        <div class="form-section">
             <h2 id="form-title">زێدەکرنا جهەکێ نوو</h2>
             <form id="location-form">
                 <input type="hidden" id="location-id">
-
-                <div class="form-group">
-                    <label for="locationName">ناڤێ جهی</label>
-                    <input type="text" id="locationName" required>
-                </div>
-                <div class="form-group">
-                    <label for="teacherId">مامۆستا</label>
-                    <select id="teacherId" required>
-                        <option value="">مامۆستای هەلبژێرە...</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="lessonTaught">وانا دهێتە گوتن</label>
-                    <input type="text" id="lessonTaught" required>
-                </div>
-                <div class="form-group">
-                    <label for="schedule">خشتێ دەوامی</label>
-                    <input type="text" id="schedule" placeholder="بۆ نموونە: هەر ڕۆژا پێنج شەمبی، پشتی نڤێژا عەیشا" required>
-                </div>
-                
-                <hr style="border-color: var(--border-color); margin: 20px 0;">
-
-                <p class="map-instructions">
-                    <i class="fas fa-mouse-pointer"></i>
-                    کلیک لسەر نەخشەی بکە بۆ دیارکرنا جهی
-                </p>
+                <div class="form-group"><label for="locationName">ناڤێ جهی</label><input type="text" id="locationName" required></div>
+                <div class="form-group"><label for="teacherId">مامۆستا</label><select id="teacherId" required><option value="">مامۆستای هەلبژێرە...</option></select></div>
+                <div class="form-group"><label for="lessonTaught">وانا دهێتە گوتن</label><input type="text" id="lessonTaught" required></div>
+                <div class="form-group"><label for="schedule">خشتێ دەوامی</label><input type="text" id="schedule" required></div>
+                <p style="text-align: center; color: var(--secondary-text); font-size: 0.9rem;">کلیک لسەر نەخشەی بکە بۆ دیارکرنا جهی</p>
                 <div id="admin-map-container"></div>
-                
-                <div class="form-group" style="display: flex; gap: 10px; margin-top: 15px;">
-                    <div>
-                        <label for="latitude">هێلا پانی (Latitude)</label>
-                        <input type="text" id="latitude" required readonly>
-                    </div>
-                    <div>
-                        <label for="longitude">هێلا درێژی (Longitude)</label>
-                        <input type="text" id="longitude" required readonly>
-                    </div>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <div class="form-group" style="flex:1;"><label for="latitude">هێلا پانی</label><input type="text" id="latitude" required readonly></div>
+                    <div class="form-group" style="flex:1;"><label for="longitude">هێلا درێژی</label><input type="text" id="longitude" required readonly></div>
                 </div>
-
                 <div class="form-actions">
-                    <button type="submit" id="submit-btn" class="submit-btn">
-                        <i class="fas fa-save"></i> پاشکەفت کرنا جهی
-                    </button>
-                    <button type="button" id="cancel-btn" class="cancel-btn" style="display: none;">
-                        هەلوەشاندن
-                    </button>
+                    <button type="submit" id="submit-btn" class="submit-btn"><i class="fas fa-save"></i> پاشکەفتکرن</button>
+                    <button type="button" id="cancel-btn" class="cancel-btn" style="display: none;">هەلوەشاندن</button>
                 </div>
             </form>
         </div>
 
-        <!-- Beşa Lîsta Cihan -->
-        <div class="locations-list-section">
-            <h2>جهێن تۆمارکری</h2>
-            <div id="location-list-container">
-                <!-- Lîst dê li vir bi JavaScript were dagirtin -->
-            </div>
+        <!-- 2. Beşa Cihên Qebûlkirî -->
+        <div class="list-section">
+            <h2><i class="fas fa-check-circle" style="color:var(--success-color);"></i> جهێن لسەر نەخشەی</h2>
+            <div id="location-list-container"></div>
+        </div>
+
+        <!-- 3. Beşa Pêşniyarên Çaverêkirî -->
+        <div class="pending-section">
+            <h2><i class="fas fa-hourglass-half" style="color:var(--warning-color);"></i> پێشنیارێن چاڤەڕێ</h2>
+            <div id="pending-list-container"></div>
         </div>
     </div>
 </div>
 
-<!-- JS Libraries -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-firestore-compat.js"></script>
-
 <script>
 'use strict';
-
-// =================================================================
-// === [ FIREBASE SETUP ] ===
-// =================================================================
 const firebaseConfig = {
-    // LI VIR FIREBASE CONFIGURATION YA XWE DANE
-    // (Heman config ya projeyê xwe yê serekî)
-    apiKey: "AIza...",
-    authDomain: "projeislam.firebaseapp.com",
-    projectId: "projeislam",
-    storageBucket: "projeislam.appspot.com",
-    messagingSenderId: "...",
-    appId: "...",
-    measurementId: "G-..."
+    // >>>>>>> LI VIR FIREBASE CONFIGURATION YA XWE DANE <<<<<<<
+    apiKey: "AIza...", authDomain: "projeislam.firebaseapp.com", projectId: "projeislam",
+    storageBucket: "projeislam.appspot.com", messagingSenderId: "...", appId: "...", measurementId: "G-..."
 };
-
-// Firebase destpêbike
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const locationsCollection = db.collection('locations');
+const pendingLocationsCollection = db.collection('pending_locations');
 const teachersCollection = db.collection('teachers');
 
-
-// =================================================================
-// === [ GLOBAL VARIABLES & MAP INITIALIZATION ] ===
-// =================================================================
 const form = document.getElementById('location-form');
-const formTitle = document.getElementById('form-title');
-const locationIdField = document.getElementById('location-id');
-const submitBtn = document.getElementById('submit-btn');
-const cancelBtn = document.getElementById('cancel-btn');
+let adminMap, marker;
 
-let adminMap;
-let marker;
-
-// Nexşeyê destpêbike
 function initializeAdminMap() {
-    adminMap = L.map('admin-map-container').setView([36.85, 42.98], 10); // Navenda Kurdistanê
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(adminMap);
-
-    // Event listener bo klikkirina ser nexşeyê
-    adminMap.on('click', function(e) {
+    adminMap = L.map('admin-map-container').setView([36.85, 42.98], 10);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(adminMap);
+    adminMap.on('click', e => {
         const { lat, lng } = e.latlng;
         document.getElementById('latitude').value = lat.toFixed(6);
         document.getElementById('longitude').value = lng.toFixed(6);
-
-        // Markerekê lê zêde bike an jî cihê wî biguhêre
-        if (marker) {
-            marker.setLatLng(e.latlng);
-        } else {
-            marker = L.marker(e.latlng).addTo(adminMap);
-        }
+        if (marker) marker.setLatLng(e.latlng); else marker = L.marker(e.latlng).addTo(adminMap);
     });
 }
 
-
-// =================================================================
-// === [ DATA LOADING FUNCTIONS ] ===
-// =================================================================
-
-// Hemû mamostayan ji Firestore bîne bo dagirtina select/dropdown
-async function loadTeachers() {
-    const teacherSelect = document.getElementById('teacherId');
-    try {
-        const snapshot = await teachersCollection.get();
-        if (snapshot.empty) {
-            console.log("No teachers found.");
-            return;
-        }
-        snapshot.forEach(doc => {
-            const teacher = doc.data();
-            const option = document.createElement('option');
-            option.value = doc.id;
-            option.textContent = teacher.name;
-            teacherSelect.appendChild(option);
-        });
-    } catch (error) {
-        console.error("Error loading teachers: ", error);
-        alert("Çewtî di barkirina mamostayan de çêbû.");
-    }
-}
-
-// Hemû cihan ji Firestore bîne û di lîstê de nîşan bide
-async function loadLocations() {
-    const container = document.getElementById('location-list-container');
-    container.innerHTML = '<p>بارکرن...</p>';
-
-    try {
-        const snapshot = await locationsCollection.get();
-        if (snapshot.empty) {
-            container.innerHTML = '<p>هیچ جهەک تۆمار نەکریە.</p>';
-            return;
-        }
-
-        const teachers = await getTeachersMap();
-        
-        let locationsHTML = '';
-        snapshot.forEach(doc => {
-            const location = doc.data();
-            const teacherName = teachers[location.teacherId] || 'مامۆستایەکێ نەناس';
-            locationsHTML += `
-                <div class="location-item" id="item-${doc.id}">
-                    <div class="location-item-info">
-                        <h4>${location.locationName}</h4>
-                        <p><strong>مامۆستا:</strong> ${teacherName}</p>
-                        <p><strong>وانە:</strong> ${location.lessonTaught}</p>
-                    </div>
-                    <div class="location-item-actions">
-                        <button class="edit-btn" onclick="editLocation('${doc.id}')"><i class="fas fa-edit"></i> دەستکاری</button>
-                        <button class="delete-btn" onclick="deleteLocation('${doc.id}')"><i class="fas fa-trash-alt"></i> ژێبرن</button>
-                    </div>
-                </div>
-            `;
-        });
-        container.innerHTML = locationsHTML;
-    } catch (error) {
-        console.error("Error loading locations: ", error);
-        container.innerHTML = '<p style="color: var(--danger-color);">چەوتیەک د وەرگرتنا زانیارییان دا روویدا.</p>';
-    }
-}
-
-// Fonksiyoneke alîkar bo wergirtina nexşeya mamostayan (ID -> Nav)
 async function getTeachersMap() {
     const teachersMap = {};
     const snapshot = await teachersCollection.get();
-    snapshot.forEach(doc => {
-        teachersMap[doc.id] = doc.data().name;
-    });
+    snapshot.forEach(doc => { teachersMap[doc.id] = doc.data().name; });
     return teachersMap;
 }
 
-// =================================================================
-// === [ FORM & CRUD FUNCTIONS ] ===
-// =================================================================
+async function loadTeachers() {
+    const teacherSelect = document.getElementById('teacherId');
+    const snapshot = await teachersCollection.get();
+    snapshot.forEach(doc => {
+        const option = document.createElement('option');
+        option.value = doc.id;
+        option.textContent = doc.data().name;
+        teacherSelect.appendChild(option);
+    });
+}
 
-// Fonksiyona sereke bo pashkeftkirinê (zêdekirin an destkarîkirin)
-async function saveLocation(event) {
-    event.preventDefault();
+async function loadLocations() {
+    const container = document.getElementById('location-list-container');
+    container.innerHTML = '<p>بارکرن...</p>';
+    const snapshot = await locationsCollection.get();
+    if (snapshot.empty) { container.innerHTML = '<p>هیچ جهەکێ قەبیلکری نینە.</p>'; return; }
+    const teachers = await getTeachersMap();
+    container.innerHTML = snapshot.docs.map(doc => {
+        const loc = doc.data();
+        return `
+        <div class="location-item" id="item-${doc.id}">
+            <h4>${loc.locationName}</h4>
+            <p><strong>مامۆستا:</strong> ${teachers[loc.teacherId] || 'نەناس'}</p>
+            <div class="location-item-actions">
+                <button onclick="editLocation('${doc.id}')"><i class="fas fa-edit"></i></button>
+                <button onclick="deleteLocation('${doc.id}')"><i class="fas fa-trash-alt"></i></button>
+            </div>
+        </div>`;
+    }).join('');
+}
 
-    const locationId = locationIdField.value;
-    const locationData = {
+async function loadPendingLocations() {
+    const container = document.getElementById('pending-list-container');
+    container.innerHTML = '<p>بارکرن...</p>';
+    pendingLocationsCollection.onSnapshot(snapshot => {
+        if (snapshot.empty) {
+            container.innerHTML = '<p>هیچ پێشنیارەکا نوو نینە.</p>';
+            return;
+        }
+        container.innerHTML = snapshot.docs.map(doc => {
+            const loc = doc.data();
+            return `
+            <div class="location-item pending-item" id="pending-${doc.id}">
+                <h4>${loc.locationName}</h4>
+                <p><strong>مامۆستایێ پێشنیارکری:</strong> ${loc.teacherName || 'نەناس'}</p>
+                <p><strong>وانە:</strong> ${loc.lessonTaught}</p>
+                <div class="pending-item-actions location-item-actions">
+                    <button class="approve-btn" onclick="approveLocation('${doc.id}')"><i class="fas fa-check"></i> قەبیلکرن</button>
+                    <button class="delete-btn" onclick="deletePendingLocation('${doc.id}')"><i class="fas fa-times"></i> ژێبرن</button>
+                </div>
+            </div>`;
+        }).join('');
+    });
+}
+
+async function saveLocation(e) {
+    e.preventDefault();
+    const id = document.getElementById('location-id').value;
+    const data = {
         locationName: document.getElementById('locationName').value,
         teacherId: document.getElementById('teacherId').value,
         lessonTaught: document.getElementById('lessonTaught').value,
         schedule: document.getElementById('schedule').value,
-        coordinates: new firebase.firestore.GeoPoint(
-            parseFloat(document.getElementById('latitude').value),
-            parseFloat(document.getElementById('longitude').value)
-        )
+        coordinates: new firebase.firestore.GeoPoint(parseFloat(document.getElementById('latitude').value), parseFloat(document.getElementById('longitude').value))
     };
-    
-    // Kontrol bike ka hemû field hatine dagirtin
-    if (!locationData.locationName || !locationData.teacherId || !locationData.lessonTaught || !locationData.schedule || !locationData.coordinates.latitude) {
-        alert("هیڤی یە هەمی خانەیان پر بکە و جهەکێ لسەر نەخشەی دیار بکە.");
-        return;
-    }
-
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> پاشکەفتکرن...';
-
     try {
-        if (locationId) {
-            // Destkarîkirina cihekî heyî
-            await locationsCollection.doc(locationId).update(locationData);
-            alert("جهـ ب سەرکەفتی هاتە نووژەنکرن!");
-        } else {
-            // Zêdekirina cihekî nû
-            await locationsCollection.add(locationData);
-            alert("جهـ ب سەرکەفتی هاتە زێدەکرن!");
-        }
+        if (id) await locationsCollection.doc(id).update(data);
+        else await locationsCollection.add(data);
+        alert(id ? "جهـ هاتە نووژەنکرن!" : "جهـ هاتە زێدەکرن!");
         resetForm();
-        await loadLocations();
-    } catch (error) {
-        console.error("Error saving location: ", error);
-        alert("چەوتیەک د پاشکەفتکرنێ دا روویدا.");
-    } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="fas fa-save"></i> پاشکەفت کرنا جهی';
+        loadLocations();
+    } catch (err) { console.error(err); alert("چەوتیەک روویدا!"); }
+}
+
+async function editLocation(id) {
+    const doc = await locationsCollection.doc(id).get();
+    const data = doc.data();
+    document.getElementById('location-id').value = id;
+    document.getElementById('locationName').value = data.locationName;
+    document.getElementById('teacherId').value = data.teacherId;
+    document.getElementById('lessonTaught').value = data.lessonTaught;
+    document.getElementById('schedule').value = data.schedule;
+    document.getElementById('latitude').value = data.coordinates.latitude;
+    document.getElementById('longitude').value = data.coordinates.longitude;
+    document.getElementById('form-title').textContent = "دەستکاری کرنا جهی";
+    document.getElementById('submit-btn').innerHTML = '<i class="fas fa-edit"></i> نووژەنکرن';
+    document.getElementById('cancel-btn').style.display = 'inline-block';
+    const latLng = [data.coordinates.latitude, data.coordinates.longitude];
+    if (marker) marker.setLatLng(latLng); else marker = L.marker(latLng).addTo(adminMap);
+    adminMap.setView(latLng, 15);
+    form.scrollIntoView({ behavior: 'smooth' });
+}
+
+async function deleteLocation(id) {
+    if (confirm("پشتڕاستی ژ ژێبرنێ؟")) {
+        await locationsCollection.doc(id).delete();
+        loadLocations();
     }
 }
 
-// Bo amadekirina formê bo destkarîkirinê
-async function editLocation(docId) {
-    try {
-        const doc = await locationsCollection.doc(docId).get();
-        if (!doc.exists) {
-            console.error("Location not found!");
-            return;
-        }
-        const data = doc.data();
+async function approveLocation(pendingId) {
+    const pendingDoc = await pendingLocationsCollection.doc(pendingId).get();
+    const data = pendingDoc.data();
+    // Pêşniyar: Li vir formê bi datayên heyî dagire da ku tu bikaribî mamostayek rast hilbijêrî
+    alert("هیڤی یە زانیاریان پشتراست بکە و مامۆستایەکێ درست ژ لیستێ هەلبژێرە، پاشی 'پاشکەفتکرن'ێ داگرە.");
+    document.getElementById('locationName').value = data.locationName;
+    document.getElementById('lessonTaught').value = data.lessonTaught;
+    document.getElementById('schedule').value = data.schedule;
+    document.getElementById('latitude').value = data.coordinates.latitude;
+    document.getElementById('longitude').value = data.coordinates.longitude;
+    const latLng = [data.coordinates.latitude, data.coordinates.longitude];
+    if (marker) marker.setLatLng(latLng); else marker = L.marker(latLng).addTo(adminMap);
+    adminMap.setView(latLng, 15);
+    
+    // Piştî qebûlkirinê, wê ji lîsta çaverêkirinê jêbibe
+    await pendingLocationsCollection.doc(pendingId).delete();
+}
 
-        // Dagirtina formê bi zanyariyên heyî
-        locationIdField.value = docId;
-        document.getElementById('locationName').value = data.locationName;
-        document.getElementById('teacherId').value = data.teacherId;
-        document.getElementById('lessonTaught').value = data.lessonTaught;
-        document.getElementById('schedule').value = data.schedule;
-        document.getElementById('latitude').value = data.coordinates.latitude;
-        document.getElementById('longitude').value = data.coordinates.longitude;
-
-        // Guhertina UI bo moda destkarîkirinê
-        formTitle.textContent = "دەستکاری کرنا جهی";
-        submitBtn.innerHTML = '<i class="fas fa-edit"></i> نووژەنکرن';
-        cancelBtn.style.display = 'inline-block';
-
-        // Nîşandana marker li ser nexşeyê
-        const latLng = [data.coordinates.latitude, data.coordinates.longitude];
-        if (marker) {
-            marker.setLatLng(latLng);
-        } else {
-            marker = L.marker(latLng).addTo(adminMap);
-        }
-        adminMap.setView(latLng, 15);
-        
-        // Scroll bike bo serê formê
-        form.scrollIntoView({ behavior: 'smooth' });
-
-    } catch (error) {
-        console.error("Error fetching location for edit: ", error);
+async function deletePendingLocation(pendingId) {
+    if (confirm("پشتڕاستی ژ ژێبرنا ڤێ پێشنیارێ؟")) {
+        await pendingLocationsCollection.doc(pendingId).delete();
     }
 }
 
-// Bo jêbirina cihekî
-async function deleteLocation(docId) {
-    if (confirm("ئەرێ تۆ پشتڕاستی کو دڤێی ڤی جهی ژێ ببەی؟ ئەڤ کارە ناهێتە ڤەگەڕاندن.")) {
-        try {
-            await locationsCollection.doc(docId).delete();
-            alert("جهـ هاتە ژێبرن.");
-            await loadLocations();
-        } catch (error) {
-            console.error("Error deleting location: ", error);
-            alert("چەوتیەک د ژێبرنێ دا روویدا.");
-        }
-    }
-}
-
-// Bo valakirina formê û vegerandina bo moda zêdekirinê
 function resetForm() {
     form.reset();
-    locationIdField.value = '';
-    formTitle.textContent = "زێدەکرنا جهەکێ نوو";
-    submitBtn.innerHTML = '<i class="fas fa-save"></i> پاشکەفت کرنا جهی';
-    cancelBtn.style.display = 'none';
-
-    if (marker) {
-        marker.remove();
-        marker = null;
-    }
+    document.getElementById('location-id').value = '';
+    document.getElementById('form-title').textContent = "زێدەکرنا جهەکێ نوو";
+    document.getElementById('submit-btn').innerHTML = '<i class="fas fa-save"></i> پاشکەفتکرن';
+    document.getElementById('cancel-btn').style.display = 'none';
+    if (marker) { marker.remove(); marker = null; }
 }
 
-// =================================================================
-// === [ EVENT LISTENERS & INITIALIZATION ] ===
-// =================================================================
 document.addEventListener('DOMContentLoaded', () => {
     initializeAdminMap();
     loadTeachers();
     loadLocations();
-    
+    loadPendingLocations();
     form.addEventListener('submit', saveLocation);
-    cancelBtn.addEventListener('click', resetForm);
+    document.getElementById('cancel-btn').addEventListener('click', resetForm);
 });
-
 </script>
-
 </body>
 </html>
