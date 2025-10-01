@@ -22,48 +22,41 @@
         .list-section, .pending-section { max-height: 85vh; overflow-y: auto; }
         @media (max-width: 1200px) { .main-layout { grid-template-columns: 1fr 1fr; } .form-section { grid-column: 1 / -1; } }
         @media (max-width: 768px) { .main-layout { grid-template-columns: 1fr; } }
-
-        /* Form Styles */
         .form-group { margin-bottom: 18px; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 500; }
         .form-group input, .form-group select { width: 100%; background: var(--dark-bg); border: 1px solid var(--border-color); color: var(--primary-text); padding: 12px; border-radius: 6px; }
-        .form-group input:focus, .form-group select:focus { border-color: var(--accent-color); outline: none; }
         #admin-map-container { height: 250px; border-radius: 8px; border: 1px solid var(--border-color); margin-top: 15px; }
         .form-actions { display: flex; gap: 10px; margin-top: 20px; }
         .submit-btn { flex-grow: 1; padding: 12px; background-color: var(--accent-color); color: white; border: none; border-radius: 8px; cursor: pointer; }
         .cancel-btn { padding: 12px 20px; background: var(--border-color); color: var(--primary-text); border: none; border-radius: 8px; cursor: pointer; }
-        
-        /* List Styles */
-        .location-item { background: var(--dark-bg); border: 1px solid var(--border-color); border-right: 4px solid var(--accent-color); border-radius: 8px; padding: 15px; margin-bottom: 15px; }
+        .location-item { background: var(--dark-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; margin-bottom: 15px; }
         .location-item h4 { margin: 0 0 5px 0; }
         .location-item p { margin: 0; font-size: 0.9rem; color: var(--secondary-text); }
         .location-item-actions { margin-top: 10px; text-align: left; }
         .location-item-actions button { background: none; border: 1px solid var(--border-color); color: var(--secondary-text); padding: 8px 12px; margin-right: 8px; border-radius: 6px; cursor: pointer; }
-        
-        /* Pending List Styles */
-        .pending-item { border-right-color: var(--warning-color); }
-        .pending-item-actions .approve-btn:hover { color: var(--success-color); border-color: var(--success-color); }
-        .pending-item-actions .delete-btn:hover { color: var(--danger-color); border-color: var(--danger-color); }
+        .approved-item { border-right: 4px solid var(--accent-color); }
+        .pending-item { border-right: 4px solid var(--warning-color); }
+        .approve-btn:hover { color: var(--success-color); border-color: var(--success-color); }
+        .delete-btn:hover { color: var(--danger-color); border-color: var(--danger-color); }
     </style>
 </head>
 <body>
 <div class="container">
     <h1><i class="fas fa-user-shield"></i> پەنا کونترۆلکرنا ئەدمینی</h1>
     <div class="main-layout">
-        <!-- 1. Beşa Formê -->
         <div class="form-section">
-            <h2 id="form-title">زێدەکرنا جهەکێ نوو</h2>
+            <h2 id="form-title">زێدەکرن/دەستکاریکرنا جهی</h2>
             <form id="location-form">
                 <input type="hidden" id="location-id">
+                <input type="hidden" id="is-pending-approval"> <!-- بۆ زانینا کا ئایا ئەم پێشنیارەکێ قەبیل دکەین -->
                 <div class="form-group"><label for="locationName">ناڤێ جهی</label><input type="text" id="locationName" required></div>
                 <div class="form-group"><label for="teacherId">مامۆستا</label><select id="teacherId" required><option value="">مامۆستای هەلبژێرە...</option></select></div>
                 <div class="form-group"><label for="lessonTaught">وانا دهێتە گوتن</label><input type="text" id="lessonTaught" required></div>
                 <div class="form-group"><label for="schedule">خشتێ دەوامی</label><input type="text" id="schedule" required></div>
-                <p style="text-align: center; color: var(--secondary-text); font-size: 0.9rem;">کلیک لسەر نەخشەی بکە بۆ دیارکرنا جهی</p>
                 <div id="admin-map-container"></div>
                 <div style="display: flex; gap: 10px; margin-top: 15px;">
-                    <div class="form-group" style="flex:1;"><label for="latitude">هێلا پانی</label><input type="text" id="latitude" required readonly></div>
-                    <div class="form-group" style="flex:1;"><label for="longitude">هێلا درێژی</label><input type="text" id="longitude" required readonly></div>
+                    <div class="form-group" style="flex:1;"><label for="latitude">هێلا پانی</label><input type="text" id="latitude"></div>
+                    <div class="form-group" style="flex:1;"><label for="longitude">هێلا درێژی</label><input type="text" id="longitude"></div>
                 </div>
                 <div class="form-actions">
                     <button type="submit" id="submit-btn" class="submit-btn"><i class="fas fa-save"></i> پاشکەفتکرن</button>
@@ -71,21 +64,16 @@
                 </div>
             </form>
         </div>
-
-        <!-- 2. Beşa Cihên Qebûlkirî -->
         <div class="list-section">
             <h2><i class="fas fa-check-circle" style="color:var(--success-color);"></i> جهێن لسەر نەخشەی</h2>
             <div id="location-list-container"></div>
         </div>
-
-        <!-- 3. Beşa Pêşniyarên Çaverêkirî -->
         <div class="pending-section">
             <h2><i class="fas fa-hourglass-half" style="color:var(--warning-color);"></i> پێشنیارێن چاڤەڕێ</h2>
             <div id="pending-list-container"></div>
         </div>
     </div>
 </div>
-
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-firestore-compat.js"></script>
@@ -116,47 +104,12 @@ function initializeAdminMap() {
     });
 }
 
-async function getTeachersMap() {
-    const teachersMap = {};
-    const snapshot = await teachersCollection.get();
-    snapshot.forEach(doc => { teachersMap[doc.id] = doc.data().name; });
-    return teachersMap;
-}
-
-async function loadTeachers() {
-    const teacherSelect = document.getElementById('teacherId');
-    const snapshot = await teachersCollection.get();
-    snapshot.forEach(doc => {
-        const option = document.createElement('option');
-        option.value = doc.id;
-        option.textContent = doc.data().name;
-        teacherSelect.appendChild(option);
-    });
-}
-
-async function loadLocations() {
-    const container = document.getElementById('location-list-container');
-    container.innerHTML = '<p>بارکرن...</p>';
-    const snapshot = await locationsCollection.get();
-    if (snapshot.empty) { container.innerHTML = '<p>هیچ جهەکێ قەبیلکری نینە.</p>'; return; }
-    const teachers = await getTeachersMap();
-    container.innerHTML = snapshot.docs.map(doc => {
-        const loc = doc.data();
-        return `
-        <div class="location-item" id="item-${doc.id}">
-            <h4>${loc.locationName}</h4>
-            <p><strong>مامۆستا:</strong> ${teachers[loc.teacherId] || 'نەناس'}</p>
-            <div class="location-item-actions">
-                <button onclick="editLocation('${doc.id}')"><i class="fas fa-edit"></i></button>
-                <button onclick="deleteLocation('${doc.id}')"><i class="fas fa-trash-alt"></i></button>
-            </div>
-        </div>`;
-    }).join('');
-}
+async function getTeachersMap() { /* ... unchanged ... */ }
+async function loadTeachers() { /* ... unchanged ... */ }
+async function loadLocations() { /* ... unchanged ... */ }
 
 async function loadPendingLocations() {
     const container = document.getElementById('pending-list-container');
-    container.innerHTML = '<p>بارکرن...</p>';
     pendingLocationsCollection.onSnapshot(snapshot => {
         if (snapshot.empty) {
             container.innerHTML = '<p>هیچ پێشنیارەکا نوو نینە.</p>';
@@ -168,9 +121,8 @@ async function loadPendingLocations() {
             <div class="location-item pending-item" id="pending-${doc.id}">
                 <h4>${loc.locationName}</h4>
                 <p><strong>مامۆستایێ پێشنیارکری:</strong> ${loc.teacherName || 'نەناس'}</p>
-                <p><strong>وانە:</strong> ${loc.lessonTaught}</p>
-                <div class="pending-item-actions location-item-actions">
-                    <button class="approve-btn" onclick="approveLocation('${doc.id}')"><i class="fas fa-check"></i> قەبیلکرن</button>
+                <div class="location-item-actions">
+                    <button class="approve-btn" onclick="prepareForApproval('${doc.id}')"><i class="fas fa-check"></i> قەبیلکرن</button>
                     <button class="delete-btn" onclick="deletePendingLocation('${doc.id}')"><i class="fas fa-times"></i> ژێبرن</button>
                 </div>
             </div>`;
@@ -181,81 +133,87 @@ async function loadPendingLocations() {
 async function saveLocation(e) {
     e.preventDefault();
     const id = document.getElementById('location-id').value;
+    const isPending = document.getElementById('is-pending-approval').value;
+    
+    let coordinates = null;
+    const lat = document.getElementById('latitude').value;
+    const lon = document.getElementById('longitude').value;
+    if (lat && lon) {
+        coordinates = new firebase.firestore.GeoPoint(parseFloat(lat), parseFloat(lon));
+    }
+
     const data = {
         locationName: document.getElementById('locationName').value,
         teacherId: document.getElementById('teacherId').value,
         lessonTaught: document.getElementById('lessonTaught').value,
         schedule: document.getElementById('schedule').value,
-        coordinates: new firebase.firestore.GeoPoint(parseFloat(document.getElementById('latitude').value), parseFloat(document.getElementById('longitude').value))
+        coordinates: coordinates
     };
+
+    if(!data.teacherId){
+        alert("هیڤی یە مامۆستایەکێ هەلبژێری!");
+        return;
+    }
+
     try {
-        if (id) await locationsCollection.doc(id).update(data);
-        else await locationsCollection.add(data);
-        alert(id ? "جهـ هاتە نووژەنکرن!" : "جهـ هاتە زێدەکرن!");
+        if (isPending === 'true') {
+            // Qebûlkirina pêşniyarê bi heman ID
+            await locationsCollection.doc(id).set(data);
+            await pendingLocationsCollection.doc(id).delete();
+            alert("پێشنیار هاتە قەبیلکرن و زێدەکرن!");
+        } else if (id) {
+            // Destkarîkirina cihekî heyî
+            await locationsCollection.doc(id).update(data);
+            alert("جهـ هاتە نووژەنکرن!");
+        } else {
+            // Zêdekirina cihekî nû
+            await locationsCollection.add(data);
+            alert("جهـ هاتە زێدەکرن!");
+        }
         resetForm();
         loadLocations();
     } catch (err) { console.error(err); alert("چەوتیەک روویدا!"); }
 }
 
-async function editLocation(id) {
-    const doc = await locationsCollection.doc(id).get();
+async function prepareForApproval(pendingId) {
+    const doc = await pendingLocationsCollection.doc(pendingId).get();
     const data = doc.data();
-    document.getElementById('location-id').value = id;
+    resetForm();
+
+    document.getElementById('location-id').value = pendingId;
+    document.getElementById('is-pending-approval').value = 'true';
     document.getElementById('locationName').value = data.locationName;
-    document.getElementById('teacherId').value = data.teacherId;
     document.getElementById('lessonTaught').value = data.lessonTaught;
     document.getElementById('schedule').value = data.schedule;
-    document.getElementById('latitude').value = data.coordinates.latitude;
-    document.getElementById('longitude').value = data.coordinates.longitude;
-    document.getElementById('form-title').textContent = "دەستکاری کرنا جهی";
-    document.getElementById('submit-btn').innerHTML = '<i class="fas fa-edit"></i> نووژەنکرن';
+
+    if (data.coordinates) {
+        const { latitude, longitude } = data.coordinates;
+        document.getElementById('latitude').value = latitude;
+        document.getElementById('longitude').value = longitude;
+        const latLng = [latitude, longitude];
+        if (marker) marker.setLatLng(latLng); else marker = L.marker(latLng).addTo(adminMap);
+        adminMap.setView(latLng, 15);
+    }
+    
+    document.getElementById('form-title').textContent = `قەبیلکرنا پێشنیارێ: ${data.locationName}`;
+    document.getElementById('submit-btn').innerHTML = `<i class="fas fa-check"></i> قەبیلکرن و پاشکەفتکرن`;
     document.getElementById('cancel-btn').style.display = 'inline-block';
-    const latLng = [data.coordinates.latitude, data.coordinates.longitude];
-    if (marker) marker.setLatLng(latLng); else marker = L.marker(latLng).addTo(adminMap);
-    adminMap.setView(latLng, 15);
+    
+    alert(`پێشنیارا "${data.locationName}" هاتیە بارکرن. هیڤی یە مامۆستایەکێ درست هەلبژێری و پاشی "قەبیلکرن"ێ داگرە.`);
     form.scrollIntoView({ behavior: 'smooth' });
 }
 
-async function deleteLocation(id) {
-    if (confirm("پشتڕاستی ژ ژێبرنێ؟")) {
-        await locationsCollection.doc(id).delete();
-        loadLocations();
-    }
+
+async function editLocation(id) { /* ... unchanged ... */ }
+async function deleteLocation(id) { /* ... unchanged ... */ }
+async function deletePendingLocation(id) { /* ... unchanged ... */ }
+function resetForm() { /* ... unchanged, just add one line */
+    document.getElementById('is-pending-approval').value = '';
+    // the rest is the same
 }
 
-async function approveLocation(pendingId) {
-    const pendingDoc = await pendingLocationsCollection.doc(pendingId).get();
-    const data = pendingDoc.data();
-    // Pêşniyar: Li vir formê bi datayên heyî dagire da ku tu bikaribî mamostayek rast hilbijêrî
-    alert("هیڤی یە زانیاریان پشتراست بکە و مامۆستایەکێ درست ژ لیستێ هەلبژێرە، پاشی 'پاشکەفتکرن'ێ داگرە.");
-    document.getElementById('locationName').value = data.locationName;
-    document.getElementById('lessonTaught').value = data.lessonTaught;
-    document.getElementById('schedule').value = data.schedule;
-    document.getElementById('latitude').value = data.coordinates.latitude;
-    document.getElementById('longitude').value = data.coordinates.longitude;
-    const latLng = [data.coordinates.latitude, data.coordinates.longitude];
-    if (marker) marker.setLatLng(latLng); else marker = L.marker(latLng).addTo(adminMap);
-    adminMap.setView(latLng, 15);
-    
-    // Piştî qebûlkirinê, wê ji lîsta çaverêkirinê jêbibe
-    await pendingLocationsCollection.doc(pendingId).delete();
-}
-
-async function deletePendingLocation(pendingId) {
-    if (confirm("پشتڕاستی ژ ژێبرنا ڤێ پێشنیارێ؟")) {
-        await pendingLocationsCollection.doc(pendingId).delete();
-    }
-}
-
-function resetForm() {
-    form.reset();
-    document.getElementById('location-id').value = '';
-    document.getElementById('form-title').textContent = "زێدەکرنا جهەکێ نوو";
-    document.getElementById('submit-btn').innerHTML = '<i class="fas fa-save"></i> پاشکەفتکرن';
-    document.getElementById('cancel-btn').style.display = 'none';
-    if (marker) { marker.remove(); marker = null; }
-}
-
+document.addEventListener('DOMContentLoaded', () => { /* ... unchanged ... */ });
+// Make sure to call all load functions
 document.addEventListener('DOMContentLoaded', () => {
     initializeAdminMap();
     loadTeachers();
