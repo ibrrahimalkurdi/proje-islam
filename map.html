@@ -11,43 +11,68 @@
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;700&display=swap');
         :root {
             --dark-bg: #0d1117; --card-bg: #161b22; --primary-text: #c9d1d9; --secondary-text: #8b949e;
-            --accent-color: #58a6ff; --border-color: #30363d; --success-color: #2ea043; --font-kurdish: 'Noto Sans Arabic', sans-serif;
+            --accent-color: #58a6ff; --border-color: #30363d; --success-color: #2ea043; --warning-color: #f0b429; --danger-color: #f85149;
+            --font-kurdish: 'Noto Sans Arabic', sans-serif;
         }
-        body { font-family: var(--font-kurdish); background-color: var(--dark-bg); color: var(--primary-text); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .form-container { width: 100%; max-width: 600px; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 30px; }
-        h1 { text-align: center; margin-bottom: 20px; }
+        body { font-family: var(--font-kurdish); background-color: var(--dark-bg); color: var(--primary-text); padding: 20px; }
+        .container { width: 100%; max-width: 600px; margin: auto; }
+        .form-container, .status-checker-container { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 30px; margin-bottom: 25px; }
+        h1, h2 { text-align: center; margin-bottom: 20px; }
         .form-group { margin-bottom: 18px; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 500; }
         .form-group input { width: 100%; background: var(--dark-bg); border: 1px solid var(--border-color); color: var(--primary-text); padding: 12px; border-radius: 6px; }
         .form-group input:focus { border-color: var(--accent-color); outline: none; }
         #public-map-container { height: 250px; border-radius: 8px; border: 1px solid var(--border-color); margin-top: 15px; }
         .submit-btn { width: 100%; padding: 12px; font-size: 1.1rem; background-color: var(--accent-color); color: white; border: none; border-radius: 8px; cursor: pointer; margin-top: 10px; }
-        #success-message { text-align: center; padding: 40px; background-color: rgba(46, 160, 67, 0.1); border: 1px solid var(--success-color); border-radius: 8px; display: none; }
+        #success-message { text-align: center; padding: 20px; background-color: rgba(46, 160, 67, 0.1); border: 1px solid var(--success-color); border-radius: 8px; display: none; }
         #success-message i { font-size: 3rem; color: var(--success-color); margin-bottom: 15px; }
+        #submission-id-display { font-family: monospace; background: var(--dark-bg); padding: 5px 10px; border-radius: 4px; color: var(--warning-color); user-select: all; }
+        #status-result { margin-top: 15px; padding: 15px; border-radius: 6px; text-align: center; font-weight: bold; }
+        .status-pending { background-color: rgba(240, 180, 41, 0.1); border: 1px solid var(--warning-color); color: var(--warning-color); }
+        .status-approved { background-color: rgba(46, 160, 67, 0.1); border: 1px solid var(--success-color); color: var(--success-color); }
+        .status-not-found { background-color: rgba(248, 81, 73, 0.1); border: 1px solid var(--danger-color); color: var(--danger-color); }
     </style>
 </head>
 <body>
-<div class="form-container">
-    <div id="submission-form">
-        <h1><i class="fas fa-map-marked-alt"></i> پێشنیارکرنا جهەکێ نوو</h1>
-        <form id="public-location-form">
-            <div class="form-group"><label for="locationName">ناڤێ جهی (بۆ نموونە: مزگەفتا فلان)</label><input type="text" id="locationName" required></div>
-            <div class="form-group"><label for="teacherName">ناڤێ مامۆستای</label><input type="text" id="teacherName" required></div>
-            <div class="form-group"><label for="lessonTaught">وانا دهێتە گوتن</label><input type="text" id="lessonTaught" required></div>
-            <div class="form-group"><label for="schedule">خشتێ دەوامی</label><input type="text" id="schedule" required></div>
-            <p style="text-align: center; color: var(--secondary-text); font-size: 0.9rem;">کلیک لسەر نەخشەی بکە بۆ دیارکرنا جهی</p>
-            <div id="public-map-container"></div>
-            <div style="display: flex; gap: 10px; margin-top: 15px;">
-                <div class="form-group" style="flex:1;"><label for="latitude">هێلا پانی</label><input type="text" id="latitude" required readonly></div>
-                <div class="form-group" style="flex:1;"><label for="longitude">هێلا درێژی</label><input type="text" id="longitude" required readonly></div>
-            </div>
-            <button type="submit" id="submit-btn" class="submit-btn"><i class="fas fa-paper-plane"></i> هنارتنا پێشنیارێ</button>
-        </form>
+<div class="container">
+    <!-- Forma هنارتنێ -->
+    <div class="form-container">
+        <div id="submission-form">
+            <h1><i class="fas fa-map-marked-alt"></i> پێشنیارکرنا جهەکێ نوو</h1>
+            <form id="public-location-form">
+                <div class="form-group"><label for="locationName">ناڤێ جهی (بۆ نموونە: مزگەفتا فلان)</label><input type="text" id="locationName" required></div>
+                <div class="form-group"><label for="teacherName">ناڤێ مامۆستای</label><input type="text" id="teacherName" required></div>
+                <div class="form-group"><label for="lessonTaught">وانا دهێتە گوتن</label><input type="text" id="lessonTaught" required></div>
+                <div class="form-group"><label for="schedule">خشتێ دەوامی</label><input type="text" id="schedule" required></div>
+                <hr style="border-color:var(--border-color); margin: 20px 0;">
+                <p style="text-align: center; color: var(--secondary-text); font-size: 0.9rem;">
+                    <i class="fas fa-info-circle"></i> تو دشێی جهی لسەر نەخشەی دیار بکەی (ب دلخواه - ئختیاری)
+                </p>
+                <div id="public-map-container"></div>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <div class="form-group" style="flex:1;"><label for="latitude">هێلا پانی</label><input type="text" id="latitude" readonly></div>
+                    <div class="form-group" style="flex:1;"><label for="longitude">هێلا درێژی</label><input type="text" id="longitude" readonly></div>
+                </div>
+                <button type="submit" id="submit-btn" class="submit-btn"><i class="fas fa-paper-plane"></i> هنارتنا پێشنیارێ</button>
+            </form>
+        </div>
+        <div id="success-message">
+            <i class="fas fa-check-circle"></i>
+            <h2>سوپاس بۆ تە!</h2>
+            <p>پێشنیارا تە ب سەرکەفتی هاتە هنارتن. هیڤی یە ڤی کۆدی ل دەف خۆ پاشکەفت بکەی بۆ زانینا حالەتێ پێشنیارێ:</p>
+            <p><span id="submission-id-display"></span></p>
+        </div>
     </div>
-    <div id="success-message">
-        <i class="fas fa-check-circle"></i>
-        <h2>سوپاس بۆ تە!</h2>
-        <p>پێشنیارا تە ب سەرکەفتی هاتە هنارتن. پشتی پێداچوونێ، دێ هێتە زێدەکرن.</p>
+
+    <!-- Beşa چاودێریێ -->
+    <div class="status-checker-container">
+        <h2><i class="fas fa-search"></i> چاودێریا حالەتێ پێشنیارا خۆ بکە</h2>
+        <div class="form-group">
+            <label for="status-id-input">کۆدێ پێشنیارا خۆ داخل بکە</label>
+            <input type="text" id="status-id-input" placeholder="کۆدی ل ڤێرە بنڤیسە...">
+        </div>
+        <button class="submit-btn" onclick="checkStatus()"><i class="fas fa-check"></i> پشکنین</button>
+        <div id="status-result" style="display: none;"></div>
     </div>
 </div>
 
@@ -64,6 +89,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const pendingLocationsCollection = db.collection('pending_locations');
+const approvedLocationsCollection = db.collection('locations');
 
 let publicMap, marker;
 
@@ -82,35 +108,75 @@ function initializePublicMap() {
 async function submitSuggestion(e) {
     e.preventDefault();
     const submitBtn = document.getElementById('submit-btn');
+    const lat = document.getElementById('latitude').value;
+    const lon = document.getElementById('longitude').value;
+    
+    let coordinates = null;
+    if (lat && lon) {
+        coordinates = new firebase.firestore.GeoPoint(parseFloat(lat), parseFloat(lon));
+    }
+
     const data = {
         locationName: document.getElementById('locationName').value,
         teacherName: document.getElementById('teacherName').value,
         lessonTaught: document.getElementById('lessonTaught').value,
         schedule: document.getElementById('schedule').value,
-        coordinates: new firebase.firestore.GeoPoint(
-            parseFloat(document.getElementById('latitude').value),
-            parseFloat(document.getElementById('longitude').value)
-        ),
-        submittedAt: firebase.firestore.FieldValue.serverTimestamp()
+        coordinates: coordinates,
+        submittedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        status: 'pending' // Em ê حالەتی zêde bikin
     };
-    
-    if (!data.locationName || !data.teacherName || !data.coordinates.latitude) {
-        alert("هیڤی یە هەمی خانەیان پر بکە و جهەکێ لسەر نەخشەی دیار بکە.");
-        return;
-    }
     
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> هنارتن...';
     
     try {
-        await pendingLocationsCollection.add(data);
+        const docRef = await pendingLocationsCollection.add(data);
         document.getElementById('submission-form').style.display = 'none';
+        document.getElementById('submission-id-display').textContent = docRef.id;
         document.getElementById('success-message').style.display = 'block';
     } catch (error) {
-        console.error("Error submitting suggestion: ", error);
-        alert("چەوتیەک د هنارتنێ دا روویدا. هیڤی یە دووبارە هەول بدە.");
+        alert("چەوتیەک د هنارتنێ دا روویدا.");
         submitBtn.disabled = false;
         submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> هنارتنا پێشنیارێ';
+    }
+}
+
+async function checkStatus() {
+    const id = document.getElementById('status-id-input').value.trim();
+    const resultDiv = document.getElementById('status-result');
+    if (!id) {
+        alert("هیڤی یە کۆدەکێ داخل بکەی.");
+        return;
+    }
+    
+    resultDiv.style.display = 'block';
+    resultDiv.className = '';
+    resultDiv.textContent = 'پشکنین دهێتە کرن...';
+
+    try {
+        // 1. Li nav 'pending' bigere
+        const pendingDoc = await pendingLocationsCollection.doc(id).get();
+        if (pendingDoc.exists) {
+            resultDiv.textContent = 'حالەت: پێشنیارا تە هێشتا چاڤەڕێی قەبیلکرنێ یە.';
+            resultDiv.classList.add('status-pending');
+            return;
+        }
+
+        // 2. Eger ne li wir bû, li nav 'approved' bigere
+        const approvedDoc = await approvedLocationsCollection.doc(id).get();
+        if (approvedDoc.exists) {
+            resultDiv.textContent = 'حالەت: پیرۆزە! پێشنیارا تە هاتە قەبیلکرن و لسەر نەخشەی هاتە زێدەکرن.';
+            resultDiv.classList.add('status-approved');
+            return;
+        }
+
+        // 3. Eger li hîç derekê nebû
+        resultDiv.textContent = 'ئەڤ کۆدە نەهاتە دیتن. هیڤی یە پشتراست بی کا تە ب دروستی نڤیسیە.';
+        resultDiv.classList.add('status-not-found');
+
+    } catch (error) {
+        resultDiv.textContent = 'چەوتیەک روویدا. هیڤی یە دووبارە هەول بدە.';
+        resultDiv.classList.add('status-not-found');
     }
 }
 
