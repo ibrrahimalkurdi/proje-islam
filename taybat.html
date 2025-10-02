@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ئەدمین پانێل - وانەیێن تایبەت</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;700&display=swap');
+        :root {
+            --dark-bg: #0d1117;
+            --card-bg: #161b22;
+            --primary-text: #c9d1d9;
+            --secondary-text: #8b949e;
+            --accent-color: #58a6ff;
+            --border-color: #30363d;
+            --success-color: #2ea043;
+            --danger-color: #f85149;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Noto Sans Arabic', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--primary-text);
+            line-height: 1.7;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        h1, h2 { color: var(--accent-color); border-bottom: 2px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; }
+        
+        /* Login Overlay */
+        #login-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(13, 17, 23, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            flex-direction: column;
+            gap: 20px;
+        }
+        #login-overlay h2 { border: none; }
+        #login-overlay input {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--primary-text);
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 1.2rem;
+            text-align: center;
+            width: 250px;
+        }
+        .btn {
+            padding: 10px 25px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: opacity 0.3s;
+        }
+        .btn:hover { opacity: 0.9; }
+        .btn-primary { background: var(--accent-color); color: #fff; }
+        .btn-success { background: var(--success-color); color: #fff; }
+        .btn-danger { background: var(--danger-color); color: #fff; }
+        .btn-secondary { background: var(--border-color); color: var(--primary-text); }
+
+        #admin-panel { display: none; }
+
+        /* Lesson List */
+        #lesson-list { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; }
+        .lesson-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+        .lesson-item-info h3 { margin: 0; font-size: 1.2rem; }
+        .lesson-item-info p { margin: 5px 0 0; color: var(--secondary-text); font-size: 0.9rem; }
+        .lesson-item-actions { display: flex; gap: 10px; }
+
+        /* Form Modal */
+        #form-modal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        #form-modal.visible { display: flex; }
+        .form-content {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            background: var(--dark-bg);
+            border: 1px solid var(--border-color);
+            color: var(--primary-text);
+            padding: 10px;
+            border-radius: 6px;
+            font-family: inherit;
+        }
+        #videos-container { display: flex; flex-direction: column; gap: 15px; border: 1px dashed var(--border-color); padding: 15px; border-radius: 8px; margin: 20px 0; }
+        .video-entry { background: var(--dark-bg); padding: 15px; border-radius: 6px; }
+        .video-entry h4 { margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+    </style>
+</head>
+<body>
+
+    <!-- LOGIN OVERLAY -->
+    <div id="login-overlay">
+        <h2>ئەدمین پانێل</h2>
+        <input type="password" id="password-input" placeholder="پاسورد">
+        <button id="login-btn" class="btn btn-primary">چوونەژوور</button>
+    </div>
+
+    <!-- ADMIN PANEL CONTENT -->
+    <div id="admin-panel" class="container">
+        <header style="display: flex; justify-content: space-between; align-items: center;">
+            <h1><i class="fas fa-user-lock"></i> کونترولا وانەیێن تایبەت</h1>
+            <button class="btn btn-success" onclick="showAddForm()"><i class="fas fa-plus"></i> وانەیەکا نوو زێدە بکە</button>
+        </header>
+        
+        <div id="lesson-list">
+            <p>چاوەڕێ بە، داتا دهێنە وەرگرتن...</p>
+        </div>
+    </div>
+
+    <!-- ADD/EDIT FORM MODAL -->
+    <div id="form-modal">
+        <div class="form-content">
+            <h2 id="form-title">زێدەکرنا وانەیەکا نوو</h2>
+            <form id="lesson-form" onsubmit="event.preventDefault(); saveLesson();">
+                <input type="hidden" id="lesson-id">
+                
+                <div class="form-group">
+                    <label for="title">ناڤونیشانێ وانەیێ</label>
+                    <input type="text" id="title" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="teacherId">مامۆستا</label>
+                    <select id="teacherId" required>
+                        <option value="">مامۆستای هەلبژێرە...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="image">لینکێ وێنەی</label>
+                    <input type="url" id="image" placeholder="https://.../wene.jpg">
+                </div>
+                
+                <div class="form-group">
+                    <label for="requiredPoints">خالێن پێدڤی</label>
+                    <input type="number" id="requiredPoints" value="0" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">ژمارا نهێنی (پاسورد)</label>
+                    <input type="text" id="password" required>
+                </div>
+
+                <h3>لیستا ڤیدیویان</h3>
+                <div id="videos-container">
+                    <!-- Dynamic video inputs will be here -->
+                </div>
+                <button type="button" class="btn btn-secondary" onclick="addVideoInput()">
+                    <i class="fas fa-plus"></i> ڤیدیویەکێ زێدە بکە
+                </button>
+
+                <div style="margin-top: 25px; display: flex; gap: 10px; justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary" onclick="closeForm()">هەلوەشاندن</button>
+                    <button type="submit" class="btn btn-success" id="save-btn">تۆمارکرن</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        // ======== FIREBASE CONFIG ========
+        const firebaseConfig = {
+            apiKey: "AIzaSyDDi3HtFigGy3qFpFVhSATal3yzm7Z_dZA",
+            authDomain: "projeislam.firebaseapp.com",
+            projectId: "projeislam",
+            storageBucket: "projeislam.appspot.com",
+            messagingSenderId: "686343038831",
+            appId: "1:686343038831:web:8b5e19daa95176000b6a9a",
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const privateLecturesCollection = db.collection('privateLectures');
+        const teachersCollection = db.collection('teachers');
+        
+        let teachersData = {};
+
+        // ======== AUTHENTICATION ========
+        document.getElementById('login-btn').addEventListener('click', () => {
+            const pass = document.getElementById('password-input').value;
+            if (pass === '0') {
+                document.getElementById('login-overlay').style.display = 'none';
+                document.getElementById('admin-panel').style.display = 'block';
+                initializeApp();
+            } else {
+                alert('پاسورد خەلەتە!');
+            }
+        });
+
+        // ======== APP INITIALIZATION ========
+        async function initializeApp() {
+            await fetchTeachers();
+            await fetchPrivateLessons();
+        }
+
+        // ======== DATA FETCHING ========
+        async function fetchTeachers() {
+            const teacherSelect = document.getElementById('teacherId');
+            try {
+                const snapshot = await teachersCollection.get();
+                snapshot.docs.forEach(doc => {
+                    const teacher = { id: doc.id, ...doc.data() };
+                    teachersData[teacher.id] = teacher.name;
+                    const option = document.createElement('option');
+                    option.value = teacher.id;
+                    option.textContent = teacher.name;
+                    teacherSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error("Error fetching teachers:", error);
+                alert("چەوتیەک د وەرگرتنا مامۆستایان دا روویدا.");
+            }
+        }
+
+        async function fetchPrivateLessons() {
+            const listContainer = document.getElementById('lesson-list');
+            listContainer.innerHTML = '<p>چاوەڕێ بە...</p>';
+            try {
+                const snapshot = await privateLecturesCollection.orderBy('title').get();
+                if (snapshot.empty) {
+                    listContainer.innerHTML = '<p>هیچ وانەیەکا تایبەت نەهاتیە تۆمارکرن.</p>';
+                    return;
+                }
+                
+                listContainer.innerHTML = '';
+                snapshot.docs.forEach(doc => {
+                    const lesson = { id: doc.id, ...doc.data() };
+                    const teacherName = teachersData[lesson.teacherId] || 'نەناسراو';
+
+                    const item = document.createElement('div');
+                    item.className = 'lesson-item';
+                    item.innerHTML = `
+                        <div class="lesson-item-info">
+                            <h3>${lesson.title}</h3>
+                            <p>
+                                <span>مامۆستا: ${teacherName}</span> | 
+                                <span>خال: ${lesson.requiredPoints}</span> | 
+                                <span>پاسورد: ${lesson.password}</span>
+                            </p>
+                        </div>
+                        <div class="lesson-item-actions">
+                            <button class="btn btn-secondary" onclick="showEditForm('${lesson.id}')"><i class="fas fa-edit"></i> گوهورین</button>
+                            <button class="btn btn-danger" onclick="deleteLesson('${lesson.id}', '${lesson.title}')"><i class="fas fa-trash"></i> ژێبرن</button>
+                        </div>
+                    `;
+                    listContainer.appendChild(item);
+                });
+            } catch (error) {
+                console.error("Error fetching lessons:", error);
+                listContainer.innerHTML = '<p style="color: var(--danger-color);">چەوتیەک روویدا د وەرگرتنا داتایان دا.</p>';
+            }
+        }
+
+        // ======== FORM HANDLING ========
+        function showForm(title) {
+            document.getElementById('form-title').textContent = title;
+            document.getElementById('form-modal').classList.add('visible');
+        }
+
+        function closeForm() {
+            document.getElementById('form-modal').classList.remove('visible');
+        }
+
+        function clearForm() {
+            document.getElementById('lesson-form').reset();
+            document.getElementById('lesson-id').value = '';
+            document.getElementById('videos-container').innerHTML = '';
+        }
+
+        function showAddForm() {
+            clearForm();
+            showForm('زێدەکرنا وانەیەکا نوو');
+        }
+
+        async function showEditForm(lessonId) {
+            clearForm();
+            try {
+                const doc = await privateLecturesCollection.doc(lessonId).get();
+                if (!doc.exists) {
+                    alert('ئەڤ وانە نینە!');
+                    return;
+                }
+                const lesson = doc.data();
+                document.getElementById('lesson-id').value = lessonId;
+                document.getElementById('title').value = lesson.title;
+                document.getElementById('teacherId').value = lesson.teacherId;
+                document.getElementById('image').value = lesson.image || '';
+                document.getElementById('requiredPoints').value = lesson.requiredPoints;
+                document.getElementById('password').value = lesson.password;
+                
+                if (lesson.videos && Array.isArray(lesson.videos)) {
+                    lesson.videos.forEach(video => addVideoInput(video.title, video.url, video.audioUrl));
+                }
+
+                showForm(`گوهورینا وانەیا: ${lesson.title}`);
+            } catch (error) {
+                console.error("Error fetching lesson for edit:", error);
+                alert('چەوتیەک روویدا.');
+            }
+        }
+
+        // ======== DYNAMIC VIDEO INPUTS ========
+        function addVideoInput(title = '', url = '', audioUrl = '') {
+            const container = document.getElementById('videos-container');
+            const videoEntry = document.createElement('div');
+            videoEntry.className = 'video-entry';
+            
+            videoEntry.innerHTML = `
+                <h4>
+                    <span>ڤیدیویەکا نوو</span>
+                    <button type="button" class="btn btn-danger" style="padding: 5px 10px;" onclick="this.parentElement.parentElement.remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </h4>
+                <div class="form-group">
+                    <input type="text" class="video-title" placeholder="ناڤونیشانێ ڤیدیویێ" value="${title}" required>
+                </div>
+                <div class="form-group">
+                    <input type="url" class="video-url" placeholder="لینکێ ڤیدیویێ (YouTube, Facebook..)" value="${url}">
+                </div>
+                <div class="form-group">
+                    <input type="url" class="video-audio-url" placeholder="لینکێ دەنگی (MP3)" value="${audioUrl}">
+                </div>
+            `;
+            container.appendChild(videoEntry);
+        }
+
+        // ======== CRUD OPERATIONS ========
+        async function saveLesson() {
+            const saveBtn = document.getElementById('save-btn');
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'تۆمار دکەت...';
+
+            const lessonId = document.getElementById('lesson-id').value;
+            
+            const videos = [];
+            document.querySelectorAll('.video-entry').forEach(entry => {
+                const title = entry.querySelector('.video-title').value;
+                const url = entry.querySelector('.video-url').value;
+                const audioUrl = entry.querySelector('.video-audio-url').value;
+                if (title && (url || audioUrl)) {
+                    videos.push({ title, url, audioUrl });
+                }
+            });
+
+            const lessonData = {
+                title: document.getElementById('title').value,
+                teacherId: document.getElementById('teacherId').value,
+                image: document.getElementById('image').value,
+                requiredPoints: Number(document.getElementById('requiredPoints').value),
+                password: document.getElementById('password').value,
+                videos: videos
+            };
+
+            try {
+                if (lessonId) {
+                    // Update
+                    await privateLecturesCollection.doc(lessonId).update(lessonData);
+                    alert('وانە ب سەرکەفتی هاتە نووژەنکرن.');
+                } else {
+                    // Add
+                    await privateLecturesCollection.add(lessonData);
+                    alert('وانە ب سەرکەفتی هاتە زێدەکرن.');
+                }
+                closeForm();
+                await fetchPrivateLessons();
+            } catch (error) {
+                console.error("Error saving lesson:", error);
+                alert('چەوتیەک د تۆمارکرنێ دا روویدا.');
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'تۆمارکرن';
+            }
+        }
+
+        async function deleteLesson(lessonId, title) {
+            if (confirm(`تۆ پشتراستی دێ وانەیا "${title}" ژێبەی؟`)) {
+                try {
+                    await privateLecturesCollection.doc(lessonId).delete();
+                    alert('وانە هاتە ژێبرن.');
+                    await fetchPrivateLessons();
+                } catch (error) {
+                    console.error("Error deleting lesson:", error);
+                    alert('چەوتیەک د ژێبرنێ دا روویدا.');
+                }
+            }
+        }
+
+    </script>
+</body>
+</html>```
