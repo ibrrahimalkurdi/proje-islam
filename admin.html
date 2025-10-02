@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پانێلا ئەدمین - پرۆژێ ئیسلام</title>
+    <!-- CSS Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        /* --- CSS گشتی و گۆڕاوەکان --- */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;700&display=swap');
+
+        :root {
+            --dark-bg: #0d1117;
+            --card-bg: #161b22;
+            --primary-text: #c9d1d9;
+            --secondary-text: #8b949e;
+            --accent-color: #58a6ff;
+            --border-color: #30363d;
+            --success-color: #2ea043;
+            --danger-color: #f85149;
+            --font-kurdish: 'Noto Sans Arabic', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font-kurdish);
+            background-color: var(--dark-bg);
+            color: var(--primary-text);
+            line-height: 1.7;
+        }
+
+        /* --- Main Content --- */
+        .main-content {
+            padding: 20px;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .page-header {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+        .page-header h1 {
+            font-size: 1.8rem;
+        }
+        .page-header .header-actions {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+        .btn {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-family: var(--font-kurdish);
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: opacity 0.3s;
+        }
+        .btn:hover { opacity: 0.9; }
+        .btn-primary { background-color: var(--accent-color); color: white; }
+        .btn-success { background-color: var(--success-color); color: white; }
+        .btn-danger { background-color: var(--danger-color); color: white; }
+        .btn-secondary { background-color: var(--border-color); color: var(--primary-text); }
+
+        /* --- Table Styles --- */
+        .data-table-container {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            overflow-x: auto;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .data-table th, .data-table td {
+            padding: 12px;
+            text-align: right;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.9rem;
+        }
+        .data-table thead {
+            background-color: var(--dark-bg);
+        }
+        .data-table tbody tr:hover {
+            background-color: #1c222c;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        .action-buttons button {
+            padding: 8px 10px;
+        }
+
+        /* --- Modal Styles --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-overlay.is-visible { display: flex; }
+        .modal-content {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            width: 95%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .modal-header {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-header h3 { font-size: 1.2rem; }
+        .close-modal-btn { background: none; border: none; color: var(--secondary-text); font-size: 1.8rem; cursor: pointer; }
+        .modal-body { padding: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.9rem;}
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            background: var(--dark-bg);
+            border: 1px solid var(--border-color);
+            color: var(--primary-text);
+            padding: 10px;
+            border-radius: 6px;
+            font-family: var(--font-kurdish);
+            font-size: 0.9rem;
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            border-color: var(--accent-color);
+            outline: none;
+        }
+        .modal-footer {
+            padding: 15px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        .modal-footer .btn {
+            flex-grow: 1;
+        }
+        
+        /* Video List in Modal */
+        #video-list-container .video-item {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+            background: var(--dark-bg);
+            padding: 15px;
+            border-radius: 6px;
+            position: relative;
+        }
+        #video-list-container .video-item .remove-video-link-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+        
+        /* Login Page & Logout */
+        #login-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100vw;
+            height: 100vh;
+            background: var(--dark-bg);
+            padding: 20px;
+        }
+        #login-container {
+            background: var(--card-bg);
+            padding: 40px 20px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        #login-container h1 { margin-bottom: 30px; font-size: 1.8rem;}
+
+        #logout-btn {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Login Page -->
+    <div id="login-page">
+        <div id="login-container">
+            <h1>پانێلا ئەدمین</h1>
+            <form id="login-form">
+                <div class="form-group">
+                    <input type="password" id="login-password" placeholder="ژمارا نهێنی" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">چوونەژوور</button>
+                <p id="login-error" style="color:var(--danger-color); margin-top:15px; display:none;"></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Admin Panel (Hidden by default) -->
+    <div id="admin-panel" style="display: none; width: 100%;">
+        <button id="logout-btn" class="btn btn-danger"><i class="fas fa-sign-out-alt"></i></button>
+        <main class="main-content">
+            
+            <!-- General Videos Page -->
+            <div id="general-videos-page" class="page active">
+                <div class="page-header">
+                    <h1>بەڕێوەبەرنا وانەیان</h1>
+                    <div class="header-actions">
+                         <button class="btn btn-primary" id="add-video-btn"><i class="fas fa-plus"></i> زێدەکرنا وانەیەکێ</button>
+                    </div>
+                </div>
+                <div class="data-table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ناڤێ وانەیێ</th>
+                                <th>مامۆستا</th>
+                                <th>چالاکی</th>
+                            </tr>
+                        </thead>
+                        <tbody id="general-videos-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- General Video Modal -->
+    <div class="modal-overlay" id="video-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="video-modal-title"></h3>
+                <button class="close-modal-btn">&times;</button>
+            </div>
+            <form id="video-form">
+                <div class="modal-body">
+                    <input type="hidden" id="video-id">
+                    <div class="form-group">
+                        <label for="video-title">ناڤێ زنجیرە وانەیێ</label>
+                        <input type="text" id="video-title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="video-teacher">مامۆستا</label>
+                        <select id="video-teacher" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="video-category">بابەت (بۆ نمونە: عەقیدە، تەفسیر)</label>
+                        <input type="text" id="video-category" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="video-youtube-thumb-fetch">لینکێ یوتوبی بۆ وەرگرتنا وێنەی (ئارەزوومەندانە)</label>
+                        <input type="url" id="video-youtube-thumb-fetch" placeholder="لینکێ ڤیدیویەکا یوتوبی لێرە دانە...">
+                    </div>
+                    <div class="form-group">
+                        <label for="video-image">لینکێ وێنەیێ سەرەکی</label>
+                        <input type="url" id="video-image" placeholder="https://example.com/image.jpg" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="video-pdf">لینکێ پەرتوکا PDF (ئەگەر هەبیت)</label>
+                        <input type="url" id="video-pdf" placeholder="https://example.com/book.pdf">
+                    </div>
+                    <hr style="border-color: var(--border-color); margin: 20px 0;">
+                    <h4>لیستا ڤیدیویان</h4>
+                    <div id="video-list-container"></div>
+                    <button type="button" class="btn btn-secondary" id="add-video-link-btn" style="margin-top: 10px;"><i class="fas fa-plus"></i> زێدەکرنا لینکەکێ دی</button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary close-modal-btn">هەلوەشاندن</button>
+                    <button type="submit" class="btn btn-success">تۆمارکرن</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- JS Libraries -->
+    <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-firestore-compat.js"></script>
+    <script>
+        // ====================================================================================
+        // ======================== پرۆژێ ئیسلام - ADMIN PANEL JS ============================
+        // ====================================================================================
+        (function() {
+            'use strict';
+
+            // === [ 0. FIREBASE SETUP ] ===
+            const firebaseConfig = {
+                apiKey: "AIzaSyDDi3HtFigGy3qFpFVhSATal3yzm7Z_dZA",
+                authDomain: "projeislam.firebaseapp.com",
+                projectId: "projeislam",
+                storageBucket: "projeislam.appspot.com",
+                messagingSenderId: "686343038831",
+                appId: "1:686343038831:web:8b5e19daa95176000b6a9a",
+            };
+            
+            firebase.initializeApp(firebaseConfig);
+            const db = firebase.firestore();
+
+            const collections = {
+                teachers: 'teachers',
+                generalLectures: 'generalLectures'
+            };
+            
+            let allTeachers = {};
+
+            // === [ 1. Simplified Authentication ] ===
+            const loginPage = document.getElementById('login-page');
+            const adminPanel = document.getElementById('admin-panel');
+            const loginForm = document.getElementById('login-form');
+            const loginError = document.getElementById('login-error');
+            const logoutBtn = document.getElementById('logout-btn');
+            const CORRECT_PASSWORD = "123123";
+
+            // Check if user is logged in using sessionStorage
+            if (sessionStorage.getItem('isLoggedIn') === 'true') {
+                loginPage.style.display = 'none';
+                adminPanel.style.display = 'block';
+                initializeApp();
+            } else {
+                loginPage.style.display = 'flex';
+                adminPanel.style.display = 'none';
+            }
+            
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const password = document.getElementById('login-password').value;
+                if (password === CORRECT_PASSWORD) {
+                    sessionStorage.setItem('isLoggedIn', 'true');
+                    loginPage.style.display = 'none';
+                    adminPanel.style.display = 'block';
+                    initializeApp();
+                } else {
+                    loginError.textContent = 'ژمارا نهێنی خەلەتە.';
+                    loginError.style.display = 'block';
+                }
+            });
+
+            logoutBtn.addEventListener('click', () => {
+                sessionStorage.removeItem('isLoggedIn');
+                window.location.reload();
+            });
+            
+            // === [ 2. App Initialization ] ===
+            async function initializeApp() {
+                await fetchTeachers();
+                await loadGeneralVideos();
+                setupEventListeners();
+            }
+            
+            async function fetchTeachers() {
+                try {
+                    const snapshot = await db.collection(collections.teachers).get();
+                    allTeachers = {};
+                    snapshot.docs.forEach(doc => {
+                        allTeachers[doc.id] = doc.data();
+                    });
+                } catch (error) {
+                    console.error("Çewtî di wergirtina mamostayan de:", error);
+                    alert("Çewtîyek di wergirtina listeya mamostayan de çêbû. Ji kerema xwe rûpelê nû bike.");
+                }
+            }
+            
+            function populateTeacherSelects() {
+                const select = document.getElementById('video-teacher');
+                select.innerHTML = '<option value="">مامۆستایەکێ هەلبژێرە</option>';
+                for (const [id, teacher] of Object.entries(allTeachers)) {
+                    select.innerHTML += `<option value="${id}">${teacher.name}</option>`;
+                }
+            }
+
+            // === [ 3. Modal Handling ] ===
+            function openModal(modalId) { document.getElementById(modalId).classList.add('is-visible'); }
+            function closeModal(modalId) { document.getElementById(modalId).classList.remove('is-visible'); }
+            
+            document.querySelectorAll('.modal-overlay').forEach(overlay => {
+                overlay.addEventListener('click', function(e) {
+                    if (e.target === this) closeModal(this.id);
+                });
+                overlay.querySelectorAll('.close-modal-btn').forEach(btn => {
+                    btn.addEventListener('click', () => closeModal(overlay.id));
+                });
+            });
+
+            // === [ 4. General Videos Management ] ===
+            const generalVideosTbody = document.getElementById('general-videos-tbody');
+            const videoForm = document.getElementById('video-form');
+            const videoListContainer = document.getElementById('video-list-container');
+
+            async function loadGeneralVideos() {
+                try {
+                    const snapshot = await db.collection(collections.generalLectures).get();
+                    generalVideosTbody.innerHTML = '';
+                    snapshot.docs.forEach(doc => {
+                        const video = { id: doc.id, ...doc.data() };
+                        const teacherName = allTeachers[video.teacherId]?.name || 'نەناسراو';
+                        const tr = `
+                            <tr>
+                                <td>${video.title}</td>
+                                <td>${teacherName}</td>
+                                <td class="action-buttons">
+                                    <button class="btn btn-secondary btn-sm" onclick="window.admin.editVideo('${video.id}')"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-danger btn-sm" onclick="window.admin.deleteDocument('${collections.generalLectures}', '${video.id}', '${video.title}')"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        `;
+                        generalVideosTbody.innerHTML += tr;
+                    });
+                } catch(error){
+                    console.error("Error loading videos: ", error);
+                    alert("چەوتیەک د وەرگرتنا داتایان دا روویدا.");
+                }
+            }
+
+            function openVideoModal(mode = 'add', videoData = {}) {
+                populateTeacherSelects();
+                videoForm.reset();
+                document.getElementById('video-id').value = '';
+                videoListContainer.innerHTML = '';
+
+                if (mode === 'add') {
+                    document.getElementById('video-modal-title').textContent = 'زێدەکرنا وانەیەکا نوو';
+                } else {
+                    document.getElementById('video-modal-title').textContent = 'دەستکاریکرنا وانەیێ';
+                    document.getElementById('video-id').value = videoData.id;
+                    document.getElementById('video-title').value = videoData.title;
+                    document.getElementById('video-teacher').value = videoData.teacherId;
+                    document.getElementById('video-category').value = videoData.category;
+                    document.getElementById('video-image').value = videoData.image;
+                    document.getElementById('video-pdf').value = videoData.pdfUrl || '';
+                    (videoData.videos || []).forEach(addVideoLinkInput);
+                }
+                openModal('video-modal');
+            }
+
+            function addVideoLinkInput(video = { title: '', url: '', audioUrl: '' }) {
+                const div = document.createElement('div');
+                div.className = 'video-item';
+                div.innerHTML = `
+                    <button type="button" class="btn btn-danger btn-sm remove-video-link-btn"><i class="fas fa-times"></i></button>
+                    <input type="text" class="video-link-title" placeholder="ناڤێ ڤیدیویێ" value="${video.title || ''}" required>
+                    <input type="url" class="video-link-url" placeholder="لینکێ ڤیدیویێ (YouTube, Facebook)" value="${video.url || ''}">
+                    <input type="url" class="video-link-audio" placeholder="لینکێ دەنگی (ئەگەر هەبیت)" value="${video.audioUrl || ''}">
+                `;
+                videoListContainer.appendChild(div);
+                div.querySelector('.remove-video-link-btn').addEventListener('click', () => div.remove());
+            }
+
+            async function saveVideo(e) {
+                e.preventDefault();
+                const id = document.getElementById('video-id').value;
+                const videoLinks = [];
+                document.querySelectorAll('#video-list-container .video-item').forEach(item => {
+                    videoLinks.push({
+                        title: item.querySelector('.video-link-title').value,
+                        url: item.querySelector('.video-link-url').value,
+                        audioUrl: item.querySelector('.video-link-audio').value
+                    });
+                });
+
+                const data = {
+                    title: document.getElementById('video-title').value,
+                    teacherId: document.getElementById('video-teacher').value,
+                    category: document.getElementById('video-category').value,
+                    image: document.getElementById('video-image').value,
+                    pdfUrl: document.getElementById('video-pdf').value,
+                    videos: videoLinks
+                };
+
+                try {
+                    if (id) {
+                        await db.collection(collections.generalLectures).doc(id).update(data);
+                    } else {
+                        await db.collection(collections.generalLectures).add(data);
+                    }
+                    closeModal('video-modal');
+                    loadGeneralVideos();
+                } catch (error) {
+                    console.error("Error saving video: ", error);
+                    alert("چەوتیەک روویدا د تۆمارکرنێ دا.");
+                }
+            }
+
+            async function editVideo(id) {
+                const doc = await db.collection(collections.generalLectures).doc(id).get();
+                if (doc.exists) {
+                    openVideoModal('edit', { id: doc.id, ...doc.data() });
+                }
+            }
+
+            // === [ 5. Helper Functions & Event Listeners ] ===
+            async function deleteDocument(collectionName, id, title) {
+                if (confirm(`ئەرێ تۆ پشتراستی دێ "${title}" ژێبەی؟`)) {
+                    try {
+                        await db.collection(collectionName).doc(id).delete();
+                        loadGeneralVideos();
+                    } catch (error) {
+                        console.error("Çewtî di dema jêbirinê de: ", error);
+                        alert("Çewtîyek di dema jêbirinê de çêbû.");
+                    }
+                }
+            }
+
+            function extractYouTubeVideoId(url) {
+                if (!url) return null;
+                let videoId = null;
+                const patterns = [
+                    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([^&]+)/,
+                    /(?:https?:\/\/)?(?:www\.)?youtu\.be\/([^?]+)/,
+                    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/embed\/([^?]+)/
+                ];
+                for (const pattern of patterns) {
+                    const match = url.match(pattern);
+                    if (match && match[1]) {
+                        videoId = match[1];
+                        break;
+                    }
+                }
+                return videoId;
+            }
+            
+            function setupEventListeners() {
+                // Video Modal Listeners
+                document.getElementById('add-video-btn').addEventListener('click', () => openVideoModal('add'));
+                document.getElementById('add-video-link-btn').addEventListener('click', () => addVideoLinkInput());
+                videoForm.addEventListener('submit', saveVideo);
+                document.getElementById('video-youtube-thumb-fetch').addEventListener('input', (e) => {
+                    const url = e.target.value;
+                    const videoId = extractYouTubeVideoId(url);
+                    if (videoId) {
+                        document.getElementById('video-image').value = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+                    }
+                });
+            }
+
+            // Expose functions to global scope for inline onclick handlers
+            window.admin = {
+                editVideo,
+                deleteDocument
+            };
+
+        })();
+    </script>
+</body>
+</html>
