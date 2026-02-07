@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پلانا ڕەمەزانێ - ملا ڕۆژمان</title>
+    
+    <!-- فۆنتێ نۆتۆ کوفی (نێزیکترین فۆنت ل ڕووداو و کەی ٢٤) -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- کتێبخانەیا دروستکرنا PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        :root {
+            --bg-dark: #05080f;
+            --panel-bg: rgba(15, 23, 42, 0.8);
+            --gold: #d4af37;
+            --gold-glow: rgba(212, 175, 55, 0.4);
+            --white: #f8fafc;
+        }
+
+        body {
+            font-family: 'Noto Kufi Arabic', sans-serif;
+            background-color: #111;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* دوگمەیا داونلۆدێ */
+        .download-bar {
+            width: 100%;
+            background: #222;
+            padding: 15px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .btn-download {
+            background: linear-gradient(45deg, #d4af37, #f2d06b);
+            color: #000;
+            border: none;
+            padding: 12px 30px;
+            font-family: 'Noto Kufi Arabic', sans-serif;
+            font-weight: bold;
+            font-size: 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px var(--gold-glow);
+            transition: 0.3s;
+        }
+
+        .btn-download:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px var(--gold-glow);
+        }
+
+        /* چوارچۆڤێ پۆستەری */
+        #poster-area {
+            width: 850px;
+            min-height: 1150px;
+            background: radial-gradient(circle at top, #0f172a 0%, #05080f 100%);
+            padding: 50px;
+            position: relative;
+            box-sizing: border-box;
+            border: 5px solid #05080f;
+        }
+
+        /* دیزاینێ گرافیکی یێ پاشبنەمای */
+        #poster-area::before {
+            content: "";
+            position: absolute;
+            top: 20px; left: 20px; right: 20px; bottom: 20px;
+            border: 1px solid var(--gold);
+            opacity: 0.2;
+            pointer-events: none;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .bismillah {
+            color: var(--gold);
+            font-size: 18px;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        header h1 {
+            color: var(--gold);
+            font-size: 42px;
+            margin: 10px 0;
+            font-weight: 700;
+            text-shadow: 0 0 15px var(--gold-glow);
+        }
+
+        .sub-title {
+            color: #94a3b8;
+            font-size: 20px;
+            border-top: 1px solid var(--gold);
+            display: inline-block;
+            padding-top: 5px;
+            margin-top: 5px;
+        }
+
+        /* دابەشکرنا پلانێ */
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .card {
+            background: var(--panel-bg);
+            border-radius: 12px;
+            padding: 20px;
+            border-right: 4px solid var(--gold);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: 0.3s;
+        }
+
+        .card h2 {
+            color: var(--gold);
+            font-size: 20px;
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .card h2::before {
+            content: "◆";
+            margin-left: 10px;
+            font-size: 14px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            color: var(--white);
+            font-size: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+            line-height: 1.6;
+        }
+
+        li::before {
+            content: "•";
+            color: var(--gold);
+            font-size: 20px;
+            margin-left: 10px;
+            line-height: 1;
+        }
+
+        /* بەشێ SWOT */
+        .swot-box {
+            margin-top: 40px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            text-align: center;
+        }
+
+        .swot-item {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 8px;
+            color: var(--gold);
+            font-weight: bold;
+            font-size: 14px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        /* پلانا یەدەگ */
+        .plan-b {
+            margin-top: 30px;
+            background: linear-gradient(to left, rgba(212, 175, 55, 0.1), transparent);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px dashed var(--gold);
+            text-align: center;
+            color: #fbbf24;
+            font-size: 15px;
+        }
+
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            color: var(--gold);
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .highlight {
+            color: var(--gold);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="download-bar">
+        <button class="btn-download" onclick="exportToPDF()">داونلۆدکرن وەک PDF (بۆ پرنتێ)</button>
+    </div>
+
+    <div id="poster-area">
+        <header>
+            <div class="bismillah">بسم اللە الرحمن الرحیم</div>
+            <h1>پلانا هەیڤا ڕەمەزانێ</h1>
+            <div class="sub-title">ئامادەکرن و پێشکێشکرن: ملا ڕۆژمانێ گرشینی</div>
+            <p style="color: var(--gold); font-size: 14px; margin-top: 10px;">[ٲیاما معدودات]</p>
+        </header>
+
+        <div class="grid-container">
+            <!-- 1 -->
+            <div class="card">
+                <h2>#پلانا بەراهیێ (تمهیدی)</h2>
+                <ul>
+                    <li>پێداچونا بیروباوەران (بنەمایێ قەبیلبونا کریاران).</li>
+                    <li>گرتنا ڕۆژیێن شەعبانێ.</li>
+                    <li>خواندنا قۆڕئانێ <span class="highlight">(شهر القراء)</span>.</li>
+                    <li>دانا زکاتێ پێشوەخت.</li>
+                    <li>خوفێرکرنا احکامێن ڕوژیێ.</li>
+                </ul>
+            </div>
+
+            <!-- 2 -->
+            <div class="card">
+                <h2>#پلانا تەرکاندنێ (المهجورات)</h2>
+                <p style="font-size: 12px; color: var(--gold); margin-bottom: 10px;">((خالیکە پاشی تژیکە))</p>
+                <ul>
+                    <li>ژدەستدان وزەعێکرنا دەمی.</li>
+                    <li>تورێن کومەڵایەتی.</li>
+                    <li>ڕێگرێن ڕێکێ بناسی.</li>
+                    <li>بێ بەڕنامجی (پلانەکا درست بگری).</li>
+                </ul>
+            </div>
+
+            <!-- 3 -->
+            <div class="card">
+                <h2>#پلانا عیبادەتان</h2>
+                <ul>
+                    <li>خواندنا قوڕئانێ ب <span class="highlight">تفسیر</span>.</li>
+                    <li>نڤێژێن فەرز ب <span class="highlight">جماعەت</span>.</li>
+                    <li>ئەنجامدانا خێرو صدقا ئەگەر کێمژی بیت.</li>
+                    <li>تەڕاویح بلا ببیتە ڕحا ڕەمەزاناتە.</li>
+                    <li>باشترین بەخشین بو خەلکی.</li>
+                </ul>
+            </div>
+
+            <!-- 4 -->
+            <div class="card">
+                <h2>#پلانا پڕوژان</h2>
+                <ul>
+                    <li>هندەکا فێری خاندنا فاتیحێ بکە.</li>
+                    <li>د بوارێ خودا (کومپانی، دختور، دکاندار...).</li>
+                    <li>مەل شەڤا قەدر ژڤانە <span class="highlight">[خیر من الف شهر]</span>.</li>
+                    <li>دانا فتارێ.</li>
+                </ul>
+            </div>
+
+            <!-- 5 -->
+            <div class="card">
+                <h2>#هاریکارێن پلانێ</h2>
+                <ul>
+                    <li>خێزان [ذرية بعضها من بعض].</li>
+                    <li>هەڤال [المرا علی دین خلیلە].</li>
+                    <li>مزگەفت، مالاخودێ بو ئیماندارا.</li>
+                </ul>
+            </div>
+
+            <!-- 6 -->
+            <div class="card">
+                <h2>#پێکهاتێن پلانێ</h2>
+                <ul>
+                    <li>دیارکرنا ئارمانجێ.</li>
+                    <li>ڕێکا گهشتنێ ب ئارمانجێ.</li>
+                    <li>ئامادەکاری بو گهشتنێ.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="swot-box">
+            <div class="swot-item">💪 خالێن بهێز</div>
+            <div class="swot-item">📉 خالێن لاواز</div>
+            <div class="swot-item">🌟 دەرفەت</div>
+            <div class="swot-item">⚠️ مە
