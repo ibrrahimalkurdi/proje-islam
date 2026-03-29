@@ -1,15 +1,126 @@
-<h1>
-8425947640:AAFFYByYi8Mv3O2MDpnIXlPABacV9HFFcVU
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>Generatora Barcodan بۆ ئیبراهیم</title>
+    <!-- لایبریری یا دروستکرنا بارکۆدان -->
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        /* تنظیماتێن پرینتێ */
+        @media print {
+            body { background-color: white; padding: 0; }
+            .no-print { display: none; }
+            .label-container { border: none !important; margin: 0 !important; page-break-inside: avoid; }
+        }
 
-  
-</h1>
+        .container {
+            width: 80mm; /* قەبارێ پرینتەرا تە */
+            margin: 0 auto;
+            background: white;
+        }
 
-<h1>
-432447925
-  
-</h1>
+        .label-container {
+            width: 76mm;
+            border: 1px dashed #ccc;
+            margin-bottom: 5mm;
+            padding: 2mm;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
 
+        .product-name {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 2px 0;
+        }
 
-<h1> 
-1172622023
-</h1>
+        .icon {
+            font-size: 24px;
+            margin-bottom: 2px;
+        }
+
+        svg {
+            width: 100%;
+            max-height: 25mm;
+        }
+
+        .print-btn {
+            display: block;
+            width: 200px;
+            padding: 10px;
+            margin: 20px auto;
+            background: #28a745;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="no-print">
+        <h2 style="text-align: center;">Generatora ١٤ بارکۆدان بۆ پرینتەرا 80mm</h2>
+        <button class="print-btn" onclick="window.print()">چاپ بکە (Print)</button>
+    </div>
+
+    <div class="container" id="barcode-list">
+        <!-- دێ لێرە بارکۆد دروست بن ب JS -->
+    </div>
+
+    <script>
+        // لیستەیا ١٤ ماددەیان دگەل ئایکۆن و بارکۆدێن وان
+        const products = [
+            { name: "پێپسی (Pepsi)", code: "111001", icon: "🥤" },
+            { name: "چپس (Chips)", code: "111002", icon: "🍟" },
+            { name: "ئاڤ (Water)", code: "111003", icon: "💧" },
+            { name: "نیسکافێ (Coffee)", code: "111004", icon: "☕" },
+            { name: "چۆکڵێت (Chocolate)", code: "111005", icon: "🍫" },
+            { name: "ئەندۆمی (Indomie)", code: "111006", icon: "🍜" },
+            { name: "بسکێت (Biscuits)", code: "111007", icon: "🍪" },
+            { name: "شیر (Milk)", code: "111008", icon: "🥛" },
+            { name: "زەیت (Oil)", code: "111009", icon: "🍾" },
+            { name: "سابوون (Soap)", code: "111010", icon: "🧼" },
+            { name: "برنج (Rice)", code: "111011", icon: "🍚" },
+            { name: "سێڤ (Apple)", code: "111012", icon: "🍎" },
+            { name: "چای (Tea)", code: "111013", icon: "🍵" },
+            { name: "شەربەت (Juice)", code: "111014", icon: "🍹" }
+        ];
+
+        const container = document.getElementById('barcode-list');
+
+        products.forEach(prod => {
+            // دروستکرنا شێوازێ ستیکەری
+            const label = document.createElement('div');
+            label.className = 'label-container';
+            
+            label.innerHTML = `
+                <div class="icon">${prod.icon}</div>
+                <div class="product-name">${prod.name}</div>
+                <svg id="barcode-${prod.code}"></svg>
+            `;
+            
+            container.appendChild(label);
+
+            // دروستکرنا بارکۆدێ فعلی
+            JsBarcode(`#barcode-${prod.code}`, prod.code, {
+                format: "CODE128",
+                lineColor: "#000",
+                width: 2,
+                height: 40,
+                displayValue: true
+            });
+        });
+    </script>
+</body>
+</html>
