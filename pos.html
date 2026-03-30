@@ -1,105 +1,124 @@
 <!DOCTYPE html>
-<html lang="ku">
+<html lang="ku" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>Barcodes for Ibrahim - XP-365B</title>
+    <title>Generatora Barcodan بۆ ئیبراهیم</title>
+    <!-- لایبریری یا دروستکرنا بارکۆدان -->
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <style>
-        /* ڕێکخستنا لاپەڕی بۆ ستیکەری */
-        @page {
-            size: 80mm 50mm; /* تو دشێی ڤی قەباری بگوهۆڕی ل دیف ستیکەرێ خۆ */
-            margin: 0;
-        }
         body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
             margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #eee;
-        }
-        .no-print {
-            text-align: center;
             padding: 20px;
-            background: #333;
-            color: white;
         }
-        .print-btn {
-            padding: 10px 25px;
-            font-size: 18px;
-            background: #28a745;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
+        /* تنظیماتێن پرینتێ */
+        @media print {
+            body { background-color: white; padding: 0; }
+            .no-print { display: none; }
+            .label-container { border: none !important; margin: 0 !important; page-break-inside: avoid; }
         }
-        /* دیزاینێ هەر ستیکەرەکێ */
-        .label {
-            width: 75mm; /* کێمەک کێمتر ژ پانیا وەرەقێ */
-            height: 45mm;
+
+        .container {
+            width: 80mm; /* قەبارێ پرینتەرا تە */
+            margin: 0 auto;
             background: white;
-            margin: 5mm auto;
+        }
+
+        .label-container {
+            width: 76mm;
+            border: 1px dashed #ccc;
+            margin-bottom: 5mm;
+            padding: 2mm;
+            text-align: center;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            border: 1px solid #ccc; /* تنێ بۆ دیاربوونێ د شاشێ دا */
-            page-break-after: always; /* هەر بارکۆدەک ل سەر وەرەقەکێ */
         }
-        @media print {
-            body { background: white; }
-            .label { border: none; margin: 0; }
-            .no-print { display: none; }
+
+        .product-name {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 2px 0;
         }
-        .icon { font-size: 40px; margin-bottom: 5px; }
-        .name { font-size: 20px; font-weight: bold; margin-bottom: 5px; color: #000; }
-        svg { width: 90%; height: auto; }
+
+        .icon {
+            font-size: 24px;
+            margin-bottom: 2px;
+        }
+
+        svg {
+            width: 100%;
+            max-height: 25mm;
+        }
+
+        .print-btn {
+            display: block;
+            width: 200px;
+            padding: 10px;
+            margin: 20px auto;
+            background: #28a745;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
     <div class="no-print">
-        <h1>Generatora بارکۆدان بۆ XP-365B</h1>
-        <p>پشتی "Print" دکەی، تنظیماتێن وەرەقێ د نێڤبەرا 20mm تا 82mm دانە</p>
-        <button class="print-btn" onclick="window.print()">چاپ بکە (Print Labels)</button>
+        <h2 style="text-align: center;">Generatora ١٤ بارکۆدان بۆ پرینتەرا 80mm</h2>
+        <button class="print-btn" onclick="window.print()">چاپ بکە (Print)</button>
     </div>
 
-    <div id="labels-container"></div>
+    <div class="container" id="barcode-list">
+        <!-- دێ لێرە بارکۆد دروست بن ب JS -->
+    </div>
 
     <script>
+        // لیستەیا ١٤ ماددەیان دگەل ئایکۆن و بارکۆدێن وان
         const products = [
-            { name: "Pepsi", code: "1001", icon: "🥤" },
-            { name: "Lays Chips", code: "1002", icon: "🍟" },
-            { name: "Water", code: "1003", icon: "💧" },
-            { name: "Nescafe", code: "1004", icon: "☕" },
-            { name: "Kinder", code: "1005", icon: "🍫" },
-            { name: "Indomie", code: "1006", icon: "🍜" },
-            { name: "Biscuits", code: "1007", icon: "🍪" },
-            { name: "Milk", code: "1008", icon: "🥛" },
-            { name: "Zir Oil", code: "1009", icon: "🍾" },
-            { name: "Duru Soap", code: "1010", icon: "🧼" },
-            { name: "Rice", code: "1011", icon: "🍚" },
-            { name: "Apple", code: "1012", icon: "🍎" },
-            { name: "Tea", code: "1013", icon: "🍵" },
-            { name: "Juice", code: "1014", icon: "🍹" }
+            { name: "پێپسی (Pepsi)", code: "111001", icon: "🥤" },
+            { name: "چپس (Chips)", code: "111002", icon: "🍟" },
+            { name: "ئاڤ (Water)", code: "111003", icon: "💧" },
+            { name: "نیسکافێ (Coffee)", code: "111004", icon: "☕" },
+            { name: "چۆکڵێت (Chocolate)", code: "111005", icon: "🍫" },
+            { name: "ئەندۆمی (Indomie)", code: "111006", icon: "🍜" },
+            { name: "بسکێت (Biscuits)", code: "111007", icon: "🍪" },
+            { name: "شیر (Milk)", code: "111008", icon: "🥛" },
+            { name: "زەیت (Oil)", code: "111009", icon: "🍾" },
+            { name: "سابوون (Soap)", code: "111010", icon: "🧼" },
+            { name: "برنج (Rice)", code: "111011", icon: "🍚" },
+            { name: "سێڤ (Apple)", code: "111012", icon: "🍎" },
+            { name: "چای (Tea)", code: "111013", icon: "🍵" },
+            { name: "شەربەت (Juice)", code: "111014", icon: "🍹" }
         ];
 
-        const container = document.getElementById('labels-container');
+        const container = document.getElementById('barcode-list');
 
-        products.forEach(p => {
-            const div = document.createElement('div');
-            div.className = 'label';
-            div.innerHTML = `
-                <div class="icon">${p.icon}</div>
-                <div class="name">${p.name}</div>
-                <svg id="barcode-${p.code}"></svg>
+        products.forEach(prod => {
+            // دروستکرنا شێوازێ ستیکەری
+            const label = document.createElement('div');
+            label.className = 'label-container';
+            
+            label.innerHTML = `
+                <div class="icon">${prod.icon}</div>
+                <div class="product-name">${prod.name}</div>
+                <svg id="barcode-${prod.code}"></svg>
             `;
-            container.appendChild(div);
+            
+            container.appendChild(label);
 
-            JsBarcode(`#barcode-${p.code}`, p.code, {
+            // دروستکرنا بارکۆدێ فعلی
+            JsBarcode(`#barcode-${prod.code}`, prod.code, {
                 format: "CODE128",
-                width: 3,
-                height: 60,
-                displayValue: true,
-                fontSize: 18
+                lineColor: "#000",
+                width: 2,
+                height: 40,
+                displayValue: true
             });
         });
     </script>
